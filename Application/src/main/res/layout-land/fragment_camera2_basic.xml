@@ -32,7 +32,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/texture"
+        android:layout_toRightOf="@id/texture"
         android:background="@color/control_background"
         android:orientation="horizontal">
 
@@ -43,15 +43,6 @@
             android:layout_gravity="center"
             android:text="@string/picture" />
 
-        <ImageButton
-            android:id="@+id/info"
-            style="@android:style/Widget.Material.Light.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:contentDescription="@string/description_info"
-            android:padding="@dimen/image_button_padding"
-            android:src="@drawable/ic_action_info" />
 
     </FrameLayout>
 

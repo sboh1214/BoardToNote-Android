@@ -14,7 +14,7 @@
  limitations under the License.
 -->
 <resources>
-    <string name="app_name">Camera2Basic</string>
+    <string name="app_name">Board To Note</string>
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>
     <string name="request_permission">This sample needs camera permission.</string>
@@ -29,5 +29,5 @@
 
         ]]>
     </string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Study Note</string>
 </resources>
