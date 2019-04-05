@@ -25,25 +25,45 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/control"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/texture"
+        android:layout_alignParentBottom="true"
         android:background="@color/control_background"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/picture"
+        <ImageButton
+            android:id="@+id/Gallery_Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_collections_black_24dp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/Picture_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/picture" />
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
-    </FrameLayout>
+        <ImageButton
+            android:id="@+id/Note_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_collections_bookmark_black_24dp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

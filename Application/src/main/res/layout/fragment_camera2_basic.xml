@@ -30,13 +30,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:background="@color/control_background">
+        android:background="@color/black">
 
         <ImageButton
             android:id="@+id/Gallery_Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:background="@color/transparent"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_collections_black_24dp" />
 
         <Space
@@ -45,10 +47,12 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/picture" />
+            android:id="@+id/Picture_Button"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_shutter" />
 
         <Space
             android:layout_width="wrap_content"
@@ -57,9 +61,11 @@
 
         <ImageButton
             android:id="@+id/Note_Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:background="@color/transparent"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_collections_bookmark_black_24dp" />
 
     </LinearLayout>

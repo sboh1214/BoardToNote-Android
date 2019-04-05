@@ -17,7 +17,9 @@
 package com.underpressure.boardtonote
 
 import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
@@ -238,8 +240,9 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener,
     ): View? = inflater.inflate(R.layout.fragment_camera2_basic, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<View>(R.id.picture).setOnClickListener(this)
-        view.findViewById<View>(R.id.info).setOnClickListener(this)
+        view.findViewById<View>(R.id.Picture_Button).setOnClickListener(this)
+        view.findViewById<View>(R.id.Note_Button).setOnClickListener(this)
+        view.findViewById<View>(R.id.Gallery_Button).setOnClickListener(this)
         textureView = view.findViewById(R.id.texture)
     }
 
@@ -667,7 +670,36 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener,
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.picture -> lockFocus()
+            R.id.Picture_Button -> lockFocus()
+            R.id.Note_Button -> {
+                val intent = Intent(context, MainActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.Gallery_Button -> {
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.action = Intent.ACTION_GET_CONTENT
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                startActivityForResult(intent, 1)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            1 -> {
+                if (resultCode == RESULT_OK) {
+                    try {
+//                    // 선택한 이미지에서 비트맵 생성
+//                    val in:InputStream = getContentResolver().openInputStream(data.getData());
+//                    val img:Bitmap = BitmapFactory.decodeStream(in);
+//                    in.close();
+                        // 이미지 표시
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
         }
     }
 
