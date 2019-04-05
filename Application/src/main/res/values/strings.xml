@@ -30,4 +30,6 @@
         ]]>
     </string>
     <string name="title_activity_main">Study Note</string>
+    <string name="search">Search</string>
+    <string name="main_search_hint">Search Study Notes</string>
 </resources>
