@@ -29,7 +29,10 @@
 
         ]]>
     </string>
+    <string name="title_activity_camera">Camera</string>
     <string name="title_activity_main">Study Note</string>
     <string name="search">Search</string>
     <string name="main_search_hint">Search Study Notes</string>
+    <string name="title_activity_edit">Edit</string>
+    <string name="action_settings">Settings</string>
 </resources>

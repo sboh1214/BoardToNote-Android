@@ -13,10 +13,12 @@
         android:label="@string/app_name"
         android:theme="@style/MaterialTheme">
         <activity
+            android:name=".EditActivity"
+            android:label="@string/title_activity_edit"></activity>
+        <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/MaterialTheme.NoActionBar">
-        </activity>
+            android:theme="@style/MaterialTheme.NoActionBar"></activity>
         <activity
             android:name=".CameraActivity"
             android:label="@string/app_name">

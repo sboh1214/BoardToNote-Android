@@ -1,12 +1,18 @@
 package com.underpressure.boardtonote
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.*
+import java.sql.Timestamp
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,17 +41,37 @@ class MainActivity : AppCompatActivity() {
             1 -> {
                 if (resultCode == RESULT_OK) {
                     try {
-//                    // 선택한 이미지에서 비트맵 생성
-//                    val in:InputStream = getContentResolver().openInputStream(data.getData());
-//                    val img:Bitmap = BitmapFactory.decodeStream(in);
-//                    in.close();
-                        // 이미지 표시
+                        val input: InputStream = contentResolver.openInputStream(data?.data)
+                        val img: Bitmap = BitmapFactory.decodeStream(input)
+                        input.close()
+                        val fileName = createTempPicture(this, img)
+                        val intent = Intent(this, EditActivity::class.java)
+                        intent.putExtra("FILE_NAME", fileName)
+                        startActivity(intent)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 }
             }
         }
+    }
+
+    fun createTempPicture(context: Context, bitmap: Bitmap): String {
+        val storage = context.cacheDir
+        val fileName = Timestamp(System.currentTimeMillis()).toString() + Random().nextInt(1000).toString() + ".png"
+        val tempFile = File(storage, fileName)
+        try {
+            tempFile.createNewFile()
+            val out = FileOutputStream(tempFile)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)
+            out.close() // 마무리로 닫아줍니다.
+
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return tempFile.absolutePath
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
