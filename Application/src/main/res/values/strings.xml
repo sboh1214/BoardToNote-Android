@@ -35,4 +35,7 @@
     <string name="main_search_hint">Search Study Notes</string>
     <string name="title_activity_edit">Edit</string>
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

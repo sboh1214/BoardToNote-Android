@@ -17,7 +17,6 @@
 package com.underpressure.boardtonote
 
 import android.Manifest
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -42,8 +41,26 @@ import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class Camera2BasicFragment : Fragment(), View.OnClickListener,
+class CameraFragment : Fragment(), View.OnClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
+
+    val REQUEST_IMAGE_OPEN = 1
+
+    override fun onClick(view: View) {
+        when (view.id) {
+            R.id.Picture_Button -> {
+                lockFocus()
+            }
+            R.id.Note_Button -> {
+                val intent = Intent(context, MainActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.Gallery_Button -> {
+                val intent = Intent(context, ProcessingActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
 
     /**
      * [TextureView.SurfaceTextureListener] handles several lifecycle events on a
@@ -97,19 +114,19 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener,
 
         override fun onOpened(cameraDevice: CameraDevice) {
             cameraOpenCloseLock.release()
-            this@Camera2BasicFragment.cameraDevice = cameraDevice
+            this@CameraFragment.cameraDevice = cameraDevice
             createCameraPreviewSession()
         }
 
         override fun onDisconnected(cameraDevice: CameraDevice) {
             cameraOpenCloseLock.release()
             cameraDevice.close()
-            this@Camera2BasicFragment.cameraDevice = null
+            this@CameraFragment.cameraDevice = null
         }
 
         override fun onError(cameraDevice: CameraDevice, error: Int) {
             onDisconnected(cameraDevice)
-            this@Camera2BasicFragment.activity?.finish()
+            this@CameraFragment.activity?.finish()
         }
 
     }
@@ -405,7 +422,7 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener,
     }
 
     /**
-     * Opens the camera specified by [Camera2BasicFragment.cameraId].
+     * Opens the camera specified by [CameraFragment.cameraId].
      */
     private fun openCamera(width: Int, height: Int) {
         val permission = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
@@ -626,7 +643,8 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener,
 
             val captureCallback = object : CameraCaptureSession.CaptureCallback() {
 
-                override fun onCaptureCompleted(session: CameraCaptureSession,
+                override fun onCaptureCompleted(
+                        session: CameraCaptureSession,
                         request: CaptureRequest,
                         result: TotalCaptureResult) {
                     activity.showToast("Saved: $file")
@@ -668,40 +686,6 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener,
 
     }
 
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.Picture_Button -> lockFocus()
-            R.id.Note_Button -> {
-                val intent = Intent(context, MainActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.Gallery_Button -> {
-                val intent = Intent()
-                intent.type = "image/*"
-                intent.action = Intent.ACTION_GET_CONTENT
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                startActivityForResult(intent, 1)
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            1 -> {
-                if (resultCode == RESULT_OK) {
-                    try {
-//                    // 선택한 이미지에서 비트맵 생성
-//                    val in:InputStream = getContentResolver().openInputStream(data.getData());
-//                    val img:Bitmap = BitmapFactory.decodeStream(in);
-//                    in.close();
-                        // 이미지 표시
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-    }
 
     private fun setAutoFlash(requestBuilder: CaptureRequest.Builder) {
         if (flashSupported) {
@@ -728,7 +712,7 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener,
         /**
          * Tag for the [Log].
          */
-        private val TAG = "Camera2BasicFragment"
+        private val TAG = "CameraFragment"
 
         /**
          * Camera state: Showing camera preview.
@@ -819,6 +803,7 @@ class Camera2BasicFragment : Fragment(), View.OnClickListener,
             }
         }
 
-        @JvmStatic fun newInstance(): Camera2BasicFragment = Camera2BasicFragment()
+        @JvmStatic
+        fun newInstance(): CameraFragment = CameraFragment()
     }
 }
