@@ -15,7 +15,7 @@
         <activity android:name=".ProcessingActivity"></activity>
         <activity
             android:name=".EditActivity"
-            android:label="@string/title_activity_edit" />
+            android:label="Untitled" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"

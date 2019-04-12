@@ -39,14 +39,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        var searchView: SearchView = menu?.findItem(R.id.Search_Menu)?.actionView as SearchView
+        var searchView: SearchView = menu?.findItem(R.id.Menu_Search)?.actionView as SearchView
         searchView.queryHint = resources.getString(R.string.main_search_hint)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.Search_Menu ->
+            R.id.Menu_Search ->
 
                 return true
             else -> return false
