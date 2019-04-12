@@ -30,7 +30,7 @@ class ProcessingActivity : AppCompatActivity() {
             intent.putExtra("URI", fullPhotoUri.toString())
             startActivity(intent)
         } else {
-            Toast.makeText(this, "User has canceled opening picture.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "User has canceled opening Picture.", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }

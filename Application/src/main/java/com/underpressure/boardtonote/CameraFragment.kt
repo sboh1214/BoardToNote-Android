@@ -147,7 +147,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
     private var imageReader: ImageReader? = null
 
     /**
-     * This is the output file for our picture.
+     * This is the output file for our Picture.
      */
     private lateinit var file: File
 
@@ -616,7 +616,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
     }
 
     /**
-     * Capture a still picture. This method should be called when we get a response in
+     * Capture a still Picture. This method should be called when we get a response in
      * [.captureCallback] from both [.lockFocus].
      */
     private fun captureStillPicture() {
@@ -624,7 +624,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             if (activity == null || cameraDevice == null) return
             val rotation = activity.windowManager.defaultDisplay.rotation
 
-            // This is the CaptureRequest.Builder that we use to take a picture.
+            // This is the CaptureRequest.Builder that we use to take a Picture.
             val captureBuilder = cameraDevice?.createCaptureRequest(
                     CameraDevice.TEMPLATE_STILL_CAPTURE)?.apply {
                 addTarget(imageReader?.surface)
