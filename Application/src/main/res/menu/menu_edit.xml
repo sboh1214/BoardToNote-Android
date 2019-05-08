@@ -3,11 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.underpressure.boardtonote.EditActivity">
     <item
-        android:id="@+id/Menu_Rename"
-        android:title="Rename"
-        android:icon="@drawable/ic_edit_black_24dp"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/Menu_Save"
         android:icon="@drawable/ic_save_black_24dp"
         android:title="Save"
