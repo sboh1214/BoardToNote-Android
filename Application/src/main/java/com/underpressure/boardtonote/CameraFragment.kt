@@ -41,6 +41,8 @@ import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
+//CameraCaptureSession()
+
 class CameraFragment : Fragment(), View.OnClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -49,7 +51,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
     override fun onClick(view: View) {
         when (view.id) {
             R.id.Picture_Button -> {
-                lockFocus()
+                takePicture()
+                val intent = Intent(context, EditActivity::class.java)
+                startActivity(intent)
             }
             R.id.Note_Button -> {
                 val intent = Intent(context, MainActivity::class.java)
@@ -60,6 +64,12 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 startActivity(intent)
             }
         }
+    }
+
+    private fun takePicture() {
+        lockFocus()
+        runPrecaptureSequence()
+        unlockFocus()
     }
 
     /**

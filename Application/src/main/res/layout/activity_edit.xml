@@ -28,6 +28,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:hint="@string/edit_title"
+                    android:singleLine="true"
                     android:textSize="20sp" />
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
