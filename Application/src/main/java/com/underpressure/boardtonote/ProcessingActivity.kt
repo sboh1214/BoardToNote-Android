@@ -1,11 +1,13 @@
 package com.underpressure.boardtonote
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
+import java.io.File
+import java.sql.Timestamp
 
 class ProcessingActivity : AppCompatActivity() {
 
@@ -15,22 +17,30 @@ class ProcessingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
 
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            type = "image/*"
-            addCategory(Intent.CATEGORY_OPENABLE)
+        val prevIntent = intent
+        val string = prevIntent.getStringExtra("URI")
+        if (string == null) {
+            val imageIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                type = "image/*"
+                addCategory(Intent.CATEGORY_OPENABLE)
+            }
+            startActivityForResult(imageIntent, REQUEST_IMAGE_OPEN)
+        } else {
+            val uri = Uri.parse(string)
+            val intent = Intent(this, EditActivity::class.java)
+            intent.putExtra("URI", copyFile(uri))
+            startActivity(intent)
         }
-// Only the system receives the ACTION_OPEN_DOCUMENT, so no need to test.
-        startActivityForResult(intent, REQUEST_IMAGE_OPEN)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_OPEN && resultCode == Activity.RESULT_OK) {
-            val fullPhotoUri: Uri = data!!.data
+        if (requestCode == REQUEST_IMAGE_OPEN && resultCode == RESULT_OK) {
+            val uri: Uri = data!!.data
             val intent = Intent(this, EditActivity::class.java)
-            intent.putExtra("URI", fullPhotoUri.toString())
+            intent.putExtra("URI", copyFile(uri))
             startActivity(intent)
         } else {
-            Toast.makeText(this, "User has canceled opening Picture.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "User has canceled opening picture.", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
@@ -39,5 +49,22 @@ class ProcessingActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun copyFile(originalUri: Uri): String? {
+        try {
+            val originalFile = File(originalUri.path)
+            val time = System.currentTimeMillis().toInt()
+            val ts = Timestamp(time.toLong()).toString()
+            val newFile = File(this.filesDir, "/{BTN_$ts}/OriPic")
+            originalFile.copyTo(newFile)
+            return Uri.fromFile(newFile).toString()
+        } catch (e: Exception) {
+            Log.d("TAG", e.toString())
+            Toast.makeText(this, "Can't open picture.", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            return null
+        }
     }
 }

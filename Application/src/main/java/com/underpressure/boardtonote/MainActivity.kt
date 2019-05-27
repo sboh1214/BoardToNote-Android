@@ -3,16 +3,13 @@ package com.underpressure.boardtonote
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
+import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.SearchView
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-
-    val REQUEST_IMAGE_OPEN = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,16 +17,14 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         Camera_Fab.setOnClickListener {
-            val nextIntent = Intent(this, CameraActivity::class.java)
-            startActivity(nextIntent)
+            val intent = Intent(this, CameraActivity::class.java)
+            startActivity(intent)
         }
 
         Gallery_Fab.setOnClickListener {
             val intent = Intent(this, ProcessingActivity::class.java)
             startActivity(intent)
         }
-
-        Log.e("TAG", "MainActivity")
     }
 
     override fun onBackPressed() {

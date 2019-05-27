@@ -17,42 +17,50 @@
 package com.underpressure.boardtonote
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
 import android.hardware.camera2.*
+import android.media.Image
 import android.media.ImageReader
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.*
+import android.widget.Toast
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.lang.Long.signum
+import java.sql.Timestamp
 import java.util.Arrays
 import java.util.Collections
+import java.util.Comparator
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-//CameraCaptureSession()
-
 class CameraFragment : Fragment(), View.OnClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
-
-    val REQUEST_IMAGE_OPEN = 1
 
     override fun onClick(view: View) {
         when (view.id) {
             R.id.Picture_Button -> {
-                takePicture()
-                val intent = Intent(context, EditActivity::class.java)
+                var uri = captureStillPicture()
+                val intent = Intent(context, ProcessingActivity::class.java)
+                intent.putExtra("URI", uri.toString())
                 startActivity(intent)
             }
             R.id.Note_Button -> {
@@ -63,94 +71,6 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 val intent = Intent(context, ProcessingActivity::class.java)
                 startActivity(intent)
             }
-        }
-    }
-
-    private fun takePicture() {
-        if(null == cameraDevice) {
-            Log.e(TAG, "cameraDevice is null")
-            return
-        }
-        var manager:CameraManager = getSystemService(Context.CAMERA_SERVICE)
-        try {
-            var characteristics:CameraCharacteristics = manager.getCameraCharacteristics(cameraDevice!!.id)
-            var jpegSizes: Array<Size>? = null
-            if (characteristics != null) {
-                jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG)
-            }
-            var width:Int = 640
-            int height = 480;
-            if (jpegSizes != null && 0 < jpegSizes.length) {
-                width = jpegSizes[0].getWidth();
-                height = jpegSizes[0].getHeight();
-            }
-            ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
-            List<Surface> outputSurfaces = new ArrayList<Surface>(2);
-            outputSurfaces.add(reader.getSurface());
-            outputSurfaces.add(new Surface(textureView.getSurfaceTexture()));
-            final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-            captureBuilder.addTarget(reader.getSurface());
-            captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-            // Orientation
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
-            ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
-                @Override
-                public void onImageAvailable(ImageReader reader) {
-                    Image image = null;
-                    try {
-                        image = reader.acquireLatestImage();
-                        ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-                        byte[] bytes = new byte[buffer.capacity()];
-                        buffer.get(bytes);
-                        save(bytes);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (image != null) {
-                            image.close();
-                        }
-                    }
-                }
-                private void save(byte[] bytes) throws IOException {
-                    OutputStream output = null;
-                    try {
-                        output = new FileOutputStream(file);
-                        output.write(bytes);
-                    } finally {
-                        if (null != output) {
-                            output.close();
-                        }
-                    }
-                }
-            };
-            reader.setOnImageAvailableListener(readerListener, mBackgroundHandler);
-            final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
-                @Override
-                public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
-                    super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(AndroidCameraApi.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
-                    createCameraPreview();
-                }
-            };
-            cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
-                @Override
-                public void onConfigured(CameraCaptureSession session) {
-                    try {
-                        session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
-                    } catch (CameraAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-                @Override
-                public void onConfigureFailed(CameraCaptureSession session) {
-                }
-            }, mBackgroundHandler);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
         }
     }
 
@@ -174,11 +94,12 @@ class CameraFragment : Fragment(), View.OnClickListener,
 
     }
 
+
+    val REQUEST_CAMERA_PERMISSION = 1
     /**
      * ID of the current [CameraDevice].
      */
     private lateinit var cameraId: String
-
     /**
      * An [AutoFitTextureView] for camera preview.
      */
@@ -357,7 +278,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        file = File(activity.getExternalFilesDir(null), PIC_FILE_NAME)
+        val time = System.currentTimeMillis().toInt()
+        val ts = Timestamp(time.toLong()).toString()
+        file = File(activity.filesDir, "BTN_OriPic_$ts")
     }
 
     override fun onResume() {
@@ -628,7 +551,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                         }
 
                         override fun onConfigureFailed(session: CameraCaptureSession) {
-                            activity.showToast("Failed")
+                            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
                         }
                     }, null)
         } catch (e: CameraAccessException) {
@@ -711,9 +634,11 @@ class CameraFragment : Fragment(), View.OnClickListener,
      * Capture a still Picture. This method should be called when we get a response in
      * [.captureCallback] from both [.lockFocus].
      */
-    private fun captureStillPicture() {
+    private fun captureStillPicture(): Uri? {
         try {
-            if (activity == null || cameraDevice == null) return
+            if (activity == null || cameraDevice == null) {
+                return null
+            }
             val rotation = activity.windowManager.defaultDisplay.rotation
 
             // This is the CaptureRequest.Builder that we use to take a Picture.
@@ -739,7 +664,6 @@ class CameraFragment : Fragment(), View.OnClickListener,
                         session: CameraCaptureSession,
                         request: CaptureRequest,
                         result: TotalCaptureResult) {
-                    activity.showToast("Saved: $file")
                     Log.d(TAG, file.toString())
                     unlockFocus()
                 }
@@ -750,8 +674,10 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 abortCaptures()
                 capture(captureBuilder?.build(), captureCallback, null)
             }
+            return Uri.fromFile(file)
         } catch (e: CameraAccessException) {
             Log.e(TAG, e.toString())
+            return null
         }
 
     }
@@ -898,4 +824,93 @@ class CameraFragment : Fragment(), View.OnClickListener,
         @JvmStatic
         fun newInstance(): CameraFragment = CameraFragment()
     }
+}
+
+internal class CompareSizesByArea : Comparator<Size> {
+
+    // We cast here to ensure the multiplications won't overflow
+    override fun compare(lhs: Size, rhs: Size) =
+            signum(lhs.width.toLong() * lhs.height - rhs.width.toLong() * rhs.height)
+
+}
+
+internal class ImageSaver(
+        /**
+         * The JPEG image
+         */
+        private val image: Image,
+
+        /**
+         * The file we save the image into.
+         */
+        private val file: File
+) : Runnable {
+
+    override fun run() {
+        val buffer = image.planes[0].buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        var output: FileOutputStream? = null
+        try {
+            output = FileOutputStream(file).apply {
+                write(bytes)
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, e.toString())
+        } finally {
+            image.close()
+            output?.let {
+                try {
+                    it.close()
+                } catch (e: IOException) {
+                    Log.e(TAG, e.toString())
+                }
+            }
+        }
+    }
+
+    companion object {
+        /**
+         * Tag for the [Log].
+         */
+        private val TAG = "ImageSaver"
+    }
+}
+
+
+class ConfirmationDialog : DialogFragment() {
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+            AlertDialog.Builder(activity)
+                    .setMessage(R.string.request_permission)
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        val REQUEST_CAMERA_PERMISSION = 1
+                        parentFragment.requestPermissions(arrayOf(Manifest.permission.CAMERA),
+                                REQUEST_CAMERA_PERMISSION)
+                    }
+                    .setNegativeButton(android.R.string.cancel) { _, _ ->
+                        parentFragment.activity?.finish()
+                    }
+                    .create()
+}
+
+class ErrorDialog : DialogFragment() {
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+            AlertDialog.Builder(activity)
+                    .setMessage(arguments.getString(ARG_MESSAGE))
+                    .setPositiveButton(android.R.string.ok) { _, _ -> activity.finish() }
+                    .create()
+
+    companion object {
+
+        @JvmStatic
+        private val ARG_MESSAGE = "message"
+
+        @JvmStatic
+        fun newInstance(message: String): ErrorDialog = ErrorDialog().apply {
+            arguments = Bundle().apply { putString(ARG_MESSAGE, message) }
+        }
+    }
+
 }
