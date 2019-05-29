@@ -5,9 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.widget.Toast
 import java.io.File
-import java.sql.Timestamp
 
 class ProcessingActivity : AppCompatActivity() {
 
@@ -15,20 +13,22 @@ class ProcessingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("TAG", "ProcessingActivity")
+
         setContentView(R.layout.activity_gallery)
 
         val prevIntent = intent
-        val string = prevIntent.getStringExtra("URI")
-        if (string == null) {
+        val dirName = prevIntent.getStringExtra("DirName")
+
+        if (dirName == null) {
             val imageIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 type = "image/*"
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
             startActivityForResult(imageIntent, REQUEST_IMAGE_OPEN)
         } else {
-            val uri = Uri.parse(string)
             val intent = Intent(this, EditActivity::class.java)
-            intent.putExtra("URI", copyFile(uri))
+            intent.putExtra("DirName", dirName)
             startActivity(intent)
         }
     }
@@ -37,10 +37,10 @@ class ProcessingActivity : AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_OPEN && resultCode == RESULT_OK) {
             val uri: Uri = data!!.data
             val intent = Intent(this, EditActivity::class.java)
-            intent.putExtra("URI", copyFile(uri))
+            intent.putExtra("DirName", copyFile(uri))
             startActivity(intent)
         } else {
-            Toast.makeText(this, "User has canceled opening picture.", Toast.LENGTH_SHORT).show()
+            toast(this, "User has canceled opening picture.")
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
@@ -52,19 +52,26 @@ class ProcessingActivity : AppCompatActivity() {
     }
 
     private fun copyFile(originalUri: Uri): String? {
-        try {
+        return try {
             val originalFile = File(originalUri.path)
-            val time = System.currentTimeMillis().toInt()
-            val ts = Timestamp(time.toLong()).toString()
-            val newFile = File(this.filesDir, "/{BTN_$ts}/OriPic")
+            val dirName = makeDir(this, originalFile.name)
+            val newFile = File(this.filesDir, "$dirName/OriPic.jpg")
             originalFile.copyTo(newFile)
-            return Uri.fromFile(newFile).toString()
+            dirName
         } catch (e: Exception) {
             Log.d("TAG", e.toString())
-            Toast.makeText(this, "Can't open picture.", Toast.LENGTH_SHORT).show()
+            toast(this, "Can't open picture.")
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            return null
+            null
+        }
+    }
+
+    private fun File.copyTo(file: File) {
+        inputStream().use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
         }
     }
 }

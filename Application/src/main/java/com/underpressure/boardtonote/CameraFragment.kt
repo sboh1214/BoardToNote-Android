@@ -26,7 +26,6 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.media.Image
 import android.media.ImageReader
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -39,15 +38,11 @@ import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.*
-import android.widget.Toast
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Long.signum
-import java.sql.Timestamp
-import java.util.Arrays
-import java.util.Collections
-import java.util.Comparator
+import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -58,9 +53,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
     override fun onClick(view: View) {
         when (view.id) {
             R.id.Picture_Button -> {
-                var uri = captureStillPicture()
+                var dirName = captureStillPicture()
                 val intent = Intent(context, ProcessingActivity::class.java)
-                intent.putExtra("URI", uri.toString())
+                intent.putExtra("DirName", dirName)
                 startActivity(intent)
             }
             R.id.Note_Button -> {
@@ -276,13 +271,6 @@ class CameraFragment : Fragment(), View.OnClickListener,
         textureView = view.findViewById(R.id.texture)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        val time = System.currentTimeMillis().toInt()
-        val ts = Timestamp(time.toLong()).toString()
-        file = File(activity.filesDir, "BTN_OriPic_$ts")
-    }
-
     override fun onResume() {
         super.onResume()
         startBackgroundThread()
@@ -399,7 +387,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 return
             }
         } catch (e: CameraAccessException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
         } catch (e: NullPointerException) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
@@ -430,7 +418,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 }
             }
             else -> {
-                Log.e(TAG, "Display rotation is invalid: $displayRotation")
+                Log.e("TAG", "Display rotation is invalid: $displayRotation")
             }
         }
         return swappedDimensions
@@ -455,7 +443,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             }
             manager.openCamera(cameraId, stateCallback, backgroundHandler)
         } catch (e: CameraAccessException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
         } catch (e: InterruptedException) {
             throw RuntimeException("Interrupted while trying to lock camera opening.", e)
         }
@@ -499,7 +487,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             backgroundThread = null
             backgroundHandler = null
         } catch (e: InterruptedException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
         }
 
     }
@@ -545,17 +533,17 @@ class CameraFragment : Fragment(), View.OnClickListener,
                                 captureSession?.setRepeatingRequest(previewRequest,
                                         captureCallback, backgroundHandler)
                             } catch (e: CameraAccessException) {
-                                Log.e(TAG, e.toString())
+                                Log.e("TAG", e.toString())
                             }
 
                         }
 
                         override fun onConfigureFailed(session: CameraCaptureSession) {
-                            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+                            toast(context, "Failed")
                         }
                     }, null)
         } catch (e: CameraAccessException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
         }
 
     }
@@ -606,7 +594,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             captureSession?.capture(previewRequestBuilder.build(), captureCallback,
                     backgroundHandler)
         } catch (e: CameraAccessException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
         }
 
     }
@@ -625,7 +613,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             captureSession?.capture(previewRequestBuilder.build(), captureCallback,
                     backgroundHandler)
         } catch (e: CameraAccessException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
         }
 
     }
@@ -634,11 +622,15 @@ class CameraFragment : Fragment(), View.OnClickListener,
      * Capture a still Picture. This method should be called when we get a response in
      * [.captureCallback] from both [.lockFocus].
      */
-    private fun captureStillPicture(): Uri? {
+    private fun captureStillPicture(): String? {
         try {
             if (activity == null || cameraDevice == null) {
                 return null
             }
+
+            val dirName: String = makeDir(context, null)
+            file = File(activity.filesDir, "$dirName/OriPic.jpg")
+
             val rotation = activity.windowManager.defaultDisplay.rotation
 
             // This is the CaptureRequest.Builder that we use to take a Picture.
@@ -664,7 +656,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                         session: CameraCaptureSession,
                         request: CaptureRequest,
                         result: TotalCaptureResult) {
-                    Log.d(TAG, file.toString())
+                    Log.d("TAG", file.toString())
                     unlockFocus()
                 }
             }
@@ -674,9 +666,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 abortCaptures()
                 capture(captureBuilder?.build(), captureCallback, null)
             }
-            return Uri.fromFile(file)
+            return dirName
         } catch (e: CameraAccessException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
             return null
         }
 
@@ -699,7 +691,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             captureSession?.setRepeatingRequest(previewRequest, captureCallback,
                     backgroundHandler)
         } catch (e: CameraAccessException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
         }
 
     }
@@ -726,11 +718,6 @@ class CameraFragment : Fragment(), View.OnClickListener,
             ORIENTATIONS.append(Surface.ROTATION_180, 270)
             ORIENTATIONS.append(Surface.ROTATION_270, 180)
         }
-
-        /**
-         * Tag for the [Log].
-         */
-        private val TAG = "CameraFragment"
 
         /**
          * Camera state: Showing camera preview.
@@ -816,7 +803,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             } else if (notBigEnough.size > 0) {
                 return Collections.max(notBigEnough, CompareSizesByArea())
             } else {
-                Log.e(TAG, "Couldn't find any suitable preview size")
+                Log.e("TAG", "Couldn't find any suitable preview size")
                 return choices[0]
             }
         }
@@ -856,24 +843,17 @@ internal class ImageSaver(
                 write(bytes)
             }
         } catch (e: IOException) {
-            Log.e(TAG, e.toString())
+            Log.e("TAG", e.toString())
         } finally {
             image.close()
             output?.let {
                 try {
                     it.close()
                 } catch (e: IOException) {
-                    Log.e(TAG, e.toString())
+                    Log.e("TAG", e.toString())
                 }
             }
         }
-    }
-
-    companion object {
-        /**
-         * Tag for the [Log].
-         */
-        private val TAG = "ImageSaver"
     }
 }
 

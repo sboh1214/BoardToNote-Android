@@ -1,40 +1,37 @@
 package com.underpressure.boardtonote
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.content_edit.*
 
 
 class EditActivity : AppCompatActivity() {
 
-    var btnClass = BoardToNoteClass()
+    private lateinit var btnClass: BTNClass
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("TAG", "EditActivity")
+
         setContentView(R.layout.activity_edit)
         setSupportActionBar(toolbar)
 
         val intent = intent
-        val pictureUri = intent.getStringExtra("URI")
-        if (pictureUri == null) {
-            Toast.makeText(this, "An Error Occurred : pictureUri does not exist.", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+        val dirName = intent.getStringExtra("DirName")
+        if (dirName == null) {
+            toast(this, "An Error Occurred : pictureUri does not exist.")
+            startActivity(Intent(this, MainActivity::class.java))
         } else {
+            btnClass = BTNClass(this, dirName)
             try {
-                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(pictureUri))
-                btnClass.Picture = bitmap
-
-                pictureView.setImageBitmap(btnClass.Picture)
+                pictureView.setImageBitmap(btnClass.OriginalPicture)
             } catch (e: Exception) {
-                Toast.makeText(this, "An Error Occurred : Can't open Picture.", Toast.LENGTH_SHORT).show()
+                toast(this, "An Error Occurred : Can't open Picture.")
             }
         }
     }
@@ -50,14 +47,14 @@ class EditActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.Menu_Save -> {
-                return true
+                true
             }
             R.id.Menu_Share -> {
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
