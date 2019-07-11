@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 class ProcessingActivity : AppCompatActivity() {
 
@@ -56,7 +58,7 @@ class ProcessingActivity : AppCompatActivity() {
             val originalFile = File(originalUri.path)
             val dirName = makeDir(this, originalFile.name)
             val newFile = File(this.filesDir, "$dirName/OriPic.jpg")
-            originalFile.copyTo(newFile)
+            copy(originalFile, newFile)
             dirName
         } catch (e: Exception) {
             Log.d("TAG", e.toString())
@@ -67,11 +69,13 @@ class ProcessingActivity : AppCompatActivity() {
         }
     }
 
-    private fun File.copyTo(file: File) {
-        inputStream().use { input ->
-            file.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
+    fun copy(src: File, dst: File) {
+        var inStream = FileInputStream(src)
+        var outStream = FileOutputStream(dst)
+        var inChannel = inStream.channel
+        var outChannel = outStream.channel
+        inChannel.transferTo(0, inChannel.size(), outChannel)
+        inStream.close()
+        outStream.close()
     }
 }

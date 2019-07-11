@@ -12,14 +12,14 @@ import java.util.*
 class BTNClass(context: Context, dirName: String) {
     private var context: Context = context
     var DirName: String = dirName
-    var OriginalPicture: Bitmap?
+    val OriginalPicture: Bitmap?  by lazy { GetOriginalPicture() }
 
-    init {
-        try {
-            this.OriginalPicture = BitmapFactory.decodeFile(context.filesDir.absolutePath + "/" + dirName + "/" + "OriPic.jpg")
+    private fun GetOriginalPicture(): Bitmap? {
+        return try {
+            BitmapFactory.decodeFile(context.filesDir.absolutePath + "/" + DirName + "/" + "OriPic.jpg")
         } catch (e: Exception) {
-            this.OriginalPicture = null
             Log.d("TAG", e.toString())
+            null
         }
     }
 }
