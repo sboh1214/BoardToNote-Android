@@ -320,7 +320,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
      * @param height The height of available size for camera preview
      */
     private fun setUpCameraOutputs(width: Int, height: Int) {
-        val manager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val manager = activity?.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
             for (cameraId in manager.cameraIdList) {
                 val characteristics = manager.getCameraCharacteristics(cameraId)
@@ -346,13 +346,13 @@ class CameraFragment : Fragment(), View.OnClickListener,
 
                 // Find out if we need to swap dimension to get the preview size relative to sensor
                 // coordinate.
-                val displayRotation = activity.windowManager.defaultDisplay.rotation
+                val displayRotation = activity?.windowManager?.defaultDisplay?.rotation
 
                 sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)
-                val swappedDimensions = areDimensionsSwapped(displayRotation)
+                val swappedDimensions = areDimensionsSwapped(displayRotation as Int)
 
                 val displaySize = Point()
-                activity.windowManager.defaultDisplay.getSize(displaySize)
+                activity?.windowManager?.defaultDisplay?.getSize(displaySize)
                 val rotatedPreviewWidth = if (swappedDimensions) height else width
                 val rotatedPreviewHeight = if (swappedDimensions) width else height
                 var maxPreviewWidth = if (swappedDimensions) displaySize.y else displaySize.x
@@ -428,14 +428,14 @@ class CameraFragment : Fragment(), View.OnClickListener,
      * Opens the camera specified by [CameraFragment.cameraId].
      */
     private fun openCamera(width: Int, height: Int) {
-        val permission = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
+        val permission = ContextCompat.checkSelfPermission(activity as Context, Manifest.permission.CAMERA)
         if (permission != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission()
             return
         }
         setUpCameraOutputs(width, height)
         configureTransform(width, height)
-        val manager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val manager = activity?.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
             // Wait for camera to open - 2.5 seconds is sufficient
             if (!cameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
@@ -539,7 +539,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                         }
 
                         override fun onConfigureFailed(session: CameraCaptureSession) {
-                            toast(context, "Failed")
+                            toast(context as Context, "Failed")
                         }
                     }, null)
         } catch (e: CameraAccessException) {
@@ -558,7 +558,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
      */
     private fun configureTransform(viewWidth: Int, viewHeight: Int) {
         activity ?: return
-        val rotation = activity.windowManager.defaultDisplay.rotation
+        val rotation = activity?.windowManager?.defaultDisplay?.rotation
         val matrix = Matrix()
         val viewRect = RectF(0f, 0f, viewWidth.toFloat(), viewHeight.toFloat())
         val bufferRect = RectF(0f, 0f, previewSize.height.toFloat(), previewSize.width.toFloat())
@@ -628,10 +628,10 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 return null
             }
 
-            val dirName: String = makeDir(context, null)
-            file = File(activity.filesDir, "$dirName/OriPic.jpg")
+            val dirName: String = makeDir(context as Context, null)
+            file = File(activity?.filesDir, "$dirName/OriPic.jpg")
 
-            val rotation = activity.windowManager.defaultDisplay.rotation
+            val rotation = activity?.windowManager?.defaultDisplay?.rotation
 
             // This is the CaptureRequest.Builder that we use to take a Picture.
             val captureBuilder = cameraDevice?.createCaptureRequest(
@@ -643,7 +643,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 // For devices with orientation of 90, we return our mapping from ORIENTATIONS.
                 // For devices with orientation of 270, we need to rotate the JPEG 180 degrees.
                 set(CaptureRequest.JPEG_ORIENTATION,
-                        (ORIENTATIONS.get(rotation) + sensorOrientation + 270) % 360)
+                        (ORIENTATIONS.get(rotation as Int) + sensorOrientation + 270) % 360)
 
                 // Use the same AE and AF modes as the preview.
                 set(CaptureRequest.CONTROL_AF_MODE,
@@ -861,15 +861,15 @@ internal class ImageSaver(
 class ConfirmationDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-            AlertDialog.Builder(activity)
+            AlertDialog.Builder(activity as Context)
                     .setMessage(R.string.request_permission)
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         val REQUEST_CAMERA_PERMISSION = 1
-                        parentFragment.requestPermissions(arrayOf(Manifest.permission.CAMERA),
+                        parentFragment?.requestPermissions(arrayOf(Manifest.permission.CAMERA),
                                 REQUEST_CAMERA_PERMISSION)
                     }
                     .setNegativeButton(android.R.string.cancel) { _, _ ->
-                        parentFragment.activity?.finish()
+                        parentFragment?.activity?.finish()
                     }
                     .create()
 }
@@ -877,9 +877,9 @@ class ConfirmationDialog : DialogFragment() {
 class ErrorDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-            AlertDialog.Builder(activity)
-                    .setMessage(arguments.getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok) { _, _ -> activity.finish() }
+            AlertDialog.Builder(activity as Context)
+                    .setMessage(arguments?.getString(ARG_MESSAGE))
+                    .setPositiveButton(android.R.string.ok) { _, _ -> activity?.finish() }
                     .create()
 
     companion object {

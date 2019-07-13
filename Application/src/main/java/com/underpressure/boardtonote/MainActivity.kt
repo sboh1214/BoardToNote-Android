@@ -15,7 +15,6 @@ import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.item_main_rv.view.*
 import java.io.File
 
 
@@ -102,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
 class MyAdapter(val context: Context, private val btnList: ArrayList<BTNClass>, val itemClick: (BTNClass) -> Unit, val itemLongClick: (BTNClass) -> Boolean) :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-    inner class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+    inner class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView as View) {
 
         fun bind(btnClass: BTNClass) {
             itemView.Title_TV.text = btnClass.DirName
