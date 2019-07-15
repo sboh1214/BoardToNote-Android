@@ -3,7 +3,6 @@ package com.underpressure.boardtonote
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         viewManager = LinearLayoutManager(this)
         getDirs(this)
-        viewAdapter = MyAdapter(this, btnList)
+        viewAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) })
 
         Main_RV.apply {
             setHasFixedSize(true)
@@ -54,14 +53,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun itemClick(btnClass: BTNClass) {
+    private fun itemClick(btnClass: BTNClass) {
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("DirName", btnClass.DirName)
         startActivity(intent)
         return
     }
 
-    fun itemLongClick(btnClass: BTNClass): Boolean {
+    private fun itemLongClick(btnClass: BTNClass): Boolean {
         return true
     }
 
@@ -91,7 +90,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.Menu_Search ->
-
                 return true
             else -> return false
         }
@@ -99,26 +97,22 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class MyAdapter(val context: Context, private val btnList: ArrayList<BTNClass>, val itemClick: (BTNClass) -> Unit, val itemLongClick: (BTNClass) -> Boolean) :
-        RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-    inner class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView as View) {
-
-        fun bind(btnClass: BTNClass) {
-            itemView.Title_TV.text = btnClass.DirName
-            //itemView.Thumbnail_IV.setImageBitmap()
+class BTNAdapter(private val btnList: ArrayList<BTNClass>, val itemClick: (BTNClass) -> Unit, val itemLongClick: (BTNClass) -> Boolean) :
+        RecyclerView.Adapter<BTNAdapter.BTNHolder>() {
+    inner class BTNHolder(item: View) : RecyclerView.ViewHolder(item) {
+        fun bind(btnClass: BTNClass, itemClick: (BTNClass) -> Unit, itemLongClick: (BTNClass) -> Boolean) {
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.setOnLongClickListener { itemLongClick(btnClass) }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyAdapter.MyViewHolder {
-        val textView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_main_rv, parent, false) as ConstraintLayout
-        return MyViewHolder(textView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BTNHolder {
+        val item = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
+        return BTNHolder(item)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(btnList[position])
+    override fun onBindViewHolder(holder: BTNHolder, position: Int) {
+        holder.bind(btnList[position], itemClick, itemLongClick)
     }
 
     override fun getItemCount() = btnList.size
