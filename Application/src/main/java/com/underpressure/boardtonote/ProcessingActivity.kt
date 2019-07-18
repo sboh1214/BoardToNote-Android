@@ -3,7 +3,7 @@ package com.underpressure.boardtonote
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import java.io.File
 import java.io.FileInputStream
@@ -37,7 +37,7 @@ class ProcessingActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_OPEN && resultCode == RESULT_OK) {
-            val uri: Uri = data!!.data
+            val uri: Uri? = data!!.data
             val intent = Intent(this, EditActivity::class.java)
             intent.putExtra("DirName", copyFile(uri))
             startActivity(intent)
@@ -56,7 +56,7 @@ class ProcessingActivity : AppCompatActivity() {
     private fun copyFile(originalUri: Uri): String? {
         return try {
             val originalFile = File(originalUri.path)
-            val dirName = makeDir(this, originalFile.name)
+            val dirName = BTNClass.makeDir(this, originalFile.name)
             val newFile = File(this.filesDir, "$dirName/OriPic.jpg")
             copy(originalFile, newFile)
             dirName

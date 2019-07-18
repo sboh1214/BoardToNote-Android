@@ -3,10 +3,10 @@ package com.underpressure.boardtonote
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView
 import android.util.Log
 import android.view.*
 import com.microsoft.appcenter.AppCenter
@@ -14,6 +14,7 @@ import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.item_main.view.*
 import java.io.File
 
 
@@ -101,6 +102,7 @@ class BTNAdapter(private val btnList: ArrayList<BTNClass>, val itemClick: (BTNCl
         RecyclerView.Adapter<BTNAdapter.BTNHolder>() {
     inner class BTNHolder(item: View) : RecyclerView.ViewHolder(item) {
         fun bind(btnClass: BTNClass, itemClick: (BTNClass) -> Unit, itemLongClick: (BTNClass) -> Boolean) {
+            itemView.Title_Text.text = btnClass.DirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.setOnLongClickListener { itemLongClick(btnClass) }
         }
