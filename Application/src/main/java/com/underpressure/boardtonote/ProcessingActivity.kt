@@ -1,26 +1,29 @@
 package com.underpressure.boardtonote
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 
 class ProcessingActivity : AppCompatActivity() {
 
     private val REQUEST_IMAGE_OPEN = 1
 
+    lateinit var btnClass: BTNClass
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "ProcessingActivity")
+
+        Log.i("ProcessingActivity", "onCreate")
 
         setContentView(R.layout.activity_gallery)
 
         val prevIntent = intent
-        val dirName = prevIntent.getStringExtra("DirName")
+        val dirName = prevIntent.getStringExtra("dirName")
 
         if (dirName == null) {
             val imageIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
@@ -30,19 +33,21 @@ class ProcessingActivity : AppCompatActivity() {
             startActivityForResult(imageIntent, REQUEST_IMAGE_OPEN)
         } else {
             val intent = Intent(this, EditActivity::class.java)
-            intent.putExtra("DirName", dirName)
+            intent.putExtra("dirName", dirName)
             startActivity(intent)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_OPEN && resultCode == RESULT_OK) {
-            val uri: Uri? = data!!.data
+            val uri: Uri? = data?.data
             val intent = Intent(this, EditActivity::class.java)
-            intent.putExtra("DirName", copyFile(uri))
+            val file = File(uri!!.path)
+            btnClass = BTNClass(this as Context, file)
+            intent.putExtra("dirName", btnClass.dirName)
             startActivity(intent)
         } else {
-            toast(this, "User has canceled opening picture.")
+            Toast.makeText(this, "User has canceled opening picture.", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
@@ -51,31 +56,5 @@ class ProcessingActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-    }
-
-    private fun copyFile(originalUri: Uri): String? {
-        return try {
-            val originalFile = File(originalUri.path)
-            val dirName = BTNClass.makeDir(this, originalFile.name)
-            val newFile = File(this.filesDir, "$dirName/OriPic.jpg")
-            copy(originalFile, newFile)
-            dirName
-        } catch (e: Exception) {
-            Log.d("TAG", e.toString())
-            toast(this, "Can't open picture.")
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            null
-        }
-    }
-
-    fun copy(src: File, dst: File) {
-        var inStream = FileInputStream(src)
-        var outStream = FileOutputStream(dst)
-        var inChannel = inStream.channel
-        var outChannel = outStream.channel
-        inChannel.transferTo(0, inChannel.size(), outChannel)
-        inStream.close()
-        outStream.close()
     }
 }

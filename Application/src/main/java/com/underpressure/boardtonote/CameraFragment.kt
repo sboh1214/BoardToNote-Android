@@ -29,15 +29,16 @@ import android.media.ImageReader
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.*
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -46,6 +47,7 @@ import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.math.max
 
 class CameraFragment : Fragment(), View.OnClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -53,9 +55,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
     override fun onClick(view: View) {
         when (view.id) {
             R.id.Picture_Button -> {
-                var dirName = captureStillPicture()
+                val dirName = captureStillPicture()
                 val intent = Intent(context, ProcessingActivity::class.java)
-                intent.putExtra("DirName", dirName)
+                intent.putExtra("dirName", dirName)
                 startActivity(intent)
             }
             R.id.Note_Button -> {
@@ -337,7 +339,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
 
                 // For still image captures, we use the largest available size.
                 val largest = Collections.max(
-                        Arrays.asList(*map.getOutputSizes(ImageFormat.JPEG)),
+                        mutableListOf(*map.getOutputSizes(ImageFormat.JPEG)),
                         CompareSizesByArea())
                 imageReader = ImageReader.newInstance(largest.width, largest.height,
                         ImageFormat.JPEG, /*maxImages*/ 2).apply {
@@ -474,7 +476,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
      */
     private fun startBackgroundThread() {
         backgroundThread = HandlerThread("CameraBackground").also { it.start() }
-        backgroundHandler = Handler(backgroundThread?.looper)
+        backgroundHandler = Handler(backgroundThread!!.looper)
     }
 
     /**
@@ -512,7 +514,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             previewRequestBuilder.addTarget(surface)
 
             // Here, we create a CameraCaptureSession for camera preview.
-            cameraDevice?.createCaptureSession(Arrays.asList(surface, imageReader?.surface),
+            cameraDevice?.createCaptureSession(mutableListOf(surface, imageReader?.surface),
                     object : CameraCaptureSession.StateCallback() {
 
                         override fun onConfigured(cameraCaptureSession: CameraCaptureSession) {
@@ -539,11 +541,11 @@ class CameraFragment : Fragment(), View.OnClickListener,
                         }
 
                         override fun onConfigureFailed(session: CameraCaptureSession) {
-                            toast(context as Context, "Failed")
+                            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
                         }
                     }, null)
         } catch (e: CameraAccessException) {
-            Log.e("TAG", e.toString())
+            Log.e("CameraFragment", e.toString())
         }
 
     }
@@ -567,9 +569,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
 
         if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
             bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY())
-            val scale = Math.max(
-                    viewHeight.toFloat() / previewSize.height,
-                    viewWidth.toFloat() / previewSize.width)
+            val scale = max(viewHeight.toFloat() / previewSize.height, viewWidth.toFloat() / previewSize.width)
             with(matrix) {
                 setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL)
                 postScale(scale, scale, centerX, centerY)
@@ -628,13 +628,14 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 return null
             }
 
-            val dirName: String = makeDir(context as Context, null)
-            file = File(activity?.filesDir, "$dirName/OriPic.jpg")
+            val btn = BTNClass(context as Context)
+            file = File(btn.oriPicPath)
 
+            lockFocus()
             val rotation = activity?.windowManager?.defaultDisplay?.rotation
 
             // This is the CaptureRequest.Builder that we use to take a Picture.
-            val captureBuilder = cameraDevice?.createCaptureRequest(
+            cameraDevice?.createCaptureRequest(
                     CameraDevice.TEMPLATE_STILL_CAPTURE)?.apply {
                 imageReader?.surface?.let { addTarget(it) }
 
@@ -650,23 +651,24 @@ class CameraFragment : Fragment(), View.OnClickListener,
                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
             }?.also { setAutoFlash(it) }
 
-            val captureCallback = object : CameraCaptureSession.CaptureCallback() {
+            object : CameraCaptureSession.CaptureCallback()
+            {
 
                 override fun onCaptureCompleted(
                         session: CameraCaptureSession,
                         request: CaptureRequest,
                         result: TotalCaptureResult) {
-                    Log.d("TAG", file.toString())
+                    Log.i("CameraFragment", file.toString())
                     unlockFocus()
                 }
             }
 
-            captureSession?.apply {
-                stopRepeating()
-                abortCaptures()
-                captureBuilder?.build()?.let { capture(it, captureCallback, null) }
-            }
-            return dirName
+//            val apply = captureSession?.apply {
+//                stopRepeating()
+//                abortCaptures()
+//                captureBuilder?.build()?.let { capture(it, captureCallback, null) }
+//            }
+            return btn.dirName
         } catch (e: CameraAccessException) {
             Log.e("TAG", e.toString())
             return null
@@ -722,37 +724,37 @@ class CameraFragment : Fragment(), View.OnClickListener,
         /**
          * Camera state: Showing camera preview.
          */
-        private val STATE_PREVIEW = 0
+        private const val STATE_PREVIEW = 0
 
         /**
          * Camera state: Waiting for the focus to be locked.
          */
-        private val STATE_WAITING_LOCK = 1
+        private const val STATE_WAITING_LOCK = 1
 
         /**
          * Camera state: Waiting for the exposure to be precapture state.
          */
-        private val STATE_WAITING_PRECAPTURE = 2
+        private const val STATE_WAITING_PRECAPTURE = 2
 
         /**
          * Camera state: Waiting for the exposure state to be something other than precapture.
          */
-        private val STATE_WAITING_NON_PRECAPTURE = 3
+        private const val STATE_WAITING_NON_PRECAPTURE = 3
 
         /**
          * Camera state: Picture was taken.
          */
-        private val STATE_PICTURE_TAKEN = 4
+        private const val STATE_PICTURE_TAKEN = 4
 
         /**
          * Max preview width that is guaranteed by Camera2 API
          */
-        private val MAX_PREVIEW_WIDTH = 1920
+        private const val MAX_PREVIEW_WIDTH = 1920
 
         /**
          * Max preview height that is guaranteed by Camera2 API
          */
-        private val MAX_PREVIEW_HEIGHT = 1080
+        private const val MAX_PREVIEW_HEIGHT = 1080
 
         /**
          * Given `choices` of `Size`s supported by a camera, choose the smallest one that
@@ -798,13 +800,15 @@ class CameraFragment : Fragment(), View.OnClickListener,
 
             // Pick the smallest of those big enough. If there is no one big enough, pick the
             // largest of those not big enough.
-            if (bigEnough.size > 0) {
-                return Collections.min(bigEnough, CompareSizesByArea())
-            } else if (notBigEnough.size > 0) {
-                return Collections.max(notBigEnough, CompareSizesByArea())
-            } else {
-                Log.e("TAG", "Couldn't find any suitable preview size")
-                return choices[0]
+            return when
+            {
+                bigEnough.size > 0 -> Collections.min(bigEnough, CompareSizesByArea())
+                notBigEnough.size > 0 -> Collections.max(notBigEnough, CompareSizesByArea())
+                else ->
+                {
+                    Log.e("TAG", "Couldn't find any suitable preview size")
+                    choices[0]
+                }
             }
         }
 
@@ -850,7 +854,7 @@ internal class ImageSaver(
                 try {
                     it.close()
                 } catch (e: IOException) {
-                    Log.e("TAG", e.toString())
+                    Log.e("CameraFragment", e.toString())
                 }
             }
         }

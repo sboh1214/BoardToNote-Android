@@ -3,12 +3,12 @@ package com.underpressure.boardtonote
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.SearchView
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun itemClick(btnClass: BTNClass) {
         val intent = Intent(this, EditActivity::class.java)
-        intent.putExtra("DirName", btnClass.DirName)
+        intent.putExtra("dirName", btnClass.dirName)
         startActivity(intent)
         return
     }
@@ -102,7 +102,7 @@ class BTNAdapter(private val btnList: ArrayList<BTNClass>, val itemClick: (BTNCl
         RecyclerView.Adapter<BTNAdapter.BTNHolder>() {
     inner class BTNHolder(item: View) : RecyclerView.ViewHolder(item) {
         fun bind(btnClass: BTNClass, itemClick: (BTNClass) -> Unit, itemLongClick: (BTNClass) -> Boolean) {
-            itemView.Title_Text.text = btnClass.DirName
+            itemView.Title_Text.text = btnClass.dirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.setOnLongClickListener { itemLongClick(btnClass) }
         }

@@ -4,37 +4,50 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import android.widget.Toast
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BTNClass()
+class BTNClass(context: Context, dirName: String)
 {
-    lateinit var context: Context
-    lateinit var DirName: String
-    val OriginalPicture: Bitmap?  by lazy { GetOriginalPicture() }
-    lateinit var SaveState: SaveStateEnum
+    val context: Context = context
+    val dirName: String = dirName
+    private val dirPath: String by lazy { "${context.filesDir.absolutePath}/$dirName.btn" }
+    val oriPic: Bitmap? by lazy { loadOriPic() }
+    val oriPicPath: String by lazy { "$dirPath/OriPic.jpg" }
+    private lateinit var state: State
 
-    constructor(context: Context) : this()
-    {
-        SaveState = SaveStateEnum.Never
-    }
-
-    constructor(context: Context, dirName: String) : this()
-    {
-        SaveState = SaveStateEnum.Saved
-    }
-
-    private fun GetOriginalPicture(): Bitmap?
+    private fun loadOriPic(): Bitmap?
     {
         return try
         {
-            BitmapFactory.decodeFile(context.filesDir.absolutePath + "/" + DirName + "/" + "OriPic.jpg")
+            BitmapFactory.decodeFile(dirPath + "/" + "OriPic.jpg")
         } catch (e: Exception)
         {
-            Log.d("TAG", e.toString())
+            Log.e("BTNClass", e.message ?: "Null")
             null
+        }
+    }
+
+    private fun copyOriPic(inFile: File): Boolean
+    {
+        return try
+        {
+            val outFile = File(dirPath + "/" + "OriPic.jpg")
+            val inStream = FileInputStream(inFile)
+            val outStream = FileOutputStream(outFile)
+            val inChannel = inStream.channel
+            val outChannel = outStream.channel
+            inChannel.transferTo(0, inChannel.size(), outChannel)
+            inStream.close()
+            outStream.close()
+            true
+        } catch (e: Exception)
+        {
+            Log.e("BTNClass", e.message ?: "Null")
+            false
         }
     }
 
@@ -50,40 +63,41 @@ class BTNClass()
         return dir.exists()
     }
 
-    private fun MakeDir(name: String?): String
+    companion object
     {
-        if (name == null)
+        enum class State
         {
-            val c: Calendar = Calendar.getInstance()
-            val d = SimpleDateFormat("yyMMdd-hhmmss")
-            val dirName = d.format(c.time)
-            val dirPath = context.filesDir.absolutePath + "/" + dirName
-            val dir = File(dirPath)
-            if (!dir.exists())
-            {
-                dir.mkdir()
-            }
-            return dirName
-        } else
+            Never, Unsaved, Saved
+        }
+
+        fun makeDir(context: Context, name: String?): String?
         {
-            val dirName = name
-            val dirPath = context.filesDir.absolutePath + "/" + dirName
-            val dir = File(dirPath)
-            if (!dir.exists())
+            if (name == null)
             {
-                dir.mkdir()
+                val c: Calendar = Calendar.getInstance()
+                val d = SimpleDateFormat("yyMMdd-hhmmss", Locale.KOREA)
+                val dirName = d.format(c.time)
+                val dirPath = context.filesDir.absolutePath + "/" + dirName
+                val dir = File(dirPath)
+                if (!dir.exists())
+                {
+                    dir.mkdir()
+                }
+                return dirName
+            } else
+            {
+                val dirName = name
+                val dirPath = context.filesDir.absolutePath + "/" + dirName
+                val dir = File(dirPath)
+                return if (!dir.exists())
+                {
+                    null
+                } else
+                {
+                    dir.mkdir()
+                    dirName
+                }
             }
-            return dirName
         }
     }
-}
-
-fun toast(context: Context, string: String)
-{
-    Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
-}
-
-enum class SaveStateEnum
-{
-    Never, Unsaved, Saved
 }

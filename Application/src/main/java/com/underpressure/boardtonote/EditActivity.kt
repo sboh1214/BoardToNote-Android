@@ -2,10 +2,11 @@ package com.underpressure.boardtonote
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.content_edit.*
 
@@ -16,22 +17,22 @@ class EditActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "EditActivity")
+        Log.i("EditActivity", "onCreate")
 
         setContentView(R.layout.activity_edit)
         setSupportActionBar(toolbar)
 
         val intent = intent
-        val dirName = intent.getStringExtra("DirName")
+        val dirName = intent.getStringExtra("dirName")
         if (dirName == null) {
-            toast(this, "An Error Occurred : pictureUri does not exist.")
+            Toast.makeText(this, "An Error Occurred : pictureUri does not exist.", Toast.LENGTH_SHORT)
             startActivity(Intent(this, MainActivity::class.java))
         } else {
             btnClass = BTNClass(this, dirName)
             try {
-                pictureView.setImageBitmap(btnClass.OriginalPicture)
+                pictureView.setImageBitmap(btnClass.oriPic)
             } catch (e: Exception) {
-                toast(this, "An Error Occurred : Can't open Picture.")
+                Toast.makeText(this, "An Error Occurred : Can't open Picture.", Toast.LENGTH_SHORT)
             }
         }
     }
