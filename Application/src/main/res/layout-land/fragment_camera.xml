@@ -36,13 +36,13 @@
         android:orientation="vertical">
 
         <ImageButton
-            android:id="@+id/Gallery_Button"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:padding="12dp"
-            android:scaleType="fitCenter"
-            android:background="@color/transparent"
-            app:srcCompat="@drawable/ic_collections_black_24dp" />
+                android:id="@+id/Gallery_Button"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:background="@color/transparent"
+                app:srcCompat="@drawable/ic_collections_black"/>
 
         <Space
             android:layout_width="wrap_content"
@@ -63,13 +63,13 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/Note_Button"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:padding="12dp"
-            android:scaleType="fitCenter"
-            android:background="@color/transparent"
-            app:srcCompat="@drawable/ic_collections_bookmark_black_24dp" />
+                android:id="@+id/Note_Button"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:background="@color/transparent"
+                app:srcCompat="@drawable/ic_bookmark_black"/>
 
     </LinearLayout>
 

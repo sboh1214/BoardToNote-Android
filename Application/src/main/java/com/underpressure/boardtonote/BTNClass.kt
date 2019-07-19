@@ -85,7 +85,7 @@ class BTNClass(context: Context, dirName: String)
                 val c: Calendar = Calendar.getInstance()
                 val d = SimpleDateFormat("yyMMdd-hhmmss", Locale.KOREA)
                 val dirName = d.format(c.time)
-                val dirPath = context.filesDir.absolutePath + "/" + dirName
+                val dirPath = context.filesDir.absolutePath + "/" + dirName + ".btn"
                 val dir = File(dirPath)
                 if (!dir.exists())
                 {
@@ -95,7 +95,7 @@ class BTNClass(context: Context, dirName: String)
             } else
             {
                 var dirName = name
-                var dir = File(context.filesDir.absolutePath + "/" + dirName)
+                var dir = File(context.filesDir.absolutePath + "/" + dirName + ".btn")
                 if (!dir.exists())
                 {
                     dir.mkdir()
@@ -105,7 +105,7 @@ class BTNClass(context: Context, dirName: String)
                 while (true)
                 {
                     dirName = name + num.toString()
-                    dir = File(context.filesDir.absolutePath + "/" + dirName)
+                    dir = File(context.filesDir.absolutePath + "/" + dirName + ".btn")
                     if (!dir.exists())
                     {
                         dir.mkdir()

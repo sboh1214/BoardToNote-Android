@@ -28,18 +28,18 @@
         android:layout_gravity="bottom|end">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/Camera_Fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/ic_photo_camera_black_24dp" />
+                android:id="@+id/Camera_Fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                app:srcCompat="@drawable/ic_camera_black"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/Gallery_Fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/ic_collections_black_24dp" />
+                android:id="@+id/Gallery_Fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                app:srcCompat="@drawable/ic_collections_black"/>
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

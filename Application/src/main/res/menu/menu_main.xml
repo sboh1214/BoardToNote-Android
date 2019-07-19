@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/Menu_Search"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="@string/search"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom" />
+            android:id="@+id/Menu_Search"
+            android:icon="@drawable/ic_search_black"
+            android:title="@string/search"
+            app:actionViewClass="androidx.appcompat.widget.SearchView"
+            app:showAsAction="ifRoom" />
     <item
             android:id="@+id/Menu_Setting"
-            android:icon="@drawable/ic_settings_white_24dp"
+            android:icon="@drawable/ic_settings_white"
             android:title="@string/setting"
             app:showAsAction="ifRoom"/>
 </menu>

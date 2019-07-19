@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.underpressure.boardtonote.EditActivity">
     <item
-        android:id="@+id/Menu_Save"
-        android:icon="@drawable/ic_save_black_24dp"
-        android:title="Save"
-        app:showAsAction="always" />
+            android:id="@+id/Menu_Save"
+            android:icon="@drawable/ic_save_black"
+            android:title="Save"
+            app:showAsAction="always" />
     <item
-        android:id="@+id/Menu_Share"
-        android:icon="@drawable/ic_share_black_24dp"
-        android:title="Share"
-        app:showAsAction="always" />
+            android:id="@+id/Menu_Share"
+            android:icon="@drawable/ic_share_black"
+            android:title="Share"
+            app:showAsAction="always" />
 </menu>

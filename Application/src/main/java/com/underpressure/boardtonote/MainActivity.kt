@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("MainActivity", "onCreate")
+        Log.i("MainActivity", "onCreate")
 
         AppCenter.start(application, "15951c1d-dee3-4a12-8f06-e2a7b2d9ff35", Analytics::class.java, Crashes::class.java)
 
@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun itemLongClick(btnClass: BTNClass): Boolean {
-
         return true
     }
 
