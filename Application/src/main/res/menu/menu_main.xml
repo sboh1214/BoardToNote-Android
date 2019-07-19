@@ -7,4 +7,9 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom" />
+    <item
+            android:id="@+id/Menu_Setting"
+            android:icon="@drawable/ic_settings_white_24dp"
+            android:title="@string/setting"
+            app:showAsAction="ifRoom"/>
 </menu>

@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "MainActivity")
+        Log.d("MainActivity", "onCreate")
 
         AppCenter.start(application, "15951c1d-dee3-4a12-8f06-e2a7b2d9ff35", Analytics::class.java, Crashes::class.java)
 
@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun itemLongClick(btnClass: BTNClass): Boolean {
+
         return true
     }
 
@@ -91,7 +92,15 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.Menu_Search ->
+            {
                 return true
+            }
+            R.id.Menu_Setting ->
+            {
+                val intent = Intent(this as Context, SettingsActivity::class.java)
+                startActivity(intent)
+                return true
+            }
             else -> return false
         }
 

@@ -628,7 +628,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 return null
             }
 
-            val btn = BTNClass(context as Context)
+            val btn = BTNClass(context as Context, BTNClass.makeDir(context as Context, null))
             file = File(btn.oriPicPath)
 
             lockFocus()

@@ -10,6 +10,10 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * A Class for Board To Note Project File
+ */
+
 class BTNClass(context: Context, dirName: String)
 {
     val context: Context = context
@@ -19,14 +23,18 @@ class BTNClass(context: Context, dirName: String)
     val oriPicPath: String by lazy { "$dirPath/OriPic.jpg" }
     private lateinit var state: State
 
+    /**
+     * @return Bitmap of original picture.
+     * @exception[Exception] If original picture doesn't exist.
+     */
     private fun loadOriPic(): Bitmap?
     {
         return try
         {
-            BitmapFactory.decodeFile(dirPath + "/" + "OriPic.jpg")
+            BitmapFactory.decodeFile("$dirPath/OriPic.jpg")
         } catch (e: Exception)
         {
-            Log.e("BTNClass", e.message ?: "Null")
+            Log.e("BTNClass", e.toString())
             null
         }
     }
@@ -35,7 +43,7 @@ class BTNClass(context: Context, dirName: String)
     {
         return try
         {
-            val outFile = File(dirPath + "/" + "OriPic.jpg")
+            val outFile = File("$dirPath/OriPic.jpg")
             val inStream = FileInputStream(inFile)
             val outStream = FileOutputStream(outFile)
             val inChannel = inStream.channel
@@ -70,7 +78,7 @@ class BTNClass(context: Context, dirName: String)
             Never, Unsaved, Saved
         }
 
-        fun makeDir(context: Context, name: String?): String?
+        fun makeDir(context: Context, name: String?): String
         {
             if (name == null)
             {
@@ -86,16 +94,24 @@ class BTNClass(context: Context, dirName: String)
                 return dirName
             } else
             {
-                val dirName = name
-                val dirPath = context.filesDir.absolutePath + "/" + dirName
-                val dir = File(dirPath)
-                return if (!dir.exists())
-                {
-                    null
-                } else
+                var dirName = name
+                var dir = File(context.filesDir.absolutePath + "/" + dirName)
+                if (!dir.exists())
                 {
                     dir.mkdir()
-                    dirName
+                    return dirName
+                }
+                var num = 1
+                while (true)
+                {
+                    dirName = name + num.toString()
+                    dir = File(context.filesDir.absolutePath + "/" + dirName)
+                    if (!dir.exists())
+                    {
+                        dir.mkdir()
+                        return dirName
+                    }
+                    num++
                 }
             }
         }

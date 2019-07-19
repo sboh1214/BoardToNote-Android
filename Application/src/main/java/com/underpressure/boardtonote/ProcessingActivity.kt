@@ -40,10 +40,10 @@ class ProcessingActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_OPEN && resultCode == RESULT_OK) {
-            val uri: Uri? = data?.data
+            val uri: Uri = data!!.data!!
             val intent = Intent(this, EditActivity::class.java)
-            val file = File(uri!!.path)
-            btnClass = BTNClass(this as Context, file)
+            val file = File(uri.path)
+            btnClass = BTNClass(this as Context, BTNClass.makeDir(this as Context, file.name))
             intent.putExtra("dirName", btnClass.dirName)
             startActivity(intent)
         } else {
