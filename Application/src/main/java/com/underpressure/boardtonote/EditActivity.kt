@@ -25,14 +25,14 @@ class EditActivity : AppCompatActivity() {
         val intent = intent
         val dirName = intent.getStringExtra("dirName")
         if (dirName == null) {
-            Toast.makeText(this, "An Error Occurred : pictureUri does not exist.", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "An Error Occurred : pictureUri does not exist.", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, MainActivity::class.java))
         } else {
             btnClass = BTNClass(this, dirName)
             try {
                 pictureView.setImageBitmap(btnClass.oriPic)
             } catch (e: Exception) {
-                Toast.makeText(this, "An Error Occurred : Can't open Picture.", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "An Error Occurred : Can't open Picture.", Toast.LENGTH_SHORT).show()
             }
         }
     }

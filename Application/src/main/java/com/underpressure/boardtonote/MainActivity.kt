@@ -18,13 +18,15 @@ import kotlinx.android.synthetic.main.item_main.view.*
 import java.io.File
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()
+{
 
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var btnList = arrayListOf<BTNClass>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         Log.i("MainActivity", "onCreate")
 
@@ -54,74 +56,89 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun itemClick(btnClass: BTNClass) {
+    private fun itemClick(btnClass: BTNClass)
+    {
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dirName", btnClass.dirName)
         startActivity(intent)
         return
     }
 
-    private fun itemLongClick(btnClass: BTNClass): Boolean {
+    private fun itemLongClick(btnClass: BTNClass): Boolean
+    {
         return true
     }
 
-    private fun getDirs(context: Context) {
+    private fun getDirs(context: Context)
+    {
         val dirList = File(context.filesDir.absolutePath).listFiles()
-        if (dirList != null) {
-            for (i in 0 until dirList.size) {
-                if (dirList[i].isDirectory) {
+        if (dirList != null)
+        {
+            for (i in 0 until dirList.size)
+            {
+                if (dirList[i].isDirectory)
+                {
                     btnList.add(BTNClass(context, dirList[i].name))
                 }
             }
         }
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed()
+    {
 
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean
+    {
         menuInflater.inflate(R.menu.menu_main, menu)
-        var searchView: SearchView = menu?.findItem(R.id.Menu_Search)?.actionView as SearchView
+        val searchView: SearchView = menu?.findItem(R.id.Menu_Search)?.actionView as SearchView
         searchView.queryHint = resources.getString(R.string.main_search_hint)
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean
+    {
+        return when (item?.itemId)
+        {
             R.id.Menu_Search ->
             {
-                return true
+                true
             }
             R.id.Menu_Setting ->
             {
                 val intent = Intent(this as Context, SettingsActivity::class.java)
                 startActivity(intent)
-                return true
+                true
             }
-            else -> return false
+            else -> false
         }
 
     }
 }
 
-class BTNAdapter(private val btnList: ArrayList<BTNClass>, val itemClick: (BTNClass) -> Unit, val itemLongClick: (BTNClass) -> Boolean) :
-        RecyclerView.Adapter<BTNAdapter.BTNHolder>() {
-    inner class BTNHolder(item: View) : RecyclerView.ViewHolder(item) {
-        fun bind(btnClass: BTNClass, itemClick: (BTNClass) -> Unit, itemLongClick: (BTNClass) -> Boolean) {
+class BTNAdapter(private val btnList: ArrayList<BTNClass>, private val itemClick: (BTNClass) -> Unit, private val itemLongClick: (BTNClass) -> Boolean) :
+        RecyclerView.Adapter<BTNAdapter.BTNHolder>()
+{
+    inner class BTNHolder(item: View) : RecyclerView.ViewHolder(item)
+    {
+        fun bind(btnClass: BTNClass, itemClick: (BTNClass) -> Unit, itemLongClick: (BTNClass) -> Boolean)
+        {
             itemView.Title_Text.text = btnClass.dirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.setOnLongClickListener { itemLongClick(btnClass) }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BTNHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BTNHolder
+    {
         val item = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
         return BTNHolder(item)
     }
 
-    override fun onBindViewHolder(holder: BTNHolder, position: Int) {
+    override fun onBindViewHolder(holder: BTNHolder, position: Int)
+    {
         holder.bind(btnList[position], itemClick, itemLongClick)
     }
 

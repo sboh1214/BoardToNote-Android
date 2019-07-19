@@ -27,13 +27,12 @@
         android:layout_alignParentTop="true" />
 
     <LinearLayout
-        android:id="@+id/control"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/black"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
 
         <ImageButton
                 android:id="@+id/Gallery_Button"
@@ -42,7 +41,8 @@
                 android:padding="12dp"
                 android:scaleType="fitCenter"
                 android:background="@color/transparent"
-                app:srcCompat="@drawable/ic_collections_black"/>
+                app:srcCompat="@drawable/ic_collections_black"
+                android:contentDescription="@string/gallery_button"/>
 
         <Space
             android:layout_width="wrap_content"
@@ -50,12 +50,13 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/Picture_Button"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:background="@color/transparent"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_shutter_state" />
+                android:id="@+id/Picture_Button"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_shutter_state"
+                android:contentDescription="@string/shutter_button"/>
 
         <Space
             android:layout_width="wrap_content"
@@ -69,7 +70,8 @@
                 android:padding="12dp"
                 android:scaleType="fitCenter"
                 android:background="@color/transparent"
-                app:srcCompat="@drawable/ic_bookmark_black"/>
+                app:srcCompat="@drawable/ic_bookmark_black"
+                android:contentDescription="@string/collection_button"/>
 
     </LinearLayout>
 

@@ -7,21 +7,21 @@
                                                      tools:context=".EditActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/MaterialTheme.AppBarOverlay">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/MaterialTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorAccent"
-            app:popupTheme="@style/MaterialTheme.PopupOverlay">
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorAccent"
+                app:popupTheme="@style/MaterialTheme.PopupOverlay">
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical">
 
                 <EditText
                         android:layout_width="match_parent"
@@ -37,5 +37,5 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_edit" />
+    <include layout="@layout/content_edit"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

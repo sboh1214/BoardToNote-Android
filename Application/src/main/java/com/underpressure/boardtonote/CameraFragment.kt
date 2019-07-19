@@ -92,7 +92,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
     }
 
 
-    val REQUEST_CAMERA_PERMISSION = 1
+    private val requestCameraPermission = 1
     /**
      * ID of the current [CameraDevice].
      */
@@ -298,14 +298,15 @@ class CameraFragment : Fragment(), View.OnClickListener,
         if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
             ConfirmationDialog().show(childFragmentManager, FRAGMENT_DIALOG)
         } else {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION)
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), requestCameraPermission)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
             permissions: Array<String>,
             grantResults: IntArray) {
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+        if (requestCode == requestCameraPermission)
+        {
             if (grantResults.size != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 ErrorDialog.newInstance(getString(R.string.request_permission))
                         .show(childFragmentManager, FRAGMENT_DIALOG)
@@ -712,7 +713,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
          * Conversion from screen rotation to JPEG orientation.
          */
         private val ORIENTATIONS = SparseIntArray()
-        private val FRAGMENT_DIALOG = "dialog"
+        private const val FRAGMENT_DIALOG = "dialog"
 
         init {
             ORIENTATIONS.append(Surface.ROTATION_0, 90)
@@ -868,9 +869,9 @@ class ConfirmationDialog : DialogFragment() {
             AlertDialog.Builder(activity as Context)
                     .setMessage(R.string.request_permission)
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        val REQUEST_CAMERA_PERMISSION = 1
+                        val requestCameraPermission = 1
                         parentFragment?.requestPermissions(arrayOf(Manifest.permission.CAMERA),
-                                REQUEST_CAMERA_PERMISSION)
+                                requestCameraPermission)
                     }
                     .setNegativeButton(android.R.string.cancel) { _, _ ->
                         parentFragment?.activity?.finish()

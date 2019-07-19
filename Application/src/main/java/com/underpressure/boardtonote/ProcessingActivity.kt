@@ -11,9 +11,9 @@ import java.io.File
 
 class ProcessingActivity : AppCompatActivity() {
 
-    private val REQUEST_IMAGE_OPEN = 1
+    private val requestImageOpen = 1
 
-    lateinit var btnClass: BTNClass
+    private lateinit var btnClass: BTNClass
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,7 @@ class ProcessingActivity : AppCompatActivity() {
                 type = "image/*"
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
-            startActivityForResult(imageIntent, REQUEST_IMAGE_OPEN)
+            startActivityForResult(imageIntent, requestImageOpen)
         } else {
             val intent = Intent(this, EditActivity::class.java)
             intent.putExtra("dirName", dirName)
@@ -39,7 +39,8 @@ class ProcessingActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_OPEN && resultCode == RESULT_OK) {
+        if (requestCode == requestImageOpen && resultCode == RESULT_OK)
+        {
             val uri: Uri = data!!.data!!
             val intent = Intent(this, EditActivity::class.java)
             val file = File(uri.path)
@@ -51,6 +52,7 @@ class ProcessingActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {

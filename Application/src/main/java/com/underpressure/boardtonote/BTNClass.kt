@@ -59,18 +59,6 @@ class BTNClass(context: Context, dirName: String)
         }
     }
 
-    fun SaveDir()
-    {
-
-    }
-
-    private fun CheckDir(dirName: String): Boolean
-    {
-        val dirPath = context.filesDir.absolutePath + "/" + dirName + ".btn"
-        val dir = File(dirPath)
-        return dir.exists()
-    }
-
     companion object
     {
         enum class State
