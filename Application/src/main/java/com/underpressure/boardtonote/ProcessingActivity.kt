@@ -22,7 +22,7 @@ class ProcessingActivity : AppCompatActivity() {
 
         Log.i(TAG, "onCreate")
 
-        setContentView(R.layout.activity_gallery)
+        setContentView(R.layout.activity_processing)
 
         val prevIntent = intent
         val dirName = prevIntent.getStringExtra("dirName")

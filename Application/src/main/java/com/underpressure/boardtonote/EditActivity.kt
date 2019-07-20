@@ -22,6 +22,7 @@ class EditActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_edit)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val intent = intent
         val dirName = intent.getStringExtra("dirName")
@@ -55,6 +56,15 @@ class EditActivity : AppCompatActivity() {
             }
             R.id.Menu_Share -> {
                 true
+            }
+            /**
+             * When user pressed back button on toolbar
+             */
+            android.R.id.home ->
+            {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
