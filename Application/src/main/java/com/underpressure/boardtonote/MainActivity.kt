@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity()
         getDirs(this)
         viewAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) })
 
-        Main_RV.apply {
+        Recycler_Main.apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter

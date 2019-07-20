@@ -49,6 +49,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.math.max
 
+const val TAG = "CameraFragment"
+
 class CameraFragment : Fragment(), View.OnClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -390,7 +392,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 return
             }
         } catch (e: CameraAccessException) {
-            Log.e("TAG", e.toString())
+            Log.e(TAG, e.toString())
         } catch (e: NullPointerException) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
@@ -421,7 +423,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 }
             }
             else -> {
-                Log.e("TAG", "Display rotation is invalid: $displayRotation")
+                Log.e(TAG, "Display rotation is invalid: $displayRotation")
             }
         }
         return swappedDimensions
@@ -446,7 +448,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             }
             manager.openCamera(cameraId, stateCallback, backgroundHandler)
         } catch (e: CameraAccessException) {
-            Log.e("TAG", e.toString())
+            Log.e(TAG, e.toString())
         } catch (e: InterruptedException) {
             throw RuntimeException("Interrupted while trying to lock camera opening.", e)
         }
@@ -490,7 +492,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             backgroundThread = null
             backgroundHandler = null
         } catch (e: InterruptedException) {
-            Log.e("TAG", e.toString())
+            Log.e(TAG, e.toString())
         }
 
     }
@@ -536,7 +538,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                                 captureSession?.setRepeatingRequest(previewRequest,
                                         captureCallback, backgroundHandler)
                             } catch (e: CameraAccessException) {
-                                Log.e("TAG", e.toString())
+                                Log.e(TAG, e.toString())
                             }
 
                         }
@@ -546,7 +548,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                         }
                     }, null)
         } catch (e: CameraAccessException) {
-            Log.e("CameraFragment", e.toString())
+            Log.e(TAG, e.toString())
         }
 
     }
@@ -595,7 +597,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             captureSession?.capture(previewRequestBuilder.build(), captureCallback,
                     backgroundHandler)
         } catch (e: CameraAccessException) {
-            Log.e("TAG", e.toString())
+            Log.e(TAG, e.toString())
         }
 
     }
@@ -614,7 +616,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             captureSession?.capture(previewRequestBuilder.build(), captureCallback,
                     backgroundHandler)
         } catch (e: CameraAccessException) {
-            Log.e("TAG", e.toString())
+            Log.e(TAG, e.toString())
         }
 
     }
@@ -623,58 +625,60 @@ class CameraFragment : Fragment(), View.OnClickListener,
      * Capture a still Picture. This method should be called when we get a response in
      * [.captureCallback] from both [.lockFocus].
      */
-    private fun captureStillPicture(): String? {
-        try {
-            if (activity == null || cameraDevice == null) {
+    private fun captureStillPicture(): String?
+    {
+        try
+        {
+            if (activity == null || cameraDevice == null)
+            {
                 return null
             }
+            val rotation = activity!!.windowManager.defaultDisplay.rotation
 
             val btn = BTNClass(context as Context, BTNClass.makeDir(context as Context, null))
             file = File(btn.oriPicPath)
 
-            lockFocus()
-            val rotation = activity?.windowManager?.defaultDisplay?.rotation
-
-            // This is the CaptureRequest.Builder that we use to take a Picture.
-            cameraDevice?.createCaptureRequest(
+            // This is the CaptureRequest.Builder that we use to take a picture.
+            val captureBuilder = cameraDevice?.createCaptureRequest(
                     CameraDevice.TEMPLATE_STILL_CAPTURE)?.apply {
-                imageReader?.surface?.let { addTarget(it) }
+                addTarget(imageReader!!.surface)
 
                 // Sensor orientation is 90 for most devices, or 270 for some devices (eg. Nexus 5X)
                 // We have to take that into account and rotate JPEG properly.
                 // For devices with orientation of 90, we return our mapping from ORIENTATIONS.
                 // For devices with orientation of 270, we need to rotate the JPEG 180 degrees.
                 set(CaptureRequest.JPEG_ORIENTATION,
-                        (ORIENTATIONS.get(rotation as Int) + sensorOrientation + 270) % 360)
+                        (ORIENTATIONS.get(rotation) + sensorOrientation + 270) % 360)
 
                 // Use the same AE and AF modes as the preview.
                 set(CaptureRequest.CONTROL_AF_MODE,
                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
             }?.also { setAutoFlash(it) }
 
-            object : CameraCaptureSession.CaptureCallback()
+            val captureCallback = object : CameraCaptureSession.CaptureCallback()
             {
 
-                override fun onCaptureCompleted(
-                        session: CameraCaptureSession,
-                        request: CaptureRequest,
-                        result: TotalCaptureResult) {
-                    Log.i("CameraFragment", file.toString())
+                override fun onCaptureCompleted(session: CameraCaptureSession,
+                                                request: CaptureRequest,
+                                                result: TotalCaptureResult)
+                {
+                    Toast.makeText(context, "Saved: $file", Toast.LENGTH_SHORT).show()
+                    Log.i(TAG, file.toString())
                     unlockFocus()
                 }
             }
 
-//            val apply = captureSession?.apply {
-//                stopRepeating()
-//                abortCaptures()
-//                captureBuilder?.build()?.let { capture(it, captureCallback, null) }
-//            }
+            captureSession?.apply {
+                stopRepeating()
+                abortCaptures()
+                capture(captureBuilder?.build()!!, captureCallback, null)
+            }
             return btn.dirName
-        } catch (e: CameraAccessException) {
-            Log.e("TAG", e.toString())
+        } catch (e: CameraAccessException)
+        {
+            Log.e(TAG, e.toString())
             return null
         }
-
     }
 
     /**
@@ -694,7 +698,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             captureSession?.setRepeatingRequest(previewRequest, captureCallback,
                     backgroundHandler)
         } catch (e: CameraAccessException) {
-            Log.e("TAG", e.toString())
+            Log.e(TAG, e.toString())
         }
 
     }
@@ -807,7 +811,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 notBigEnough.size > 0 -> Collections.max(notBigEnough, CompareSizesByArea())
                 else ->
                 {
-                    Log.e("TAG", "Couldn't find any suitable preview size")
+                    Log.e(TAG, "Couldn't find any suitable preview size")
                     choices[0]
                 }
             }
@@ -848,14 +852,14 @@ internal class ImageSaver(
                 write(bytes)
             }
         } catch (e: IOException) {
-            Log.e("TAG", e.toString())
+            Log.e(TAG, e.toString())
         } finally {
             image.close()
             output?.let {
                 try {
                     it.close()
                 } catch (e: IOException) {
-                    Log.e("CameraFragment", e.toString())
+                    Log.e(TAG, e.toString())
                 }
             }
         }
