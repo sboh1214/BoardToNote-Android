@@ -10,10 +10,11 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
+private const val TAG = "BTNClass"
+
 /**
  * A Class for Board To Note Project File
  */
-
 class BTNClass(context: Context, dirName: String)
 {
     val context: Context = context
@@ -34,7 +35,7 @@ class BTNClass(context: Context, dirName: String)
             BitmapFactory.decodeFile("$dirPath/OriPic.jpg")
         } catch (e: Exception)
         {
-            Log.e("BTNClass", e.toString())
+            Log.e(TAG, e.toString())
             null
         }
     }
@@ -54,7 +55,7 @@ class BTNClass(context: Context, dirName: String)
             true
         } catch (e: Exception)
         {
-            Log.e("BTNClass", e.message ?: "Null")
+            Log.e(TAG, e.message ?: "Null")
             false
         }
     }

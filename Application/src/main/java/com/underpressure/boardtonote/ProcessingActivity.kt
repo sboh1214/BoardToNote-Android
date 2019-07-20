@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 
+private const val TAG = "ProcessingActivity"
+
 class ProcessingActivity : AppCompatActivity() {
 
     private val requestImageOpen = 1
@@ -18,7 +20,7 @@ class ProcessingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.i("ProcessingActivity", "onCreate")
+        Log.i(TAG, "onCreate")
 
         setContentView(R.layout.activity_gallery)
 

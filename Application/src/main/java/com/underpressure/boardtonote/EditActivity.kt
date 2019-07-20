@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.content_edit.*
 
+private const val TAG = "EditActivity"
 
 class EditActivity : AppCompatActivity() {
 
@@ -17,7 +18,7 @@ class EditActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("EditActivity", "onCreate")
+        Log.i(TAG, "onCreate")
 
         setContentView(R.layout.activity_edit)
         setSupportActionBar(toolbar)

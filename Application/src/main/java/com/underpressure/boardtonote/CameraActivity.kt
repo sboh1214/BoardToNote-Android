@@ -24,11 +24,13 @@ import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 
+private const val TAG = "CameraActivity"
+
 class CameraActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("CameraActivity", "onCreate")
+        Log.i(TAG, "onCreate")
         setContentView(R.layout.activity_camera)
         savedInstanceState ?: supportFragmentManager.beginTransaction()
                 .replace(R.id.container, CameraFragment.newInstance())

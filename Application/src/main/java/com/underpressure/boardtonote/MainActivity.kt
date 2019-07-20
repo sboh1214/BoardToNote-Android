@@ -13,10 +13,10 @@ import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.item_main.view.*
 import java.io.File
 
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity()
 {
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        Log.i("MainActivity", "onCreate")
+        Log.i(TAG, "onCreate")
 
         AppCenter.start(application, "15951c1d-dee3-4a12-8f06-e2a7b2d9ff35", Analytics::class.java, Crashes::class.java)
 
