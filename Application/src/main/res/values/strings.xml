@@ -21,7 +21,7 @@
     <string name="search">Search</string>
     <string name="main_search_hint">Search Study Notes</string>
     <string name="edit_title">Edit Title</string>
-    <string name="Error">Error</string>
+    <string name="Error" translatable="false">Error</string>
     <string name="setting">Setting</string>
     <string name="title_activity_settings">Settings</string>
 

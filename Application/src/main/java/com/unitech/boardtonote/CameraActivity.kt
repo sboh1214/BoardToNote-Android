@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.underpressure.boardtonote
+package com.unitech.boardtonote
 
 import android.content.Intent
 import android.os.Bundle

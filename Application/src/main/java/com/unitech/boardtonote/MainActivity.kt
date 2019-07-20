@@ -1,4 +1,4 @@
-package com.underpressure.boardtonote
+package com.unitech.boardtonote
 
 import android.content.Context
 import android.content.Intent
@@ -71,15 +71,16 @@ class MainActivity : AppCompatActivity()
 
     private fun getDirs(context: Context)
     {
-        val dirList = File(context.filesDir.absolutePath).listFiles()
-        if (dirList != null)
+        val dirList = File(context.filesDir.absolutePath).listFiles() ?: return
+        for (i in 0 until dirList.size)
         {
-            for (i in 0 until dirList.size)
+            if (!dirList[i].isDirectory)
             {
-                if (dirList[i].isDirectory)
-                {
-                    btnList.add(BTNClass(context, dirList[i].name))
-                }
+                continue
+            }
+            if (dirList[i].name.substringAfterLast('.') == "btn")
+            {
+                btnList.add(BTNClass(context, dirList[i].name.substringBeforeLast('.')))
             }
         }
     }

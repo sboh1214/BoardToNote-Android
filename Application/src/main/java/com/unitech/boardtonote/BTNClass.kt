@@ -1,4 +1,4 @@
-package com.underpressure.boardtonote
+package com.unitech.boardtonote
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -1,4 +1,4 @@
-package com.underpressure.boardtonote
+package com.unitech.boardtonote
 
 import android.content.Context
 import android.content.Intent
@@ -45,7 +45,7 @@ class ProcessingActivity : AppCompatActivity() {
         {
             val uri: Uri = data!!.data!!
             val intent = Intent(this, EditActivity::class.java)
-            val file = File(uri.path)
+            val file = File(uri.path as String)
             btnClass = BTNClass(this as Context, BTNClass.makeDir(this as Context, file.name))
             intent.putExtra("dirName", btnClass.dirName)
             startActivity(intent)
