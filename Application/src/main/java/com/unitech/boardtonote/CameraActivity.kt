@@ -20,9 +20,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.microsoft.appcenter.AppCenter
-import com.microsoft.appcenter.analytics.Analytics
-import com.microsoft.appcenter.crashes.Crashes
 
 private const val TAG = "CameraActivity"
 
@@ -35,8 +32,6 @@ class CameraActivity : AppCompatActivity() {
         savedInstanceState ?: supportFragmentManager.beginTransaction()
                 .replace(R.id.container, CameraFragment.newInstance())
                 .commit()
-
-        AppCenter.start(application, "15951c1d-dee3-4a12-8f06-e2a7b2d9ff35", Analytics::class.java, Crashes::class.java)
     }
 
     override fun onBackPressed() {

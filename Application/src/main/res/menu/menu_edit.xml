@@ -4,12 +4,12 @@
       tools:context="com.unitech.boardtonote.EditActivity">
     <item
             android:id="@+id/Menu_Save"
-            android:icon="@drawable/ic_save_black"
+            android:icon="@drawable/ic_save"
             android:title="@string/save"
             app:showAsAction="ifRoom"/>
     <item
             android:id="@+id/Menu_Share"
-            android:icon="@drawable/ic_share_black"
+            android:icon="@drawable/ic_share"
             android:title="@string/share"
             app:showAsAction="ifRoom"/>
 </menu>

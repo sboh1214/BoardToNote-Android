@@ -6,12 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.microsoft.appcenter.AppCenter
-import com.microsoft.appcenter.analytics.Analytics
-import com.microsoft.appcenter.crashes.Crashes
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_main.view.*
 import java.io.File
@@ -30,14 +28,12 @@ class MainActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         Log.i(TAG, "onCreate")
 
-        AppCenter.start(application, "15951c1d-dee3-4a12-8f06-e2a7b2d9ff35", Analytics::class.java, Crashes::class.java)
-
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         viewManager = LinearLayoutManager(this)
         getDirs(this)
-        viewAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) })
+        viewAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) }, { btnClass, view -> itemMoreClick(btnClass, view) })
 
         Recycler_Main.apply {
             setHasFixedSize(true)
@@ -66,6 +62,31 @@ class MainActivity : AppCompatActivity()
 
     private fun itemLongClick(btnClass: BTNClass): Boolean
     {
+        return true
+    }
+
+    private fun itemMoreClick(btnClass: BTNClass, view: View): Boolean
+    {
+        PopupMenu(this, view).apply {
+            setOnMenuItemClickListener { item: MenuItem ->
+                Boolean
+                when (item.itemId)
+                {
+                    R.id.Menu_Delete ->
+                    {
+
+                        true
+                    }
+                    else ->
+                    {
+                        false
+                    }
+                }
+            }
+            inflate(R.menu.menu_main_more)
+
+            show()
+        }
         return true
     }
 
@@ -119,16 +140,20 @@ class MainActivity : AppCompatActivity()
     }
 }
 
-class BTNAdapter(private val btnList: ArrayList<BTNClass>, private val itemClick: (BTNClass) -> Unit, private val itemLongClick: (BTNClass) -> Boolean) :
+class BTNAdapter(private val btnList: ArrayList<BTNClass>,
+                 private val itemClick: (BTNClass) -> Unit,
+                 private val itemLongClick: (BTNClass) -> Boolean,
+                 private val itemMoreClick: (BTNClass, View) -> Boolean) :
         RecyclerView.Adapter<BTNAdapter.BTNHolder>()
 {
     inner class BTNHolder(item: View) : RecyclerView.ViewHolder(item)
     {
-        fun bind(btnClass: BTNClass, itemClick: (BTNClass) -> Unit, itemLongClick: (BTNClass) -> Boolean)
+        fun bind(btnClass: BTNClass, itemClick: (BTNClass) -> Unit, itemLongClick: (BTNClass) -> Boolean, itemMoreClick: (BTNClass, View) -> Boolean)
         {
             itemView.Title_Text.text = btnClass.dirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.setOnLongClickListener { itemLongClick(btnClass) }
+            itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
         }
     }
 
@@ -140,7 +165,7 @@ class BTNAdapter(private val btnList: ArrayList<BTNClass>, private val itemClick
 
     override fun onBindViewHolder(holder: BTNHolder, position: Int)
     {
-        holder.bind(btnList[position], itemClick, itemLongClick)
+        holder.bind(btnList[position], itemClick, itemLongClick, itemMoreClick)
     }
 
     override fun getItemCount() = btnList.size

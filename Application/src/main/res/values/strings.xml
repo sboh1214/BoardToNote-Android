@@ -45,4 +45,6 @@
     <string name="save">Save</string>
     <string name="share">Share</string>
     <string name="collection_button">Collection Button</string>
+    <string name="more_button">More Button</string>
+    <string name="delete">Delete</string>
 </resources>

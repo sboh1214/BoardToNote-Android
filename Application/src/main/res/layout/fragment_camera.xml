@@ -57,7 +57,7 @@
                 android:background="@color/transparent"
                 android:padding="12dp"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_collections_black"
+                app:srcCompat="@drawable/ic_collections"
                 android:contentDescription="@string/gallery_button"/>
 
         <Space
@@ -86,7 +86,7 @@
                 android:background="@color/transparent"
                 android:padding="12dp"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_bookmark_black"
+                app:srcCompat="@drawable/ic_bookmark"
                 android:contentDescription="@string/collection_button"/>
 
     </LinearLayout>

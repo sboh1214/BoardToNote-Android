@@ -37,6 +37,11 @@
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
         </activity>
+
+        <meta-data
+                android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+                android:value="ocr"/>
+        <!-- To use multiple models: android:value="ocr,model2,model3" -->
     </application>
 
 </manifest>
