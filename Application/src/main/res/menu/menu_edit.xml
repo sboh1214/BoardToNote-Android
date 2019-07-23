@@ -6,7 +6,8 @@
             android:id="@+id/Menu_Save"
             android:icon="@drawable/ic_save"
             android:title="@string/save"
-            app:showAsAction="ifRoom"/>
+            app:showAsAction="ifRoom"
+            />
     <item
             android:id="@+id/Menu_Share"
             android:icon="@drawable/ic_share"

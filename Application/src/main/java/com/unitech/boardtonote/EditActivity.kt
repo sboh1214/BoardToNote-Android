@@ -21,7 +21,7 @@ class EditActivity : AppCompatActivity() {
         Log.i(TAG, "onCreate")
 
         setContentView(R.layout.activity_edit)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(Toolbar_Edit)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val intent = intent

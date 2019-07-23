@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity()
         Log.i(TAG, "onCreate")
 
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(Toolbar_Main)
 
         viewManager = LinearLayoutManager(this)
         getDirs(this)
