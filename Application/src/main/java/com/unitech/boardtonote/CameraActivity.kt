@@ -17,8 +17,10 @@
 package com.unitech.boardtonote
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 private const val TAG = "CameraActivity"
@@ -28,6 +30,14 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(TAG, "onCreate")
+        if (Build.VERSION.SDK_INT < 21)
+        {
+            Log.w(TAG, "Android SDK : " + Build.VERSION.SDK_INT.toString())
+            Toast.makeText(this, "This android version is not supported for camera preview.", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            return
+        }
         setContentView(R.layout.activity_camera)
         savedInstanceState ?: supportFragmentManager.beginTransaction()
                 .replace(R.id.container, CameraFragment.newInstance())

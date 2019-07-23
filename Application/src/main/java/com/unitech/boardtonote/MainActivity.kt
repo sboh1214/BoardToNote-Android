@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity()
 
         setContentView(R.layout.activity_main)
         setSupportActionBar(Toolbar_Main)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewManager = LinearLayoutManager(this)
         getDirs(this)
