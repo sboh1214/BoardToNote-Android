@@ -7,10 +7,12 @@
             android:icon="@drawable/ic_save"
             android:title="@string/save"
             app:showAsAction="ifRoom"
+            android:tint="?attr/colorControlNormal"
             />
     <item
             android:id="@+id/Menu_Share"
             android:icon="@drawable/ic_share"
             android:title="@string/share"
-            app:showAsAction="ifRoom"/>
+            app:showAsAction="ifRoom"
+            android:tint="?attr/colorControlNormal"/>
 </menu>
