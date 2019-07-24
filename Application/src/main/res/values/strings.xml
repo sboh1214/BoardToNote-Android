@@ -33,4 +33,7 @@
     <string name="collection_button">Collection Button</string>
     <string name="more_button">More Button</string>
     <string name="delete">Delete</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
