@@ -17,13 +17,15 @@ android {
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
-        debug{
-            debuggable true
-        }
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+    buildToolsVersion = '29.0.1'
 }
 
 dependencies {
