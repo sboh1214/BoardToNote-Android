@@ -13,5 +13,5 @@
             android:icon="@drawable/ic_settings"
             android:title="@string/setting"
             app:showAsAction="ifRoom"
-            android:tint="?attr/colorControlNormal"/>
+        android:iconTint="?attr/colorControlNormal" />
 </menu>

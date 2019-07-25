@@ -7,40 +7,45 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_processing.*
 import java.io.File
 
 private const val TAG = "ProcessingActivity"
 
-class ProcessingActivity : AppCompatActivity() {
+class ProcessingActivity : AppCompatActivity()
+{
 
     private val requestImageOpen = 1
 
     private lateinit var btnClass: BTNClass
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
 
         Log.i(TAG, "onCreate")
-
         setContentView(R.layout.activity_processing)
+        setSupportActionBar(Toolbar_Processing)
 
         val prevIntent = intent
         val dirName = prevIntent.getStringExtra("dirName")
 
-        if (dirName == null) {
+        if (dirName == null)
+        {
             val imageIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 type = "image/*"
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
             startActivityForResult(imageIntent, requestImageOpen)
-        } else {
-            val intent = Intent(this, EditActivity::class.java)
-            intent.putExtra("dirName", dirName)
-            startActivity(intent)
+        }
+        else
+        {
+            btnClass = BTNClass(this, dirName)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
         if (requestCode == requestImageOpen && resultCode == RESULT_OK)
         {
             val uri: Uri = data!!.data!!
@@ -49,7 +54,9 @@ class ProcessingActivity : AppCompatActivity() {
             btnClass = BTNClass(this as Context, BTNClass.makeDir(this as Context, file.name))
             intent.putExtra("dirName", btnClass.dirName)
             startActivity(intent)
-        } else {
+        }
+        else
+        {
             Toast.makeText(this, "User has canceled opening picture.", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -57,7 +64,8 @@ class ProcessingActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed()
+    {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
