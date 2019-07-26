@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/Button_Rename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:drawableStart="@drawable/ic_edit_black"
+        android:drawablePadding="@dimen/popup_drawable"
+        android:paddingStart="@dimen/popup_padding"
+        android:text="@string/rename"
+        android:textAlignment="textStart" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/Button_Delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:drawableStart="@drawable/ic_delete_black"
+        android:drawablePadding="@dimen/popup_drawable"
+        android:paddingStart="@dimen/popup_padding"
+        android:text="@string/delete"
+        android:textAlignment="textStart" />
+</LinearLayout>

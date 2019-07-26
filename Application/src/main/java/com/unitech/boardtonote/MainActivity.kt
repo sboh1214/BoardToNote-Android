@@ -6,21 +6,24 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_popup.view.*
 import kotlinx.android.synthetic.main.item_main.view.*
 import java.io.File
 
+
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity()
+class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
 {
 
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
+    private lateinit var btnAdapter: RecyclerView.Adapter<*>
+    private lateinit var btnManager: RecyclerView.LayoutManager
     private var btnList = arrayListOf<BTNClass>()
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -30,16 +33,15 @@ class MainActivity : AppCompatActivity()
 
         setContentView(R.layout.activity_main)
         setSupportActionBar(Toolbar_Main)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewManager = LinearLayoutManager(this)
+        btnManager = LinearLayoutManager(this)
         getDirs(this)
-        viewAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) }, { btnClass, view -> itemMoreClick(btnClass, view) })
+        btnAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) }, { btnClass, view -> itemMoreClick(btnClass, view) })
 
         Recycler_Main.apply {
             setHasFixedSize(true)
-            layoutManager = viewManager
-            adapter = viewAdapter
+            layoutManager = btnManager
+            adapter = btnAdapter
         }
 
         Camera_Fab.setOnClickListener {
@@ -68,28 +70,18 @@ class MainActivity : AppCompatActivity()
 
     private fun itemMoreClick(btnClass: BTNClass, view: View): Boolean
     {
-        PopupMenu(this, view).apply {
-            setOnMenuItemClickListener { item: MenuItem ->
-                Boolean
-                when (item.itemId)
-                {
-                    R.id.Menu_Delete ->
-                    {
-
-                        true
-                    }
-                    else ->
-                    {
-                        false
-                    }
-                }
-            }
-            inflate(R.menu.menu_main_more)
-
-            show()
-        }
+        val fragment = PopupFragment(btnClass)
+        fragment.show(supportFragmentManager, "fragment_popup")
         return true
     }
+
+    override fun delete(btnClass: BTNClass)
+    {
+        (btnAdapter as BTNAdapter).delete(btnClass)
+        Snackbar.make(Recycler_Main, "${btnClass.dirName} deleted", Snackbar.LENGTH_SHORT).show()
+    }
+
+
 
     private fun getDirs(context: Context)
     {
@@ -105,11 +97,6 @@ class MainActivity : AppCompatActivity()
                 btnList.add(BTNClass(context, dirList[i].name.substringBeforeLast('.')))
             }
         }
-    }
-
-    override fun onBackPressed()
-    {
-
     }
 
 
@@ -158,6 +145,13 @@ class BTNAdapter(private val btnList: ArrayList<BTNClass>,
         }
     }
 
+    fun delete(btnClass: BTNClass)
+    {
+        btnClass.delete()
+        btnList.remove(btnClass)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BTNHolder
     {
         val item = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
@@ -170,4 +164,33 @@ class BTNAdapter(private val btnList: ArrayList<BTNClass>,
     }
 
     override fun getItemCount() = btnList.size
+}
+
+class PopupFragment(private var btnClass: BTNClass) : BottomSheetDialogFragment()
+{
+    lateinit var popupListener: PopupListener
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
+        val view = inflater.inflate(R.layout.fragment_popup, container, false)
+        view.Button_Delete.setOnClickListener {
+            popupListener.delete(btnClass)
+            dismiss()
+        }
+        return view
+    }
+
+    override fun onAttach(context: Context)
+    {
+        if (context is PopupListener)
+        {
+            popupListener = context
+        }
+        super.onAttach(context)
+    }
+
+    interface PopupListener
+    {
+        fun delete(btnClass: BTNClass)
+    }
 }

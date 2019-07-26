@@ -9,14 +9,10 @@
     <androidx.cardview.widget.CardView
 
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            app:cardElevation="5dp"
-            app:cardCornerRadius="5dp"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/recycler_margin"
+        app:cardCornerRadius="@dimen/recycler_radius"
+        app:cardElevation="@dimen/recycler_elevation">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

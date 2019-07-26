@@ -20,5 +20,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/fragment_processing" />
+    <TextView
+        android:id="@+id/Text_Test"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

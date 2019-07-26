@@ -6,12 +6,10 @@
             android:icon="@drawable/ic_search"
             android:title="@string/search"
             app:actionViewClass="androidx.appcompat.widget.SearchView"
-            app:showAsAction="ifRoom"
-            android:tint="?attr/colorControlNormal"/>
+        app:showAsAction="ifRoom" />
     <item
             android:id="@+id/Menu_Setting"
             android:icon="@drawable/ic_settings"
             android:title="@string/setting"
-            app:showAsAction="ifRoom"
-        android:iconTint="?attr/colorControlNormal" />
+        app:showAsAction="ifRoom" />
 </menu>

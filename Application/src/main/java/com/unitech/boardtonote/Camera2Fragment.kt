@@ -26,6 +26,7 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.media.Image
 import android.media.ImageReader
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -35,6 +36,7 @@ import android.util.Size
 import android.util.SparseIntArray
 import android.view.*
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -52,6 +54,7 @@ import kotlin.math.max
 
 private const val TAG = "CameraFragment"
 
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class CameraFragment : Fragment(), View.OnClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback
 {
@@ -67,7 +70,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 intent.putExtra("dirName", dirName)
                 startActivity(intent)
             }
-            R.id.Note_Button ->
+            R.id.Note_Button    ->
             {
                 val intent = Intent(context, MainActivity::class.java)
                 startActivity(intent)
@@ -234,9 +237,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
         {
             when (state)
             {
-                STATE_PREVIEW -> Unit // Do nothing when the camera preview is working normally.
-                STATE_WAITING_LOCK -> capturePicture(result)
-                STATE_WAITING_PRECAPTURE ->
+                STATE_PREVIEW                -> Unit // Do nothing when the camera preview is working normally.
+                STATE_WAITING_LOCK           -> capturePicture(result)
+                STATE_WAITING_PRECAPTURE     ->
                 {
                     // CONTROL_AE_STATE can be null on some devices
                     val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
@@ -468,7 +471,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
         var swappedDimensions = false
         when (displayRotation)
         {
-            Surface.ROTATION_0, Surface.ROTATION_180 ->
+            Surface.ROTATION_0, Surface.ROTATION_180  ->
             {
                 if (sensorOrientation == 90 || sensorOrientation == 270)
                 {
@@ -482,7 +485,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                     swappedDimensions = true
                 }
             }
-            else ->
+            else                                      ->
             {
                 Log.e(TAG, "Display rotation is invalid: $displayRotation")
             }
@@ -912,9 +915,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
             // largest of those not big enough.
             return when
             {
-                bigEnough.size > 0 -> Collections.min(bigEnough, CompareSizesByArea())
+                bigEnough.size > 0    -> Collections.min(bigEnough, CompareSizesByArea())
                 notBigEnough.size > 0 -> Collections.max(notBigEnough, CompareSizesByArea())
-                else ->
+                else                  ->
                 {
                     Log.e(TAG, "Couldn't find any suitable preview size")
                     choices[0]
@@ -985,6 +988,7 @@ internal class CompareSizesByArea : Comparator<Size>
 {
 
     // We cast here to ensure the multiplications won't overflow
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun compare(lhs: Size, rhs: Size) =
             signum(lhs.width.toLong() * lhs.height - rhs.width.toLong() * rhs.height)
 

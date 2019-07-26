@@ -9,7 +9,6 @@ import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,38 +25,27 @@ class BTNClass(context: Context, dirName: String)
     private val dirPath: String by lazy { "${context.filesDir.absolutePath}/$dirName.btn" }
     val oriPic: Bitmap? by lazy { loadOriPic() }
     val oriPicPath: String by lazy { "$dirPath/OriPic.jpg" }
-    val visionText: FirebaseVisionText? = null
+    var visionText: FirebaseVisionText? = null
     private lateinit var state: State
 
-    fun analyzePic()
+    fun analyzePic(): Boolean
     {
-        val image: FirebaseVisionImage = FirebaseVisionImage.fromFilePath(context, Uri.parse(oriPicPath))
-        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
-        val result = detector.processImage(image).result
-        for (block in result!!.textBlocks!!)
+        if (oriPic == null)
         {
-            val blockText = block.text
-            val blockConfidence = block.confidence
-            val blockLanguages = block.recognizedLanguages
-            val blockCornerPoints = block.cornerPoints
-            val blockFrame = block.boundingBox
-            for (line in block.lines)
-            {
-                val lineText = line.text
-                val lineConfidence = line.confidence
-                val lineLanguages = line.recognizedLanguages
-                val lineCornerPoints = line.cornerPoints
-                val lineFrame = line.boundingBox
-                for (element in line.elements)
-                {
-                    val elementText = element.text
-                    val elementConfidence = element.confidence
-                    val elementLanguages = element.recognizedLanguages
-                    val elementCornerPoints = element.cornerPoints
-                    val elementFrame = element.boundingBox
-                }
+            return false
+        }
+        val image: FirebaseVisionImage = FirebaseVisionImage.fromBitmap(oriPic!!)
+        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
+        detector.processImage(image).apply {
+            addOnSuccessListener { firebaseVisionText ->
+                visionText = firebaseVisionText
+                Log.i(TAG, firebaseVisionText.text)
+            }
+            addOnFailureListener { e ->
+                Log.e(TAG, e.toString())
             }
         }
+        return true
     }
 
     /**
@@ -76,22 +64,34 @@ class BTNClass(context: Context, dirName: String)
         }
     }
 
-    private fun copyOriPic(inFile: File): Boolean
+    fun copyOriPic(uri: Uri): Boolean
     {
         return try
         {
-            val outFile = File("$dirPath/OriPic.jpg")
-            val inStream = FileInputStream(inFile)
-            val outStream = FileOutputStream(outFile)
-            val inChannel = inStream.channel
-            val outChannel = outStream.channel
-            inChannel.transferTo(0, inChannel.size(), outChannel)
-            inStream.close()
-            outStream.close()
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val outputStream = FileOutputStream(File(oriPicPath))
+            inputStream?.copyTo(outputStream, DEFAULT_BUFFER_SIZE)
+            inputStream?.close()
+            outputStream.close()
             true
         } catch (e: Exception)
         {
-            Log.e(TAG, e.message ?: "Null")
+            Log.e(TAG, e.toString())
+            false
+        }
+    }
+
+    fun delete(): Boolean
+    {
+        return try
+        {
+            val dir = File(dirPath)
+            dir.deleteRecursively()
+            true
+        }
+        catch (e: Exception)
+        {
+            Log.e(TAG, e.toString())
             false
         }
     }

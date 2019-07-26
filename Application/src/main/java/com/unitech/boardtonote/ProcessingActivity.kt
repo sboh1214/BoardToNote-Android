@@ -8,9 +8,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_processing.*
-import java.io.File
+
 
 private const val TAG = "ProcessingActivity"
+private const val REQUEST_IMAGE_GET = 1
 
 class ProcessingActivity : AppCompatActivity()
 {
@@ -32,28 +33,31 @@ class ProcessingActivity : AppCompatActivity()
 
         if (dirName == null)
         {
-            val imageIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "image/*"
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
-            startActivityForResult(imageIntent, requestImageOpen)
+            if (intent.resolveActivity(packageManager) != null)
+            {
+                startActivityForResult(intent, REQUEST_IMAGE_GET)
+            }
         }
         else
         {
             btnClass = BTNClass(this, dirName)
+            analyze()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
-        if (requestCode == requestImageOpen && resultCode == RESULT_OK)
+        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK && data?.data != null)
         {
-            val uri: Uri = data!!.data!!
-            val intent = Intent(this, EditActivity::class.java)
-            val file = File(uri.path as String)
-            btnClass = BTNClass(this as Context, BTNClass.makeDir(this as Context, file.name))
-            intent.putExtra("dirName", btnClass.dirName)
-            startActivity(intent)
+            val uri: Uri = data.data!!
+            btnClass = BTNClass(this as Context, BTNClass.makeDir(this as Context, null))
+            btnClass.copyOriPic(uri)
+
+            analyze()
         }
         else
         {
@@ -64,9 +68,23 @@ class ProcessingActivity : AppCompatActivity()
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+
     override fun onBackPressed()
     {
         val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun analyze()
+    {
+        btnClass.analyzePic()
+        Text_Test.text = btnClass.visionText?.text
+    }
+
+    private fun startEditActivity()
+    {
+        val intent = Intent(this, EditActivity::class.java)
+        intent.putExtra("dirName", btnClass.dirName)
         startActivity(intent)
     }
 }
