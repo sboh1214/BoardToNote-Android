@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.EditText
+import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -75,13 +78,37 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         return true
     }
 
+    override fun rename(btnClass: BTNClass)
+    {
+        val srcName = btnClass.dirName
+        var dstName: String?
+
+        val container = LinearLayout(this@MainActivity)
+        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.setMargins(48, 48, 48, 48)
+        val edit = EditText(this@MainActivity)
+        edit.layoutParams = lp
+        container.addView(edit)
+
+        AlertDialog.Builder(this).apply {
+            setTitle("Rename Note")
+            setView(container)
+            setPositiveButton("Rename") { _, _ ->
+                dstName = edit.text.toString()
+                (btnAdapter as BTNAdapter).rename(btnClass, dstName!!)
+                Snackbar.make(Recycler_Main, "$srcName renamed to $dstName", Snackbar.LENGTH_SHORT).show()
+            }
+            setNegativeButton("Cancel") { i, _ ->
+                Snackbar.make(Recycler_Main, "User canceled renaming $srcName", Snackbar.LENGTH_SHORT).show()
+            }
+        }.show()
+    }
+
     override fun delete(btnClass: BTNClass)
     {
         (btnAdapter as BTNAdapter).delete(btnClass)
         Snackbar.make(Recycler_Main, "${btnClass.dirName} deleted", Snackbar.LENGTH_SHORT).show()
     }
-
-
 
     private fun getDirs(context: Context)
     {
@@ -145,6 +172,12 @@ class BTNAdapter(private val btnList: ArrayList<BTNClass>,
         }
     }
 
+    fun rename(btnClass: BTNClass, name: String)
+    {
+        btnClass.rename(name)
+        notifyDataSetChanged()
+    }
+
     fun delete(btnClass: BTNClass)
     {
         btnClass.delete()
@@ -173,6 +206,11 @@ class PopupFragment(private var btnClass: BTNClass) : BottomSheetDialogFragment(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val view = inflater.inflate(R.layout.fragment_popup, container, false)
+        view.Text_Title.text = btnClass.dirName
+        view.Button_Rename.setOnClickListener {
+            popupListener.rename(btnClass)
+            dismiss()
+        }
         view.Button_Delete.setOnClickListener {
             popupListener.delete(btnClass)
             dismiss()
@@ -191,6 +229,7 @@ class PopupFragment(private var btnClass: BTNClass) : BottomSheetDialogFragment(
 
     interface PopupListener
     {
+        fun rename(btnClass: BTNClass)
         fun delete(btnClass: BTNClass)
     }
 }

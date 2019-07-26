@@ -4,25 +4,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/Button_Rename"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/Text_Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        android:layout_margin="@dimen/popup_padding"
+        android:text="@string/error" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/Button_Share"
+        style="@style/TextView_Popup"
+        android:drawableStart="@drawable/ic_share_black"
+        android:text="@string/share" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/Button_Rename"
+        style="@style/TextView_Popup"
         android:drawableStart="@drawable/ic_edit_black"
-        android:drawablePadding="@dimen/popup_drawable"
-        android:paddingStart="@dimen/popup_padding"
-        android:text="@string/rename"
-        android:textAlignment="textStart" />
+        android:text="@string/rename" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/Button_Info"
+        style="@style/TextView_Popup"
+        android:drawableStart="@drawable/ic_info_black"
+        android:text="@string/more_info" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/Button_Delete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        style="@style/TextView_Popup"
         android:drawableStart="@drawable/ic_delete_black"
-        android:drawablePadding="@dimen/popup_drawable"
-        android:paddingStart="@dimen/popup_padding"
-        android:text="@string/delete"
-        android:textAlignment="textStart" />
+        android:text="@string/delete" />
 </LinearLayout>

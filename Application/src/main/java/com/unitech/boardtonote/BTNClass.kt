@@ -5,8 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
-import com.google.firebase.ml.vision.FirebaseVision
-import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import java.io.File
 import java.io.FileOutputStream
@@ -18,35 +16,28 @@ private const val TAG = "BTNClass"
 /**
  * A Class for Board To Note Project File
  */
-class BTNClass(context: Context, dirName: String)
+class BTNClass(private val context: Context, var dirName: String)
 {
-    private val context: Context = context
-    val dirName: String = dirName
-    private val dirPath: String by lazy { "${context.filesDir.absolutePath}/$dirName.btn" }
-    val oriPic: Bitmap? by lazy { loadOriPic() }
-    val oriPicPath: String by lazy { "$dirPath/OriPic.jpg" }
-    var visionText: FirebaseVisionText? = null
-    private lateinit var state: State
 
-    fun analyzePic(): Boolean
-    {
-        if (oriPic == null)
+    private val dirPath: String
+        get()
         {
-            return false
+            return "${context.filesDir.absolutePath}/$dirName.btn"
         }
-        val image: FirebaseVisionImage = FirebaseVisionImage.fromBitmap(oriPic!!)
-        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
-        detector.processImage(image).apply {
-            addOnSuccessListener { firebaseVisionText ->
-                visionText = firebaseVisionText
-                Log.i(TAG, firebaseVisionText.text)
-            }
-            addOnFailureListener { e ->
-                Log.e(TAG, e.toString())
-            }
+
+    val oriPic: Bitmap?
+        get()
+        {
+            return loadOriPic()
         }
-        return true
-    }
+
+    val oriPicPath: String
+        get()
+        {
+            return "$dirPath/OriPic.jpg"
+        }
+
+    var visionText: FirebaseVisionText? = null
 
     /**
      * @return Bitmap of original picture.
@@ -57,7 +48,8 @@ class BTNClass(context: Context, dirName: String)
         return try
         {
             BitmapFactory.decodeFile("$dirPath/OriPic.jpg")
-        } catch (e: Exception)
+        }
+        catch (e: Exception)
         {
             Log.e(TAG, e.toString())
             null
@@ -74,10 +66,29 @@ class BTNClass(context: Context, dirName: String)
             inputStream?.close()
             outputStream.close()
             true
-        } catch (e: Exception)
+        }
+        catch (e: Exception)
         {
             Log.e(TAG, e.toString())
             false
+        }
+    }
+
+    fun rename(name: String): Boolean
+    {
+        val srcDir = File(dirPath)
+        val dstDir = File("${context.filesDir.absolutePath}/$name.btn")
+        return if (dstDir.exists())
+        {
+            Log.w(TAG, "rename failed (${srcDir.name} -> ${dstDir.name})")
+            false
+        }
+        else
+        {
+            srcDir.renameTo(dstDir)
+            dirName = name
+            Log.i(TAG, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
+            true
         }
     }
 
@@ -98,11 +109,6 @@ class BTNClass(context: Context, dirName: String)
 
     companion object
     {
-        enum class State
-        {
-            Never, Unsaved, Saved
-        }
-
         fun makeDir(context: Context, name: String?): String
         {
             if (name == null)
@@ -117,7 +123,8 @@ class BTNClass(context: Context, dirName: String)
                     dir.mkdir()
                 }
                 return dirName
-            } else
+            }
+            else
             {
                 var dirName = name
                 var dir = File(context.filesDir.absolutePath + "/" + dirName + ".btn")

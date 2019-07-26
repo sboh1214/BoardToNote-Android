@@ -7,17 +7,15 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.ml.vision.FirebaseVision
+import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import kotlinx.android.synthetic.main.activity_processing.*
 
 
 private const val TAG = "ProcessingActivity"
-private const val REQUEST_IMAGE_GET = 1
 
 class ProcessingActivity : AppCompatActivity()
 {
-
-    private val requestImageOpen = 1
-
     private lateinit var btnClass: BTNClass
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -27,6 +25,7 @@ class ProcessingActivity : AppCompatActivity()
         Log.i(TAG, "onCreate")
         setContentView(R.layout.activity_processing)
         setSupportActionBar(Toolbar_Processing)
+
 
         val prevIntent = intent
         val dirName = prevIntent.getStringExtra("dirName")
@@ -39,25 +38,22 @@ class ProcessingActivity : AppCompatActivity()
             }
             if (intent.resolveActivity(packageManager) != null)
             {
-                startActivityForResult(intent, REQUEST_IMAGE_GET)
+                startActivityForResult(intent, Companion.REQUEST_IMAGE_GET)
             }
         }
         else
         {
             btnClass = BTNClass(this, dirName)
-            analyze()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
-        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK && data?.data != null)
+        if (requestCode == Companion.REQUEST_IMAGE_GET && resultCode == RESULT_OK && data?.data != null)
         {
             val uri: Uri = data.data!!
             btnClass = BTNClass(this as Context, BTNClass.makeDir(this as Context, null))
             btnClass.copyOriPic(uri)
-
-            analyze()
         }
         else
         {
@@ -75,16 +71,31 @@ class ProcessingActivity : AppCompatActivity()
         startActivity(intent)
     }
 
-    private fun analyze()
+    private fun analyze(): Boolean
     {
-        btnClass.analyzePic()
-        Text_Test.text = btnClass.visionText?.text
+        if (btnClass.oriPic == null)
+        {
+            return false
+        }
+        val image: FirebaseVisionImage = FirebaseVisionImage.fromBitmap(btnClass.oriPic!!)
+        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
+        detector.processImage(image).apply {
+            addOnSuccessListener { firebaseVisionText ->
+                btnClass.visionText = firebaseVisionText
+                Log.i(TAG, firebaseVisionText.text)
+                val intent = Intent(this@ProcessingActivity, EditActivity::class.java)
+                intent.putExtra("dirName", btnClass.dirName)
+                startActivity(intent)
+            }
+            addOnFailureListener { e ->
+                Log.e(TAG, e.toString())
+            }
+        }
+        return true
     }
 
-    private fun startEditActivity()
+    companion object
     {
-        val intent = Intent(this, EditActivity::class.java)
-        intent.putExtra("dirName", btnClass.dirName)
-        startActivity(intent)
+        private const val REQUEST_IMAGE_GET = 1
     }
 }

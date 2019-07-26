@@ -29,5 +29,13 @@
 
     <style name="MaterialTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight"/>
 
+    <style name="TextView_Popup" parent="@android:style/Widget.TextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:padding">@dimen/popup_padding</item>
+        <item name="android:drawablePadding">@dimen/popup_drawable</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
 
 </resources>
