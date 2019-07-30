@@ -22,6 +22,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.BuildCompat
+import androidx.preference.PreferenceManager
 
 private const val TAG = "CameraActivity"
 
@@ -30,6 +33,15 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(TAG, "onCreate")
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */)
+        val theme = sharedPreferences.getString("Preference_Theme","Default")
+        applyTheme(theme!!)
+        sharedPreferences.registerOnSharedPreferenceChangeListener { preferences, s ->
+            val theme = sharedPreferences.getString(s,"Default")
+            applyTheme(theme!!)
+        }
+
         if (Build.VERSION.SDK_INT < 21)
         {
             Log.w(TAG, "Android SDK : " + Build.VERSION.SDK_INT.toString())
@@ -42,6 +54,32 @@ class CameraActivity : AppCompatActivity() {
         savedInstanceState ?: supportFragmentManager.beginTransaction()
                 .replace(R.id.container, CameraFragment.newInstance())
                 .commit()
+    }
+
+    private fun applyTheme(theme: String)
+    {
+        when (theme)
+        {
+            "Light"   ->
+            {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            "Dark"    ->
+            {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            "Default" ->
+            {
+                if (BuildCompat.isAtLeastQ())
+                {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                }
+                else
+                {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
+                }
+            }
+        }
     }
 
     override fun onBackPressed() {

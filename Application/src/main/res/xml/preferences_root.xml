@@ -1,16 +1,21 @@
 <androidx.preference.PreferenceScreen
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        app:entries="@array/array_theme"
+        app:entryValues="@array/array_theme_value"
+        app:icon="@drawable/ic_theme_dark"
+        app:key="Preference_Theme"
+        app:title="App Theme" />
+    <Preference
+        app:fragment="com.unitech.boardtonote.SettingsActivity$ImageFragment"
+        app:icon="@drawable/ic_image_dark"
+        app:key="Preference_ImageProcessing"
+        app:title="Image Processing" />
 
     <Preference
-            app:key="Preference_ImageProcessing"
-            app:title="Image Processing"
-            app:icon="@drawable/ic_image"
-            app:fragment="com.unitech.boardtonote.SettingsActivity$ImageFragment"/>
-
-    <Preference
-            app:key="Preference_Dev"
-            app:title="Developer Options"
-            app:icon="@drawable/ic_developer"
-            app:fragment="com.unitech.boardtonote.SettingsActivity$DevFragment"/>
+        app:icon="@drawable/ic_developer_dark"
+        app:key="Preference_Dev"
+        app:title="Developer Options" />
 
 </androidx.preference.PreferenceScreen>

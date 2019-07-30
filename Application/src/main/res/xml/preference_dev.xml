@@ -18,8 +18,13 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
+        app:key="Preference_Delete"
+        app:title="Delete All"
+        app:summary="Delete all directories and files"/>
+
+    <Preference
             app:key="Preference_Crash"
-            app:title="Force a crash"
+            app:title="Force a Crash"
             app:summary="Check that Firebase Crashlytics is working"/>
 
 </androidx.preference.PreferenceScreen>

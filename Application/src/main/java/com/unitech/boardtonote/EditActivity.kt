@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.content_edit.*
 
@@ -27,14 +28,16 @@ class EditActivity : AppCompatActivity() {
         val intent = intent
         val dirName = intent.getStringExtra("dirName")
         if (dirName == null) {
-            Toast.makeText(this, "An Error Occurred : pictureUri does not exist.", Toast.LENGTH_SHORT).show()
+            Log.e(TAG,"dirName does not exist")
+            Snackbar.make(Linear_Edit, "An Error Occurred : file name does not exist.", Snackbar.LENGTH_SHORT).show()
             startActivity(Intent(this, MainActivity::class.java))
         } else {
             btnClass = BTNClass(this, dirName)
             try {
                 pictureView.setImageBitmap(btnClass.oriPic)
             } catch (e: Exception) {
-                Toast.makeText(this, "An Error Occurred : Can't open Picture.", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Can't open Picture dirName : $dirName")
+                Snackbar.make(Linear_Edit, "An Error Occurred : Can't open Picture.", Snackbar.LENGTH_SHORT).show()
             }
         }
     }

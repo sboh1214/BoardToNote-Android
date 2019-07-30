@@ -43,7 +43,7 @@
                 android:padding="12dp"
                 android:scaleType="fitCenter"
                 android:background="@color/transparent"
-                app:srcCompat="@drawable/ic_collections"
+                app:srcCompat="@drawable/ic_collections_white"
                 android:contentDescription="@string/gallery_button"/>
 
         <Space

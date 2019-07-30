@@ -1,12 +1,19 @@
 package com.unitech.boardtonote
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
+import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.crashlytics.android.Crashlytics
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_settings.*
+import java.io.File
+
 
 private const val TITLE_TAG = "settingsActivityTitle"
 
@@ -22,9 +29,10 @@ class SettingsActivity : AppCompatActivity(),
         {
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.settings, RootFragment())
+                    .replace(R.id.Frame_Settings, RootFragment())
                     .commit()
-        } else
+        }
+        else
         {
             title = savedInstanceState.getCharSequence(TITLE_TAG)
         }
@@ -50,7 +58,8 @@ class SettingsActivity : AppCompatActivity(),
         return if (supportFragmentManager.popBackStackImmediate())
         {
             true
-        } else
+        }
+        else
         {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -74,7 +83,7 @@ class SettingsActivity : AppCompatActivity(),
         }
         // Replace the existing Fragment with the new Fragment
         supportFragmentManager.beginTransaction()
-                .replace(R.id.settings, fragment)
+                .replace(R.id.Frame_Settings, fragment)
                 .addToBackStack(null)
                 .commit()
         title = pref.title
@@ -86,6 +95,39 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
         {
             setPreferencesFromResource(R.xml.preferences_root, rootKey)
+
+            val dev = findPreference<Preference>("Preference_Dev")
+            dev!!.setOnPreferenceClickListener { _ ->
+                val container = LinearLayout(activity)
+                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                lp.setMargins(48, 48, 48, 48)
+                val edit = EditText(activity)
+                edit.layoutParams = lp
+                container.addView(edit)
+
+                AlertDialog.Builder(activity as Context).apply {
+                    setTitle("Enter Password")
+                    setView(container)
+                    setPositiveButton("Unlock") { _, _ ->
+                        if (edit.text.toString() == "unitech")
+                        {
+                            activity!!.supportFragmentManager.beginTransaction()
+                                    .replace(R.id.Frame_Settings, DevFragment())
+                                    .addToBackStack(null)
+                                    .commit()
+                            Snackbar.make(activity!!.Linear_Settings, "You are now developer!", Snackbar.LENGTH_SHORT).show()
+                        }
+                        else
+                        {
+                            Snackbar.make(activity!!.Linear_Settings, "Password is wrong", Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
+                    setNegativeButton("Cancel") { _, _ ->
+                        Snackbar.make(activity!!.Linear_Settings, "User has canceled entering Developer Options", Snackbar.LENGTH_SHORT).show()
+                    }
+                }.show()
+                true
+            }
         }
     }
 
@@ -102,8 +144,17 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
         {
             setPreferencesFromResource(R.xml.preference_dev, rootKey)
-            val preference: Preference? = findPreference<Preference>("Preference_Crash")
-            preference?.setOnPreferenceClickListener {
+
+            val delete: Preference? = findPreference<Preference>("Preference_Delete")
+            delete!!.setOnPreferenceClickListener {
+                val dir = File(activity!!.filesDir!!.path)
+                dir.deleteRecursively()
+                Snackbar.make(activity!!.Linear_Settings, "Deleted all files", Snackbar.LENGTH_SHORT).show()
+                true
+            }
+
+            val crash: Preference? = findPreference<Preference>("Preference_Crash")
+            crash!!.setOnPreferenceClickListener {
                 Crashlytics.getInstance().crash()
                 true
             }

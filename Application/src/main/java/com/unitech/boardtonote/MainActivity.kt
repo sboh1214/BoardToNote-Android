@@ -9,7 +9,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.BuildCompat
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -28,6 +31,8 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
     private lateinit var btnAdapter: RecyclerView.Adapter<*>
     private lateinit var btnManager: RecyclerView.LayoutManager
     private var btnList = arrayListOf<BTNClass>()
+
+    private var time: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -55,6 +60,26 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         Gallery_Fab.setOnClickListener {
             val intent = Intent(this, ProcessingActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    override fun onBackPressed()
+    {
+        if (System.currentTimeMillis() <= time + 2000)
+        {
+            Log.v(TAG, "Press Back Button 2 time $time")
+            Log.i(TAG, "Exit Application.")
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        }
+        else
+        {
+            Log.v(TAG, "Press Back Button 1 time $time")
+            time = System.currentTimeMillis()
+            Snackbar.make(Recycler_Main, "Press back on more time to exit.", Snackbar.LENGTH_SHORT).show()
+            return
         }
     }
 
@@ -139,7 +164,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
     {
         return when (item?.itemId)
         {
-            R.id.Menu_Search ->
+            R.id.Menu_Search  ->
             {
                 true
             }
@@ -149,7 +174,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
                 startActivity(intent)
                 true
             }
-            else -> false
+            else              -> false
         }
 
     }
@@ -201,7 +226,7 @@ class BTNAdapter(private val btnList: ArrayList<BTNClass>,
 
 class PopupFragment(private var btnClass: BTNClass) : BottomSheetDialogFragment()
 {
-    lateinit var popupListener: PopupListener
+    private lateinit var popupListener: PopupListener
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {

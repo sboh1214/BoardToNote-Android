@@ -21,4 +21,6 @@
     <string name="more_info">More Info</string>
     <string name="rename">Rename</string>
     <string name="delete">Delete</string>
+    <string name="board_to_note">Board To Note</string>
+    <string name="process">Process</string>
 </resources>

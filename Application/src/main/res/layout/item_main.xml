@@ -33,7 +33,7 @@
             <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_more_black"
+                    app:srcCompat="@drawable/ic_more"
                     android:id="@+id/Button_More"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

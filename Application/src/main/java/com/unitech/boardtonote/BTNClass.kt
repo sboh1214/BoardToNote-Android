@@ -18,26 +18,33 @@ private const val TAG = "BTNClass"
  */
 class BTNClass(private val context: Context, var dirName: String)
 {
-
-    private val dirPath: String
-        get()
-        {
-            return "${context.filesDir.absolutePath}/$dirName.btn"
-        }
-
     val oriPic: Bitmap?
         get()
         {
             return loadOriPic()
         }
 
-    val oriPicPath: String
-        get()
-        {
-            return "$dirPath/OriPic.jpg"
-        }
-
     var visionText: FirebaseVisionText? = null
+        get()
+    {
+        openVisionText()
+        return field
+    }
+    set(value)
+    {
+        field = value
+        saveVisionText()
+    }
+
+    private fun getDirPath():String
+    {
+        return "${context.filesDir.absolutePath}/$dirName.btn"
+    }
+
+    fun getOriPicPath():String
+    {
+        return "${getDirPath()}/OriPic.jpg"
+    }
 
     /**
      * @return Bitmap of original picture.
@@ -47,7 +54,7 @@ class BTNClass(private val context: Context, var dirName: String)
     {
         return try
         {
-            BitmapFactory.decodeFile("$dirPath/OriPic.jpg")
+            BitmapFactory.decodeFile("${getDirPath()}/OriPic.jpg")
         }
         catch (e: Exception)
         {
@@ -61,7 +68,7 @@ class BTNClass(private val context: Context, var dirName: String)
         return try
         {
             val inputStream = context.contentResolver.openInputStream(uri)
-            val outputStream = FileOutputStream(File(oriPicPath))
+            val outputStream = FileOutputStream(File(getOriPicPath()))
             inputStream?.copyTo(outputStream, DEFAULT_BUFFER_SIZE)
             inputStream?.close()
             outputStream.close()
@@ -74,9 +81,19 @@ class BTNClass(private val context: Context, var dirName: String)
         }
     }
 
+    private fun openVisionText()
+    {
+
+    }
+
+    private fun saveVisionText()
+    {
+
+    }
+
     fun rename(name: String): Boolean
     {
-        val srcDir = File(dirPath)
+        val srcDir = File(getDirPath())
         val dstDir = File("${context.filesDir.absolutePath}/$name.btn")
         return if (dstDir.exists())
         {
@@ -96,7 +113,7 @@ class BTNClass(private val context: Context, var dirName: String)
     {
         return try
         {
-            val dir = File(dirPath)
+            val dir = File(getDirPath())
             dir.deleteRecursively()
             true
         }

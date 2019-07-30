@@ -1,51 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.unitech.boardtonote">
+    package="com.unitech.boardtonote">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
-            android:allowBackup="true"
-            android:fullBackupContent="@xml/backup_descriptor"
-            android:icon="@drawable/ic_launcher"
-            android:label="@string/app_name"
-            android:supportsRtl="true"
-            android:theme="@style/MaterialTheme">
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/BTN">
         <activity
-                android:name=".SettingsActivity"
-                android:label="@string/title_activity_settings"
-                android:theme="@style/MaterialTheme.NoActionBar">
-        </activity>
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" />
         <activity
-                android:name=".ProcessingActivity"
-                android:theme="@style/MaterialTheme.NoActionBar"/>
+            android:name=".ProcessingActivity"
+            android:label="@string/process" />
         <activity
-                android:name=".EditActivity"
-                android:label="Untitled"
-                android:theme="@style/MaterialTheme.NoActionBar"/>
+            android:name=".EditActivity"
+            android:label="Untitled" />
         <activity
-                android:name=".MainActivity"
-                android:label="@string/title_activity_main"
-                android:theme="@style/MaterialTheme.NoActionBar"/>
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main" />
         <activity
-                android:name=".CameraActivity"
-                android:label="@string/app_name"
-                android:theme="@style/MaterialTheme.NoActionBar">
+            android:name=".CameraActivity"
+            android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
 
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
 
         <meta-data
-                android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-                android:value="ocr"/>
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="ocr" />
     </application>
 
 </manifest>

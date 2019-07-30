@@ -57,7 +57,7 @@
                 android:background="@color/transparent"
                 android:padding="12dp"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_collections"
+                app:srcCompat="@drawable/ic_collections_white"
                 android:contentDescription="@string/gallery_button"/>
 
         <Space

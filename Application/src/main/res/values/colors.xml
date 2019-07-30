@@ -16,4 +16,14 @@
 -->
 <resources>
     <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Light Theme -->
+    <color name="primary">#1976D2</color>
+    <color name="secondary">#F57C00</color>
+    <color name="error">#E53935</color>
+
+    <color name="light">#FFFFFF</color>
+    <color name="dark">#000000</color>
 </resources>

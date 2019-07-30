@@ -8,15 +8,13 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/MaterialTheme.AppBarOverlay">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/Toolbar_Edit"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorAccent"
-                app:popupTheme="@style/MaterialTheme.PopupOverlay">
+                android:background="?attr/colorAccent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,4 +35,10 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_edit" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Linear_Edit"
+        android:orientation="vertical"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
