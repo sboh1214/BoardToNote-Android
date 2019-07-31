@@ -103,6 +103,7 @@ class SettingsActivity : AppCompatActivity(),
                 lp.setMargins(48, 48, 48, 48)
                 val edit = EditText(activity)
                 edit.layoutParams = lp
+                edit.requestFocus()
                 container.addView(edit)
 
                 AlertDialog.Builder(activity as Context).apply {

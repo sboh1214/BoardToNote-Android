@@ -9,10 +9,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
-import androidx.core.os.BuildCompat
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -42,9 +39,15 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         setContentView(R.layout.activity_main)
         setSupportActionBar(Toolbar_Main)
 
+        val snackBar = intent.getStringExtra("snackBar")
+        if (snackBar!=null && snackBar!="")
+        {
+            Snackbar.make(Linear_Main,snackBar,Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
+        }
+
         btnManager = LinearLayoutManager(this)
         getDirs(this)
-        btnAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) }, { btnClass, view -> itemMoreClick(btnClass, view) })
+        btnAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) }, { btnClass, _ -> itemMoreClick(btnClass) })
 
         Recycler_Main.apply {
             setHasFixedSize(true)
@@ -78,7 +81,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         {
             Log.v(TAG, "Press Back Button 1 time $time")
             time = System.currentTimeMillis()
-            Snackbar.make(Recycler_Main, "Press back on more time to exit.", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(Linear_Main, "Press back on more time to exit.", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
             return
         }
     }
@@ -96,7 +99,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         return true
     }
 
-    private fun itemMoreClick(btnClass: BTNClass, view: View): Boolean
+    private fun itemMoreClick(btnClass: BTNClass): Boolean
     {
         val fragment = PopupFragment(btnClass)
         fragment.show(supportFragmentManager, "fragment_popup")
@@ -121,10 +124,10 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
             setPositiveButton("Rename") { _, _ ->
                 dstName = edit.text.toString()
                 (btnAdapter as BTNAdapter).rename(btnClass, dstName!!)
-                Snackbar.make(Recycler_Main, "$srcName renamed to $dstName", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(Linear_Main, "$srcName renamed to $dstName", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
             }
-            setNegativeButton("Cancel") { i, _ ->
-                Snackbar.make(Recycler_Main, "User canceled renaming $srcName", Snackbar.LENGTH_SHORT).show()
+            setNegativeButton("Cancel") { _, _ ->
+                Snackbar.make(Linear_Main, "User canceled renaming $srcName", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
             }
         }.show()
     }
@@ -132,7 +135,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
     override fun delete(btnClass: BTNClass)
     {
         (btnAdapter as BTNAdapter).delete(btnClass)
-        Snackbar.make(Recycler_Main, "${btnClass.dirName} deleted", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(Linear_Main, "${btnClass.dirName} deleted", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
     }
 
     private fun getDirs(context: Context)

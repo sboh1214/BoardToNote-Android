@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import kotlinx.android.synthetic.main.activity_processing.*
@@ -63,8 +64,8 @@ class ProcessingActivity : AppCompatActivity(), ProcessingOptionsFragment.Analyz
         }
         else
         {
-            Toast.makeText(this, "User has canceled opening picture.", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("snackBar","User has canceled opening picture")
             startActivity(intent)
         }
         super.onActivityResult(requestCode, resultCode, data)

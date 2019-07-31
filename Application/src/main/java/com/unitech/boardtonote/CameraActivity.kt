@@ -37,16 +37,15 @@ class CameraActivity : AppCompatActivity() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */)
         val theme = sharedPreferences.getString("Preference_Theme","Default")
         applyTheme(theme!!)
-        sharedPreferences.registerOnSharedPreferenceChangeListener { preferences, s ->
-            val theme = sharedPreferences.getString(s,"Default")
-            applyTheme(theme!!)
+        sharedPreferences.registerOnSharedPreferenceChangeListener { _, s ->
+            applyTheme(sharedPreferences.getString(s,"Default").toString())
         }
 
         if (Build.VERSION.SDK_INT < 21)
         {
             Log.w(TAG, "Android SDK : " + Build.VERSION.SDK_INT.toString())
-            Toast.makeText(this, "This android version is not supported for camera preview.", Toast.LENGTH_LONG).show()
             val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("snackBar","This android version is not supported for camera preview.")
             startActivity(intent)
             return
         }
