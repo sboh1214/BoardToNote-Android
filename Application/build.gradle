@@ -10,7 +10,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.unitech.boardtonote"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 29
         versionCode 8
         versionName "0.7"
@@ -18,8 +18,18 @@ android {
         multiDexEnabled true
     }
     buildTypes {
+        debug {
+            minifyEnabled true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFile 'proguard-rules.pro'
+            proguardFile 'proguard-debug.pro'
+        }
+
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            shrinkResources true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFile 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -32,8 +42,8 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.android.material:material:1.1.0-alpha08'
-    implementation 'androidx.multidex:multidex:2.0.1'
 
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -43,4 +53,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision:22.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.firebase:firebase-perf:18.0.1'
+
+    implementation 'com.github.yalantis:ucrop:2.2.3-native'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7'
 }

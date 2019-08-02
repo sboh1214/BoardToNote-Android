@@ -37,7 +37,7 @@ class EditActivity : AppCompatActivity()
             Snackbar.make(Linear_Edit, "An Error Occurred : file name does not exist.", Snackbar.LENGTH_SHORT).show()
             startActivity(Intent(this, MainActivity::class.java))
         }
-        btnClass = BTNClass(this, dirName)
+        btnClass = BTNClass(this, dirName, BTNClass.Location.LOCAL)
         try
         {
             Edit_Title.setText(btnClass.dirName)

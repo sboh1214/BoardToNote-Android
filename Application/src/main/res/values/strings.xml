@@ -23,4 +23,9 @@
     <string name="delete">Delete</string>
     <string name="board_to_note">Board To Note</string>
     <string name="process">Process</string>
+    <string name="crop_image">Crop Image</string>
+
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">2290284624342086</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb2290284624342086</string>
 </resources>

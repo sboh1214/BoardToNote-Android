@@ -1,5 +1,6 @@
 package com.unitech.boardtonote
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -8,19 +9,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import com.google.firebase.ml.vision.text.FirebaseVisionText
+import com.google.firebase.perf.FirebasePerformance
+import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_processing.*
-import kotlinx.android.synthetic.main.fragment_processing_options.view.*
+import kotlinx.android.synthetic.main.fragment_processing.view.*
+import java.io.File
+import java.lang.Exception
 
 
 private const val TAG = "ProcessingActivity"
 
-class ProcessingActivity : AppCompatActivity(), ProcessingOptionsFragment.AnalyzeListener
+class ProcessingActivity : AppCompatActivity(), ProcessingFragment.ProcessingListener
 {
     private lateinit var btnClass: BTNClass
 
@@ -31,7 +36,7 @@ class ProcessingActivity : AppCompatActivity(), ProcessingOptionsFragment.Analyz
         setContentView(R.layout.activity_processing)
         setSupportActionBar(Toolbar_Processing)
         supportFragmentManager.beginTransaction()
-                .replace(R.id.Frame_Processing, ProcessingOptionsFragment())
+                .replace(R.id.Frame_Processing, ProcessingFragment())
                 .commit()
 
         val prevIntent = intent
@@ -50,22 +55,45 @@ class ProcessingActivity : AppCompatActivity(), ProcessingOptionsFragment.Analyz
         }
         else
         {
-            btnClass = BTNClass(this, dirName)
+            btnClass = BTNClass(this, dirName,BTNClass.Location.LOCAL)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
-        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK && data?.data != null)
+        if (requestCode == REQUEST_IMAGE_GET)
         {
-            val uri: Uri = data.data!!
-            btnClass = BTNClass(this as Context, BTNClass.makeDir(this as Context, null))
-            btnClass.copyOriPic(uri)
+            if (resultCode == RESULT_OK && data?.data != null)
+            {
+                val uri: Uri = data.data!!
+                btnClass = BTNClass(this as Context,null,BTNClass.Location.LOCAL)
+                btnClass.copyOriPic(uri)
+                Snackbar.make(Linear_Processing, "Created note from picture named ${btnClass.dirName}",Snackbar.LENGTH_SHORT).show()
+            }
+            else
+            {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("snackBar","User has canceled opening picture")
+                startActivity(intent)
+            }
+        }
+        else if (requestCode == UCrop.REQUEST_CROP)
+        {
+            if (resultCode == RESULT_OK)
+            {
+
+            }
+            else
+            {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("snackBar","Error raised while cropping picture")
+                startActivity(intent)
+            }
         }
         else
         {
             val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("snackBar","User has canceled opening picture")
+            intent.putExtra("snackBar","Unknown error raised")
             startActivity(intent)
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -78,28 +106,18 @@ class ProcessingActivity : AppCompatActivity(), ProcessingOptionsFragment.Analyz
         startActivity(intent)
     }
 
+    override fun crop():Boolean
+    {
+        UCrop.of(Uri.fromFile(File(btnClass.oriPicPath)), Uri.fromFile(File(btnClass.oriPicPath)))
+                .start(this@ProcessingActivity)
+        return true
+    }
+
     override fun analyze(): Boolean
     {
-        if (btnClass.oriPic == null)
-        {
-            return false
-        }
-        val image: FirebaseVisionImage = FirebaseVisionImage.fromBitmap(btnClass.oriPic!!)
-        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
-        detector.processImage(image).apply {
-            addOnSuccessListener { firebaseVisionText ->
-                btnClass.visionText = firebaseVisionText
-                Log.i(TAG, "analyze() Success ${btnClass.dirName}")
-                Log.v(TAG, firebaseVisionText.text)
-                val intent = Intent(this@ProcessingActivity, EditActivity::class.java)
-                intent.putExtra("dirName", btnClass.dirName)
-                startActivity(intent)
-            }
-            addOnFailureListener { e ->
-                Log.i(TAG, "analyze() Failure ${btnClass.dirName}")
-                Log.w(TAG, e.toString())
-            }
-        }
+        val onSuccess = {text:FirebaseVisionText->true}
+        val onFailure = {e:Exception->true}
+        btnClass.analyze(onSuccess, onFailure)
         return true
     }
 
@@ -109,36 +127,30 @@ class ProcessingActivity : AppCompatActivity(), ProcessingOptionsFragment.Analyz
     }
 }
 
-class ProcessingOptionsFragment : Fragment()
+class ProcessingFragment : Fragment()
 {
-    private lateinit var analyzeListener: AnalyzeListener
+    private lateinit var processingListener: ProcessingListener
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        val view = inflater.inflate(R.layout.fragment_processing_options, container, false)
-        view.Button_Process.setOnClickListener { analyzeListener.analyze() }
+        val view = inflater.inflate(R.layout.fragment_processing, container, false)
+        view.Button_Process.setOnClickListener { processingListener.analyze() }
+        view.Button_Crop.setOnClickListener {processingListener.crop()}
         return view
     }
 
     override fun onAttach(context: Context)
     {
-        if (context is AnalyzeListener)
+        if (context is ProcessingListener)
         {
-            analyzeListener = context
+            processingListener = context
         }
         super.onAttach(context)
     }
 
-    interface AnalyzeListener
+    interface ProcessingListener
     {
+        fun crop():Boolean
         fun analyze():Boolean
-    }
-}
-
-class ProcessingImageFragment : Fragment()
-{
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-    {
-        return inflater.inflate(R.layout.fragment_processing_image, container, false)
     }
 }

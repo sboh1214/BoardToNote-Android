@@ -715,8 +715,8 @@ class CameraFragment : Fragment(), View.OnClickListener,
             }
             val rotation = activity!!.windowManager.defaultDisplay.rotation
 
-            val btn = BTNClass(context as Context, BTNClass.makeDir(context as Context, null))
-            file = File(btn.getOriPicPath())
+            val btn = BTNClass(context as Context, null,BTNClass.Location.LOCAL)
+            file = File(btn.oriPicPath)
 
             // This is the CaptureRequest.Builder that we use to take a picture.
             val captureBuilder = cameraDevice?.createCaptureRequest(
@@ -992,6 +992,7 @@ internal class ImageSaver(
 ) : Runnable
 {
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun run()
     {
         val buffer = image.planes[0].buffer

@@ -149,7 +149,8 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
             }
             if (dirList[i].name.substringAfterLast('.') == "btn")
             {
-                btnList.add(BTNClass(context, dirList[i].name.substringBeforeLast('.')))
+                val dirName = dirList[i].name.substringBeforeLast('.')
+                btnList.add(BTNClass(context, dirName ,BTNClass.Location.LOCAL))
             }
         }
     }

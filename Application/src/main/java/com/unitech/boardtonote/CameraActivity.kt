@@ -38,7 +38,9 @@ class CameraActivity : AppCompatActivity() {
         val theme = sharedPreferences.getString("Preference_Theme","Default")
         applyTheme(theme!!)
         sharedPreferences.registerOnSharedPreferenceChangeListener { _, s ->
-            applyTheme(sharedPreferences.getString(s,"Default").toString())
+            val theme = sharedPreferences.getString(s,"Default").toString()
+            applyTheme(theme)
+            Log.i(TAG,"Applying theme to $theme")
         }
 
         if (Build.VERSION.SDK_INT < 21)
