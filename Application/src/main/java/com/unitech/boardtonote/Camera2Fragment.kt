@@ -65,7 +65,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.type = "image/*"
-                startActivityForResult(intent, requestImageGet)
+                activity!!.startActivityForResult(intent, requestImageGet)
             }
         }
     }

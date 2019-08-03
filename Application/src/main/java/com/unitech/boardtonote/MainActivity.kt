@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
 
         btnManager = LinearLayoutManager(this)
         getDirs(this)
-        btnAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) }, { btnClass, _ -> itemMoreClick(btnClass) })
+        btnAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) },
+                { btnClass -> itemLongClick(btnClass) }, { btnClass, _ -> itemMoreClick(btnClass) })
 
         Recycler_Main.apply {
             setHasFixedSize(true)
