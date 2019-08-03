@@ -20,7 +20,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.BuildCompat
@@ -28,26 +27,27 @@ import androidx.preference.PreferenceManager
 
 private const val TAG = "CameraActivity"
 
-class CameraActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+class CameraActivity : AppCompatActivity()
+{
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         Log.i(TAG, "onCreate")
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */)
-        val theme = sharedPreferences.getString("Preference_Theme","Default")
+        val theme = sharedPreferences.getString("Preference_Theme", "Default")
         applyTheme(theme!!)
         sharedPreferences.registerOnSharedPreferenceChangeListener { _, s ->
-            val theme = sharedPreferences.getString(s,"Default").toString()
+            val theme = sharedPreferences.getString(s, "Default").toString()
             applyTheme(theme)
-            Log.i(TAG,"Applying theme to $theme")
+            Log.i(TAG, "Applying theme to $theme")
         }
 
         if (Build.VERSION.SDK_INT < 21)
         {
             Log.w(TAG, "Android SDK : " + Build.VERSION.SDK_INT.toString())
             val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("snackBar","This android version is not supported for camera preview.")
+            intent.putExtra("snackBar", "This android version is not supported for camera preview.")
             startActivity(intent)
             return
         }
@@ -83,7 +83,23 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        if (requestCode == requestImageGet && resultCode == RESULT_OK && data != null)
+        {
+            val uri = data.data!!
+            val btnClass = BTNClass(this@CameraActivity, null, BTNClass.Location.LOCAL)
+            btnClass.copyOriPic(uri)
+            val intent = Intent(this@CameraActivity, EditActivity::class.java)
+            intent.putExtra("dirName", btnClass.dirName)
+            intent.putExtra("location", btnClass.location.value)
+            startActivity(intent)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onBackPressed()
+    {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }

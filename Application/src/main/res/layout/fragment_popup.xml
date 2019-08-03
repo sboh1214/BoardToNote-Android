@@ -12,7 +12,6 @@
         android:text="@string/error" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/Button_Share"
         style="@style/BTN.TextView_Popup"
         android:drawableStart="@drawable/ic_share_dark"
         android:text="@string/share" />
@@ -24,7 +23,6 @@
         android:text="@string/rename" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/Button_Info"
         style="@style/BTN.TextView_Popup"
         android:drawableStart="@drawable/ic_info_dark"
         android:text="@string/more_info" />

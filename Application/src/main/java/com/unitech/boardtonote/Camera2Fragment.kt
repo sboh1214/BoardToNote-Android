@@ -51,8 +51,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
             {
                 val dirName = captureStillPicture()
                 Log.i(TAG, "Captured picture with dirName $dirName")
-                val intent = Intent(context, ProcessingActivity::class.java)
+                val intent = Intent(context, EditActivity::class.java)
                 intent.putExtra("dirName", dirName)
+                intent.putExtra("location", BTNClass.Location.LOCAL.value)
                 startActivity(intent)
             }
             R.id.Note_Button    ->
@@ -62,8 +63,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
             }
             R.id.Gallery_Button ->
             {
-                val intent = Intent(context, ProcessingActivity::class.java)
-                startActivity(intent)
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "image/*"
+                startActivityForResult(intent, requestImageGet)
             }
         }
     }

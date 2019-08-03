@@ -19,12 +19,12 @@ import kotlinx.android.synthetic.main.fragment_popup.view.*
 import kotlinx.android.synthetic.main.item_main.view.*
 import java.io.File
 
+const val requestImageGet = 1
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
 {
-
     private lateinit var btnAdapter: RecyclerView.Adapter<*>
     private lateinit var btnManager: RecyclerView.LayoutManager
     private var btnList = arrayListOf<BTNClass>()
@@ -61,9 +61,25 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         }
 
         Gallery_Fab.setOnClickListener {
-            val intent = Intent(this, ProcessingActivity::class.java)
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            startActivityForResult(intent, requestImageGet)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        if (requestCode == requestImageGet && resultCode == RESULT_OK && data != null)
+        {
+            val uri = data.data!!
+            val btnClass = BTNClass(this@MainActivity, null, BTNClass.Location.LOCAL)
+            btnClass.copyOriPic(uri)
+            val intent = Intent(this@MainActivity, EditActivity::class.java)
+            intent.putExtra("dirName", btnClass.dirName)
+            intent.putExtra("location", btnClass.location.value)
             startActivity(intent)
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed()
@@ -90,6 +106,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
     {
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dirName", btnClass.dirName)
+        intent.putExtra("location", btnClass.location.value)
         startActivity(intent)
         return
     }
@@ -140,7 +157,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
 
     private fun getDirs(context: Context)
     {
-        val dirList = File(context.filesDir.absolutePath).listFiles() ?: return
+        val dirList = File(context.filesDir.absolutePath + "/local").listFiles() ?: return
         for (i in 0 until dirList.size)
         {
             if (!dirList[i].isDirectory)

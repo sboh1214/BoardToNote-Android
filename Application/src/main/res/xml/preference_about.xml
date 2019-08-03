@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        app:key="Preference_VersionName"
+        app:summary="Version Name"
+        app:title="Unknown" />
+    <Preference
+        app:key="Preference_VersionCode"
+        app:summary="Version Code"
+        app:title="Unknown" />
+</androidx.preference.PreferenceScreen>

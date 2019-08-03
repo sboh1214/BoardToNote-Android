@@ -14,17 +14,18 @@
   ~ limitations under the License.
   -->
 
-<androidx.preference.PreferenceScreen
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
         app:key="Preference_Delete"
+        app:icon="@drawable/ic_delete_sweep_dark"
         app:title="Delete All"
         app:summary="Delete all directories and files"/>
 
     <Preference
-            app:key="Preference_Crash"
-            app:title="Force a Crash"
-            app:summary="Check that Firebase Crashlytics is working"/>
+        app:icon="@drawable/ic_adb_dark"
+        app:key="Preference_Crash"
+        app:summary="Check that Firebase Crashlytics is working"
+        app:title="Force a Crash" />
 
 </androidx.preference.PreferenceScreen>

@@ -2,23 +2,29 @@ package com.unitech.boardtonote
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.content_edit.*
+import kotlinx.android.synthetic.main.item_edit.view.*
+import java.io.File
 
 private const val TAG = "EditActivity"
 
 class EditActivity : AppCompatActivity()
 {
-
     private lateinit var btnClass: BTNClass
+
+    private lateinit var blockAdapter: RecyclerView.Adapter<*>
+    private lateinit var blockManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -31,17 +37,19 @@ class EditActivity : AppCompatActivity()
 
         val intent = intent
         val dirName = intent.getStringExtra("dirName")
-        if (dirName == null)
+        val location = intent.getIntExtra("location", -1)
+        if (dirName == null || location == -1)
         {
-            Log.e(TAG, "dirName does not exist")
-            Snackbar.make(Linear_Edit, "An Error Occurred : file name does not exist.", Snackbar.LENGTH_SHORT).show()
-            startActivity(Intent(this, MainActivity::class.java))
+            Log.e(TAG, "dirName does not exist $dirName $location")
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("snackBar", "An Error Occurred : file does not exist.")
+            startActivity(intent)
         }
-        btnClass = BTNClass(this, dirName, BTNClass.Location.LOCAL)
+        btnClass = BTNClass(this, dirName, BTNClass.toLocate(location))
         try
         {
             Edit_Title.setText(btnClass.dirName)
-            Edit_Title.setOnKeyListener { view, code, event ->
+            Edit_Title.setOnKeyListener { _, code, event ->
                 if (event.action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER)
                 {
                     val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -53,7 +61,7 @@ class EditActivity : AppCompatActivity()
                     }
                     else
                     {
-                        Snackbar.make(Linear_Edit,"Fail to rename note",Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(Linear_Edit, "Fail to rename note", Snackbar.LENGTH_SHORT).show()
                         Edit_Title.setText(btnClass.dirName)
                         false
                     }
@@ -64,12 +72,58 @@ class EditActivity : AppCompatActivity()
                 }
             }
             pictureView.setImageBitmap(btnClass.oriPic)
+            btnClass.asyncGetContent {
+                Log.i(TAG, "Recycler_Edit Init")
+                blockManager = LinearLayoutManager(this)
+                blockAdapter = BlockAdapter(btnClass.content.blockList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) }, { btnClass, _ -> itemMoreClick(btnClass) })
+
+                Recycler_Edit.apply {
+                    setHasFixedSize(true)
+                    layoutManager = blockManager
+                    adapter = blockAdapter
+                }
+                true
+            }
         }
         catch (e: Exception)
         {
-            Log.e(TAG, "Can't open dirName : $dirName")
+            Log.e(TAG, "Can't open dirName : $dirName $location")
             Snackbar.make(Linear_Edit, "An Error Occurred : Can't open note.", Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    private fun itemClick(btnClass: BTNClass.BlockClass)
+    {
+    }
+
+    private fun itemLongClick(btnClass: BTNClass.BlockClass): Boolean
+    {
+        return true
+    }
+
+    private fun itemMoreClick(btnClass: BTNClass.BlockClass): Boolean
+    {
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        if (requestCode == UCrop.REQUEST_CROP)
+        {
+            if (resultCode == RESULT_OK)
+            {
+
+            }
+            else
+            {
+                Snackbar.make(Coor_Edit, "Error raised while cropping picture", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+        else
+        {
+            Snackbar.make(Coor_Edit, "Unknown error raised", Snackbar.LENGTH_SHORT).show()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed()
@@ -88,17 +142,17 @@ class EditActivity : AppCompatActivity()
     {
         return when (item.itemId)
         {
-            R.id.Menu_Save    ->
-            {
-                true
-            }
             R.id.Menu_Share   ->
             {
                 true
             }
-            /**
-             * When user pressed back button on toolbar
-             */
+            R.id.Menu_Crop    ->
+            {
+                UCrop.of(Uri.fromFile(File(btnClass.oriPicPath)), Uri.fromFile(File(btnClass.oriPicPath)))
+                        .start(this@EditActivity)
+                true
+            }
+            //When user pressed back button on toolbar
             android.R.id.home ->
             {
                 val intent = Intent(this, MainActivity::class.java)
@@ -108,5 +162,38 @@ class EditActivity : AppCompatActivity()
             else              -> super.onOptionsItemSelected(item)
         }
     }
+}
 
+class BlockAdapter(private val blockList: ArrayList<BTNClass.BlockClass>,
+                   private val itemClick: (BTNClass.BlockClass) -> Unit,
+                   private val itemLongClick: (BTNClass.BlockClass) -> Boolean,
+                   private val itemMoreClick: (BTNClass.BlockClass, View) -> Boolean) :
+        RecyclerView.Adapter<BlockAdapter.BlockHolder>()
+{
+    inner class BlockHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    {
+        fun bind(blockClass: BTNClass.BlockClass,
+                 itemClick: (BTNClass.BlockClass) -> Unit,
+                 itemLongClick: (BTNClass.BlockClass) -> Boolean,
+                 itemMoreClick: (BTNClass.BlockClass, View) -> Boolean)
+        {
+            itemView.Text_Content.text = blockClass.text
+            itemView.setOnClickListener { itemClick(blockClass) }
+            itemView.setOnLongClickListener { itemLongClick(blockClass) }
+            itemView.Button_More.setOnClickListener { itemMoreClick(blockClass, itemView) }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlockHolder
+    {
+        val item = LayoutInflater.from(parent.context).inflate(R.layout.item_edit, parent, false)
+        return BlockHolder(item)
+    }
+
+    override fun onBindViewHolder(holder: BlockHolder, position: Int)
+    {
+        holder.bind(blockList[position], itemClick, itemLongClick, itemMoreClick)
+    }
+
+    override fun getItemCount() = blockList.size
 }

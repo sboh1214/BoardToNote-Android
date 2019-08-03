@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
 import android.util.Log
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
@@ -21,17 +23,17 @@ private const val TAG = "BTNClass"
 /**
  * A Class for Board To Note Project File
  */
-class BTNClass(private val context: Context, var dirName: String?, location: Location)
+class BTNClass(private val context: Context, var dirName: String?, val location: Location)
 {
-    enum class Location
+    enum class Location(val value: Int)
     {
-        LOCAL, FIREBASE_STORAGE
+        LOCAL(1), FIREBASE_STORAGE(2)
     }
 
     data class ContentClass
     (
             var text: String?,
-            var blockList: List<BlockClass>
+            var blockList: ArrayList<BlockClass>
     )
 
     data class BlockClass
@@ -39,6 +41,7 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
             val text: String,
             val confidence: Float?,
             val language: List<String?>,
+            @JsonIgnore
             val frame: Rect?,
             val lines: List<LineClass>
     )
@@ -48,6 +51,7 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
             val text: String,
             val confidence: Float?,
             val language: List<String?>,
+            @JsonIgnore
             val frame: Rect?,
             val lines: List<ElementClass>
     )
@@ -57,11 +61,16 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
             val text: String,
             val confidence: Float?,
             val language: List<String?>,
+            @JsonIgnore
             val frame: Rect?
     )
 
     init
     {
+        if (!File(parentDirPath).exists())
+        {
+            File(parentDirPath).mkdir()
+        }
         when (location)
         {
             Location.LOCAL            ->
@@ -86,7 +95,15 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
         }
     }
 
-    private var content = ContentClass(null, mutableListOf())
+    private val parentDirPath: String
+        get()
+        {
+            return when (location)
+            {
+                Location.LOCAL            -> "${context.filesDir.path}/local"
+                Location.FIREBASE_STORAGE -> "${context.filesDir.path}/firebase_storage"
+            }
+        }
 
     val oriPic: Bitmap?
         get()
@@ -98,7 +115,7 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
     private val dirPath: String
         get()
         {
-            return "${context.filesDir.absolutePath}/$dirName.btn"
+            return "$parentDirPath/$dirName.btn"
         }
 
     val oriPicPath: String
@@ -107,7 +124,7 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
             return "$dirPath/OriPic.jpg"
         }
 
-    val contentPath: String
+    private val contentPath: String
         get()
         {
             return "$dirPath/content.json"
@@ -121,7 +138,7 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
     {
         return try
         {
-            BitmapFactory.decodeFile("$dirPath/OriPic.jpg")
+            BitmapFactory.decodeFile(oriPicPath)
         }
         catch (e: Exception)
         {
@@ -155,7 +172,7 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
             val c: Calendar = Calendar.getInstance()
             val d = SimpleDateFormat("yyMMdd-hhmmss", Locale.KOREA)
             dirName = d.format(c.time)
-            val dirPath = context.filesDir.absolutePath + "/" + dirName + ".btn"
+            val dirPath = context.filesDir.absolutePath + "/local/" + dirName + ".btn"
             val dir = File(dirPath)
             if (!dir.exists())
             {
@@ -166,7 +183,7 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
         else
         {
             dirName = name
-            var dir = File(context.filesDir.absolutePath + "/" + dirName + ".btn")
+            var dir = File(context.filesDir.absolutePath + "/local/" + dirName + ".btn")
             if (!dir.exists())
             {
                 dir.mkdir()
@@ -176,7 +193,7 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
             while (true)
             {
                 dirName = name + num.toString()
-                dir = File(context.filesDir.absolutePath + "/" + dirName + ".btn")
+                dir = File(context.filesDir.absolutePath + "/local/" + dirName + ".btn")
                 if (!dir.exists())
                 {
                     dir.mkdir()
@@ -220,11 +237,28 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
         }
     }
 
-    fun analyze(onSuccess: (FirebaseVisionText) -> Boolean, onFailure: (java.lang.Exception) -> Boolean): Boolean
+    lateinit var content: ContentClass
+
+    fun asyncGetContent(onGet: (ContentClass) -> Boolean)
+    {
+        if (!File(contentPath).exists())
+        {
+            File(contentPath).canWrite()
+            analyze(onGet)
+        }
+        else
+        {
+            val mapper = jacksonObjectMapper()
+            content = mapper.readValue(File(contentPath))
+            onGet(content)
+        }
+    }
+
+    private fun analyze(onGet: (ContentClass) -> Boolean)
     {
         if (oriPic == null)
         {
-            return false
+            return
         }
         val trace = FirebasePerformance.getInstance().newTrace("process_image")
         trace.start()
@@ -235,42 +269,57 @@ class BTNClass(private val context: Context, var dirName: String?, location: Loc
                 trace.stop()
                 saveVisionText(firebaseVisionText)
                 Log.i(TAG, "analyze() Success $dirName")
-                Log.v(TAG, firebaseVisionText.text)
-                onSuccess(firebaseVisionText)
+                Log.v(TAG, firebaseVisionText.text.replace("\n", " "))
+                onGet(content)
             }
             addOnFailureListener { e ->
                 trace.stop()
                 Log.i(TAG, "analyze() Failure $dirName")
                 Log.w(TAG, e.toString())
-                onFailure(e)
             }
         }
-        return true
+        return
     }
 
     private fun saveVisionText(visionText: FirebaseVisionText)
     {
-        val blocks = mutableListOf<BlockClass>()
+        val list = arrayListOf<BlockClass>()
         for (b in visionText.textBlocks)
         {
-            val lines = mutableListOf<LineClass>()
+            Log.v(TAG, "saveVisionText block ${b.text.replace("\n", " ")}")
+            val lines = arrayListOf<LineClass>()
             for (l in b.lines)
             {
-                val elements = mutableListOf<ElementClass>()
+                Log.v(TAG, "saveVisionText line ${l.text.replace("\n", " ")}")
+                val elements = arrayListOf<ElementClass>()
                 for (e in l.elements)
                 {
+                    Log.v(TAG, "saveVisionText block ${e.text.replace("\n", " ")}")
                     val elementClass = ElementClass(e.text, e.confidence, e.recognizedLanguages.map { lang -> lang.languageCode }, e.boundingBox)
-                    elements + elementClass
+                    elements.add(elementClass)
                 }
                 val lineClass = LineClass(l.text, l.confidence, l.recognizedLanguages.map { lang -> lang.languageCode }, l.boundingBox, elements)
-                lines + lineClass
+                lines.add(lineClass)
             }
             val blockClass = BlockClass(b.text, b.confidence, b.recognizedLanguages.map { lang -> lang.languageCode }, b.boundingBox, lines)
-            blocks+blockClass
+            list.add(blockClass)
         }
-        content.text = visionText.text
-        content.blockList = blocks
+        content = ContentClass(visionText.text, list)
         val mapper = jacksonObjectMapper()
         mapper.writerWithDefaultPrettyPrinter().writeValue(File(contentPath), content)
     }
+
+    companion object
+    {
+        fun toLocate(int: Int): Location
+        {
+            return when (int)
+            {
+                Location.LOCAL.value            -> Location.LOCAL
+                Location.FIREBASE_STORAGE.value -> Location.FIREBASE_STORAGE
+                else                            -> Location.LOCAL
+            }
+        }
+    }
 }
+

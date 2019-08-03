@@ -18,9 +18,6 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".ProcessingActivity"
-            android:label="@string/process" />
-        <activity
             android:name=".EditActivity"
             android:label="Untitled" />
         <activity
@@ -40,8 +37,7 @@
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/BTN"/>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

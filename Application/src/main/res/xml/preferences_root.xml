@@ -18,4 +18,10 @@
         app:key="Preference_Dev"
         app:title="Developer Options" />
 
+    <Preference
+        app:fragment="com.unitech.boardtonote.SettingsActivity$AboutFragment"
+        app:icon="@drawable/ic_info_dark"
+        app:key="Preference_About"
+        app:title="About" />
+
 </androidx.preference.PreferenceScreen>

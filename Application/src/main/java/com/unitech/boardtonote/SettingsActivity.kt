@@ -3,6 +3,8 @@ package com.unitech.boardtonote
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
@@ -13,7 +15,6 @@ import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_settings.*
 import java.io.File
-
 
 private const val TITLE_TAG = "settingsActivityTitle"
 
@@ -97,7 +98,7 @@ class SettingsActivity : AppCompatActivity(),
             setPreferencesFromResource(R.xml.preferences_root, rootKey)
 
             val dev = findPreference<Preference>("Preference_Dev")
-            dev!!.setOnPreferenceClickListener { _ ->
+            dev!!.setOnPreferenceClickListener {
                 val container = LinearLayout(activity)
                 val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 lp.setMargins(48, 48, 48, 48)
@@ -105,6 +106,16 @@ class SettingsActivity : AppCompatActivity(),
                 edit.layoutParams = lp
                 edit.requestFocus()
                 container.addView(edit)
+
+                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(edit, 0)
+                edit.setOnKeyListener { _, key, event ->
+                    if (event.action == KeyEvent.ACTION_DOWN && key == KeyEvent.KEYCODE_ENTER)
+                    {
+                        imm.hideSoftInputFromWindow(edit.windowToken, 0)
+                    }
+                    true
+                }
 
                 AlertDialog.Builder(activity as Context).apply {
                     setTitle("Enter Password")
@@ -160,6 +171,18 @@ class SettingsActivity : AppCompatActivity(),
                 true
             }
         }
+    }
 
+    class AboutFragment : PreferenceFragmentCompat()
+    {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
+        {
+            setPreferencesFromResource(R.xml.preference_about, rootKey)
+
+            val versionName: Preference? = findPreference<Preference>("Preference_VersionName")
+            versionName!!.title = BuildConfig.VERSION_NAME
+            val versionCode: Preference? = findPreference<Preference>("Preference_VersionCode")
+            versionCode!!.title = BuildConfig.VERSION_CODE.toString()
+        }
     }
 }

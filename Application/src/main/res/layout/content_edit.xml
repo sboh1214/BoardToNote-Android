@@ -24,11 +24,12 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/avatars[14]"
                 android:contentDescription="@string/original_picture"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/Recycler_Edit"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pictureView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
