@@ -41,9 +41,9 @@ class EditActivity : AppCompatActivity()
         if (dirName == null || location == -1)
         {
             Log.e(TAG, "dirName does not exist $dirName $location")
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("snackBar", "An Error Occurred : file does not exist.")
-            startActivity(intent)
+            val mainIntent = Intent(this, MainActivity::class.java)
+            mainIntent.putExtra("snackBar", "An Error Occurred : file does not exist.")
+            startActivity(mainIntent)
         }
         btnClass = BTNClass(this, dirName, BTNClass.toLocate(location))
         try

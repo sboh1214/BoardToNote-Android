@@ -12,8 +12,8 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 10
-        versionName "0.9"
+        versionCode 11
+        versionName "0.10"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
@@ -49,6 +49,8 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.0-rc01'
 
     implementation 'com.google.firebase:firebase-core:17.0.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
+    implementation 'com.google.firebase:firebase-auth:18.1.0'
     implementation 'com.google.firebase:firebase-ml-vision:22.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.firebase:firebase-perf:18.0.1'

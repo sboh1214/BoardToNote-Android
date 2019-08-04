@@ -8,6 +8,11 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/Menu_Account"
+        android:icon="@drawable/ic_account_light"
+        android:title="@string/account"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/Menu_Setting"
         android:icon="@drawable/ic_settings_light"
         android:title="@string/setting"

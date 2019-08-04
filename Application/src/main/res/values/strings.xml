@@ -24,6 +24,7 @@
     <string name="board_to_note">Board To Note</string>
     <string name="process">Process</string>
     <string name="crop_image">Crop Image</string>
+    <string name="account">Account</string>
 
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
 </resources>

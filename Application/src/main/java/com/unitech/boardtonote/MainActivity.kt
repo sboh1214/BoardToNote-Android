@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.item_main.view.*
 import java.io.File
 
 const val requestImageGet = 1
+const val authSignIn = 1
 
 private const val TAG = "MainActivity"
 
@@ -40,9 +41,9 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         setSupportActionBar(Toolbar_Main)
 
         val snackBar = intent.getStringExtra("snackBar")
-        if (snackBar!=null && snackBar!="")
+        if (snackBar != null && snackBar != "")
         {
-            Snackbar.make(Linear_Main,snackBar,Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
+            Snackbar.make(Linear_Main, snackBar, Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
         }
 
         btnManager = LinearLayoutManager(this)
@@ -168,7 +169,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
             if (dirList[i].name.substringAfterLast('.') == "btn")
             {
                 val dirName = dirList[i].name.substringBeforeLast('.')
-                btnList.add(BTNClass(context, dirName ,BTNClass.Location.LOCAL))
+                btnList.add(BTNClass(context, dirName, BTNClass.Location.LOCAL))
             }
         }
     }
@@ -187,6 +188,10 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         return when (item?.itemId)
         {
             R.id.Menu_Search  ->
+            {
+                true
+            }
+            R.id.Menu_Account ->
             {
                 true
             }
