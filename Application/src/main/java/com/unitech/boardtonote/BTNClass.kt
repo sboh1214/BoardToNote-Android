@@ -14,6 +14,8 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.google.firebase.perf.FirebasePerformance
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -108,9 +110,16 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
     val oriPic: Bitmap?
         get()
         {
-            return loadOriPic()
+            return try
+            {
+                BitmapFactory.decodeFile(oriPicPath)
+            }
+            catch (e: Exception)
+            {
+                Log.e(TAG, e.toString())
+                null
+            }
         }
-
 
     private val dirPath: String
         get()
@@ -130,23 +139,6 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
             return "$dirPath/content.json"
         }
 
-    /**
-     * @return Bitmap of original picture.
-     * @exception[Exception] If original picture doesn't exist.
-     */
-    private fun loadOriPic(): Bitmap?
-    {
-        return try
-        {
-            BitmapFactory.decodeFile(oriPicPath)
-        }
-        catch (e: Exception)
-        {
-            Log.e(TAG, e.toString())
-            null
-        }
-    }
-
     fun copyOriPic(uri: Uri): Boolean
     {
         return try
@@ -163,6 +155,34 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
             Log.e(TAG, e.toString())
             false
         }
+    }
+
+    fun decodeFile(f: File, WIDTH: Int, HIEGHT: Int): Bitmap?
+    {
+        try
+        {
+            //Decode image size
+            val o = BitmapFactory.Options()
+            o.inJustDecodeBounds = true
+            BitmapFactory.decodeStream(FileInputStream(f), null, o)
+
+            //The new size we want to scale to
+            //Find the correct scale value. It should be the power of 2.
+            var scale = 1
+            while (o.outWidth / scale / 2 >= WIDTH && o.outHeight / scale / 2 >= HIEGHT)
+                scale *= 2
+
+            //Decode with inSampleSize
+            val o2 = BitmapFactory.Options()
+            o2.inSampleSize = scale
+            return BitmapFactory.decodeStream(FileInputStream(f), null, o2)
+        }
+        catch (e: FileNotFoundException)
+        {
+
+        }
+
+        return null
     }
 
     private fun makeLocalDir(name: String?)

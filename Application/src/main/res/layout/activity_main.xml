@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,16 +27,16 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <LinearLayout
+        android:id="@+id/Linear_Main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/Linear_Main"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <LinearLayout
+        android:id="@+id/Linear_Floating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:id="@+id/Linear_Floating">
+        android:layout_gravity="bottom|end">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/Camera_Fab"
@@ -43,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
             app:srcCompat="@drawable/ic_camera_light"
-            app:tint="@color/light"/>
+            app:tint="@color/light" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/Gallery_Fab"
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
             app:srcCompat="@drawable/ic_collections_light"
-            app:tint="@color/light"/>
+            app:tint="@color/light" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

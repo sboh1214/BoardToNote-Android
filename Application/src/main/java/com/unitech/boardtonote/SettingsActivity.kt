@@ -2,6 +2,7 @@ package com.unitech.boardtonote
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
@@ -15,6 +16,7 @@ import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_settings.*
 import java.io.File
+
 
 private const val TITLE_TAG = "settingsActivityTitle"
 
@@ -179,10 +181,19 @@ class SettingsActivity : AppCompatActivity(),
         {
             setPreferencesFromResource(R.xml.preference_about, rootKey)
 
+            val info = activity!!.packageManager.getPackageInfo(activity!!.packageName, 0)
             val versionName: Preference? = findPreference<Preference>("Preference_VersionName")
-            versionName!!.title = BuildConfig.VERSION_NAME
+            versionName?.title = info.versionName
             val versionCode: Preference? = findPreference<Preference>("Preference_VersionCode")
-            versionCode!!.title = BuildConfig.VERSION_CODE.toString()
+            if (Build.VERSION.SDK_INT >= 28)
+            {
+                versionCode?.title = info.longVersionCode.toString()
+            }
+            else
+            {
+                @Suppress("DEPRECATION")
+                versionCode?.title = info.versionCode.toString()
+            }
         }
     }
 }
