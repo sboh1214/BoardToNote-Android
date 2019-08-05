@@ -24,6 +24,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.BuildCompat
 import androidx.preference.PreferenceManager
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
+import io.fabric.sdk.android.Fabric
+
 
 private const val TAG = "CameraActivity"
 
@@ -33,6 +37,13 @@ class CameraActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         Log.i(TAG, "onCreate")
+
+        // Initializes Fabric for builds that don't use the debug build type.
+        val crashlyticsKit = Crashlytics.Builder()
+                .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build()
+
+        Fabric.with(this, crashlyticsKit)
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */)
         val theme = sharedPreferences.getString("Preference_Theme", "Default")

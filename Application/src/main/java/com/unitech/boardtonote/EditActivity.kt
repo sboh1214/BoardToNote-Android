@@ -72,24 +72,35 @@ class EditActivity : AppCompatActivity()
                 }
             }
             pictureView.setImageBitmap(btnClass.oriPic)
-            btnClass.asyncGetContent {
-                Log.i(TAG, "Recycler_Edit Init")
-                blockManager = LinearLayoutManager(this)
-                blockAdapter = BlockAdapter(btnClass.content.blockList, { btnClass -> itemClick(btnClass) }, { btnClass -> itemLongClick(btnClass) }, { btnClass, _ -> itemMoreClick(btnClass) })
-
-                Recycler_Edit.apply {
-                    setHasFixedSize(true)
-                    layoutManager = blockManager
-                    adapter = blockAdapter
-                }
-                true
-            }
+            btnClass.asyncGetContent({ content -> onSuccess(content) }, { content -> onFailure(content) })
         }
         catch (e: Exception)
         {
             Log.e(TAG, "Can't open dirName : $dirName $location")
             Snackbar.make(Linear_Edit, "An Error Occurred : Can't open note.", Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    private fun onSuccess(content: BTNClass.ContentClass): Boolean
+    {
+        Log.i(TAG, "Recycler_Edit Init")
+        blockManager = LinearLayoutManager(this)
+        blockAdapter = BlockAdapter(btnClass.content.blockList,
+                { btnClass -> itemClick(btnClass) },
+                { btnClass -> itemLongClick(btnClass) },
+                { btnClass, _ -> itemMoreClick(btnClass) })
+
+        Recycler_Edit.apply {
+            setHasFixedSize(true)
+            layoutManager = blockManager
+            adapter = blockAdapter
+        }
+        return true
+    }
+
+    private fun onFailure(content: BTNClass.ContentClass): Boolean
+    {
+        return true
     }
 
     private fun itemClick(btnClass: BTNClass.BlockClass)

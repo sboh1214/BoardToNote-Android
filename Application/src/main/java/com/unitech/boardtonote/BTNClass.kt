@@ -259,22 +259,22 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
 
     lateinit var content: ContentClass
 
-    fun asyncGetContent(onGet: (ContentClass) -> Boolean)
+    fun asyncGetContent(onSuccess: (ContentClass) -> Boolean, onFailure: (ContentClass) -> Boolean)
     {
         if (!File(contentPath).exists())
         {
             File(contentPath).canWrite()
-            analyze(onGet)
+            analyze(onSuccess, onFailure)
         }
         else
         {
             val mapper = jacksonObjectMapper()
             content = mapper.readValue(File(contentPath))
-            onGet(content)
+            onSuccess(content)
         }
     }
 
-    private fun analyze(onGet: (ContentClass) -> Boolean)
+    private fun analyze(onSuccess: (ContentClass) -> Boolean, onFailure: (ContentClass) -> Boolean)
     {
         if (oriPic == null)
         {
@@ -286,11 +286,19 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
         val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
         detector.processImage(image).apply {
             addOnSuccessListener { firebaseVisionText ->
-                trace.stop()
-                saveVisionText(firebaseVisionText)
-                Log.i(TAG, "analyze() Success $dirName")
-                Log.v(TAG, firebaseVisionText.text.replace("\n", " "))
-                onGet(content)
+                try
+                {
+                    trace.stop()
+                    saveVisionText(firebaseVisionText)
+                    Log.i(TAG, "analyze() Success $dirName")
+                    Log.v(TAG, firebaseVisionText.text.replace("\n", " "))
+                    onSuccess(content)
+                }
+                catch (e: Exception)
+                {
+                    onFailure(content)
+                    Log.e(TAG, "analyze() Exception $dirName")
+                }
             }
             addOnFailureListener { e ->
                 trace.stop()
@@ -325,8 +333,15 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
             list.add(blockClass)
         }
         content = ContentClass(visionText.text, list)
-        val mapper = jacksonObjectMapper()
-        mapper.writerWithDefaultPrettyPrinter().writeValue(File(contentPath), content)
+        try
+        {
+            val mapper = jacksonObjectMapper()
+            mapper.writerWithDefaultPrettyPrinter().writeValue(File(contentPath), content)
+        }
+        catch (e: Exception)
+        {
+            Log.e(TAG, e.toString())
+        }
     }
 
     companion object
