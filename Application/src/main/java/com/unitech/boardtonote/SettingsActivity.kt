@@ -92,108 +92,108 @@ class SettingsActivity : AppCompatActivity(),
         title = pref.title
         return true
     }
+}
 
-    class RootFragment : PreferenceFragmentCompat()
+class RootFragment : PreferenceFragmentCompat()
+{
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
     {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
-        {
-            setPreferencesFromResource(R.xml.preferences_root, rootKey)
+        setPreferencesFromResource(R.xml.preferences_root, rootKey)
 
-            val dev = findPreference<Preference>("Preference_Dev")
-            dev!!.setOnPreferenceClickListener {
-                val container = LinearLayout(activity)
-                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                lp.setMargins(48, 48, 48, 48)
-                val edit = EditText(activity)
-                edit.layoutParams = lp
-                edit.requestFocus()
-                container.addView(edit)
+        val dev = findPreference<Preference>("Preference_Dev")
+        dev!!.setOnPreferenceClickListener {
+            val container = LinearLayout(activity)
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.setMargins(48, 48, 48, 48)
+            val edit = EditText(activity)
+            edit.layoutParams = lp
+            edit.requestFocus()
+            container.addView(edit)
 
-                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(edit, 0)
-                edit.setOnKeyListener { _, key, event ->
-                    if (event.action == KeyEvent.ACTION_DOWN && key == KeyEvent.KEYCODE_ENTER)
-                    {
-                        imm.hideSoftInputFromWindow(edit.windowToken, 0)
-                    }
-                    true
+            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(edit, 0)
+            edit.setOnKeyListener { _, key, event ->
+                if (event.action == KeyEvent.ACTION_DOWN && key == KeyEvent.KEYCODE_ENTER)
+                {
+                    imm.hideSoftInputFromWindow(edit.windowToken, 0)
                 }
+                true
+            }
 
-                AlertDialog.Builder(activity as Context).apply {
-                    setTitle("Enter Password")
-                    setView(container)
-                    setPositiveButton("Unlock") { _, _ ->
-                        if (edit.text.toString() == "unitech")
-                        {
-                            activity!!.supportFragmentManager.beginTransaction()
-                                    .replace(R.id.Frame_Settings, DevFragment())
-                                    .addToBackStack(null)
-                                    .commit()
-                            Snackbar.make(activity!!.Linear_Settings, "You are now developer!", Snackbar.LENGTH_SHORT).show()
-                        }
-                        else
-                        {
-                            Snackbar.make(activity!!.Linear_Settings, "Password is wrong", Snackbar.LENGTH_SHORT).show()
-                        }
+            AlertDialog.Builder(activity as Context).apply {
+                setTitle("Enter Password")
+                setView(container)
+                setPositiveButton("Unlock") { _, _ ->
+                    if (edit.text.toString() == "unitech")
+                    {
+                        activity!!.supportFragmentManager.beginTransaction()
+                                .replace(R.id.Frame_Settings, DevFragment())
+                                .addToBackStack(null)
+                                .commit()
+                        Snackbar.make(activity!!.Linear_Settings, "You are now developer!", Snackbar.LENGTH_SHORT).show()
                     }
-                    setNegativeButton("Cancel") { _, _ ->
-                        Snackbar.make(activity!!.Linear_Settings, "User has canceled entering Developer Options", Snackbar.LENGTH_SHORT).show()
+                    else
+                    {
+                        Snackbar.make(activity!!.Linear_Settings, "Password is wrong", Snackbar.LENGTH_SHORT).show()
                     }
-                }.show()
-                true
-            }
+                }
+                setNegativeButton("Cancel") { _, _ ->
+                    Snackbar.make(activity!!.Linear_Settings, "User has canceled entering Developer Options", Snackbar.LENGTH_SHORT).show()
+                }
+            }.show()
+            true
         }
     }
+}
 
-    class ImageFragment : PreferenceFragmentCompat()
+class ImageFragment : PreferenceFragmentCompat()
+{
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
     {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
-        {
-            setPreferencesFromResource(R.xml.preference_image, rootKey)
+        setPreferencesFromResource(R.xml.preference_image, rootKey)
+    }
+}
+
+class DevFragment : PreferenceFragmentCompat()
+{
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
+    {
+        setPreferencesFromResource(R.xml.preference_dev, rootKey)
+
+        val delete: Preference? = findPreference<Preference>("Preference_Delete")
+        delete!!.setOnPreferenceClickListener {
+            val dir = File(activity!!.filesDir!!.path)
+            dir.deleteRecursively()
+            Snackbar.make(activity!!.Linear_Settings, "Deleted all files", Snackbar.LENGTH_SHORT).show()
+            true
+        }
+
+        val crash: Preference? = findPreference<Preference>("Preference_Crash")
+        crash!!.setOnPreferenceClickListener {
+            Crashlytics.getInstance().crash()
+            true
         }
     }
+}
 
-    class DevFragment : PreferenceFragmentCompat()
+class AboutFragment : PreferenceFragmentCompat()
+{
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
     {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
+        setPreferencesFromResource(R.xml.preference_about, rootKey)
+
+        val info = activity!!.packageManager.getPackageInfo(activity!!.packageName, 0)
+        val versionName: Preference? = findPreference<Preference>("Preference_VersionName")
+        versionName?.title = info.versionName
+        val versionCode: Preference? = findPreference<Preference>("Preference_VersionCode")
+        if (Build.VERSION.SDK_INT >= 28)
         {
-            setPreferencesFromResource(R.xml.preference_dev, rootKey)
-
-            val delete: Preference? = findPreference<Preference>("Preference_Delete")
-            delete!!.setOnPreferenceClickListener {
-                val dir = File(activity!!.filesDir!!.path)
-                dir.deleteRecursively()
-                Snackbar.make(activity!!.Linear_Settings, "Deleted all files", Snackbar.LENGTH_SHORT).show()
-                true
-            }
-
-            val crash: Preference? = findPreference<Preference>("Preference_Crash")
-            crash!!.setOnPreferenceClickListener {
-                Crashlytics.getInstance().crash()
-                true
-            }
+            versionCode?.title = info.longVersionCode.toString()
         }
-    }
-
-    class AboutFragment : PreferenceFragmentCompat()
-    {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
+        else
         {
-            setPreferencesFromResource(R.xml.preference_about, rootKey)
-
-            val info = activity!!.packageManager.getPackageInfo(activity!!.packageName, 0)
-            val versionName: Preference? = findPreference<Preference>("Preference_VersionName")
-            versionName?.title = info.versionName
-            val versionCode: Preference? = findPreference<Preference>("Preference_VersionCode")
-            if (Build.VERSION.SDK_INT >= 28)
-            {
-                versionCode?.title = info.longVersionCode.toString()
-            }
-            else
-            {
-                @Suppress("DEPRECATION")
-                versionCode?.title = info.versionCode.toString()
-            }
+            @Suppress("DEPRECATION")
+            versionCode?.title = info.versionCode.toString()
         }
     }
 }
