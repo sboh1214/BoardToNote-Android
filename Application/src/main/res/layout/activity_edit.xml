@@ -31,7 +31,7 @@
                     android:singleLine="true"
                     android:textSize="20sp"
                     android:id="@+id/Edit_Title"
-                    android:textCursorDrawable="@drawable/ic_cursor"/>
+                    android:textCursorDrawable="@drawable/ic_cursor" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 

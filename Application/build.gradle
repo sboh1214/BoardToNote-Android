@@ -12,8 +12,8 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 12
-        versionName "0.11"
+        versionCode 13
+        versionName "0.12"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
@@ -59,5 +59,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:18.0.1'
 
     implementation 'com.github.yalantis:ucrop:2.2.3-native'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0.pr1'
 }

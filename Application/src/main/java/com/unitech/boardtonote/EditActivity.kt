@@ -2,6 +2,7 @@ package com.unitech.boardtonote
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -71,12 +72,15 @@ class EditActivity : AppCompatActivity()
                     false
                 }
             }
-            pictureView.setImageBitmap(btnClass.oriPic)
+
+            val size = Point()
+            windowManager.defaultDisplay.getSize(size)
+            pictureView.setImageBitmap(btnClass.decodeOriPic(size.x, null))
             btnClass.asyncGetContent({ content -> onSuccess(content) }, { content -> onFailure(content) })
         }
         catch (e: Exception)
         {
-            Log.e(TAG, "Can't open dirName : $dirName $location")
+            Log.e(TAG, "Can't open dirName : $dirName $location $e}")
             Snackbar.make(Linear_Edit, "An Error Occurred : Can't open note.", Snackbar.LENGTH_SHORT).show()
         }
     }
