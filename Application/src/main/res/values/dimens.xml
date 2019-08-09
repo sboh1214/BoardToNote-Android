@@ -6,6 +6,5 @@
     <dimen name="recycler_radius">6dp</dimen>
     <dimen name="popup_padding">16dp</dimen>
     <dimen name="popup_drawable">16dp</dimen>
-    <dimen name="button_margin">8dp</dimen>
     <dimen name="cursor_width">2dp</dimen>
 </resources>

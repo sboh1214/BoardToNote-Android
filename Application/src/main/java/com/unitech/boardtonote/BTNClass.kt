@@ -18,13 +18,13 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val TAG = "BTNClass"
-
 /**
  * A Class for Board To Note Project File
  */
 class BTNClass(private val context: Context, var dirName: String?, val location: Location)
 {
+    private val tag = "BTNClass"
+
     enum class Location(val value: Int)
     {
         LOCAL(1), FIREBASE_STORAGE(2)
@@ -105,7 +105,7 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
             }
         }
 
-    val oriPic: Bitmap?
+    private val oriPic: Bitmap?
         get()
         {
             return try
@@ -114,7 +114,7 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
             }
             catch (e: Exception)
             {
-                Log.e(TAG, e.toString())
+                Log.e(tag, e.toString())
                 null
             }
         }
@@ -150,7 +150,7 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
         }
         catch (e: Exception)
         {
-            Log.e(TAG, e.toString())
+            Log.e(tag, e.toString())
             false
         }
     }
@@ -220,14 +220,14 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
         val dstDir = File("${context.filesDir.absolutePath}/$name.btn")
         return if (dstDir.exists())
         {
-            Log.w(TAG, "rename failed (${srcDir.name} -> ${dstDir.name})")
+            Log.w(tag, "rename failed (${srcDir.name} -> ${dstDir.name})")
             false
         }
         else
         {
             srcDir.renameTo(dstDir)
             dirName = name
-            Log.i(TAG, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
+            Log.i(tag, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
             true
         }
     }
@@ -242,7 +242,7 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
         }
         catch (e: Exception)
         {
-            Log.e(TAG, e.toString())
+            Log.e(tag, e.toString())
             false
         }
     }
@@ -280,20 +280,20 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
                 {
                     trace.stop()
                     saveVisionText(firebaseVisionText)
-                    Log.i(TAG, "analyze() Success $dirName")
-                    Log.v(TAG, firebaseVisionText.text.replace("\n", " "))
+                    Log.i(tag, "analyze() Success $dirName")
+                    Log.v(tag, firebaseVisionText.text.replace("\n", " "))
                     onSuccess(content)
                 }
                 catch (e: Exception)
                 {
                     onFailure(content)
-                    Log.e(TAG, "analyze() Exception $dirName")
+                    Log.e(tag, "analyze() Exception $dirName")
                 }
             }
             addOnFailureListener { e ->
                 trace.stop()
-                Log.i(TAG, "analyze() Failure $dirName")
-                Log.w(TAG, e.toString())
+                Log.i(tag, "analyze() Failure $dirName")
+                Log.w(tag, e.toString())
             }
         }
         return
@@ -304,15 +304,15 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
         val list = arrayListOf<BlockClass>()
         for (b in visionText.textBlocks)
         {
-            Log.v(TAG, "saveVisionText block ${b.text.replace("\n", " ")}")
+            Log.v(tag, "saveVisionText block ${b.text.replace("\n", " ")}")
             val lines = arrayListOf<LineClass>()
             for (l in b.lines)
             {
-                Log.v(TAG, "saveVisionText line ${l.text.replace("\n", " ")}")
+                Log.v(tag, "saveVisionText line ${l.text.replace("\n", " ")}")
                 val elements = arrayListOf<ElementClass>()
                 for (e in l.elements)
                 {
-                    Log.v(TAG, "saveVisionText block ${e.text.replace("\n", " ")}")
+                    Log.v(tag, "saveVisionText block ${e.text.replace("\n", " ")}")
                     val elementClass = ElementClass(e.text, e.confidence, e.recognizedLanguages.map { lang -> lang.languageCode }, e.boundingBox)
                     elements.add(elementClass)
                 }
@@ -330,7 +330,7 @@ class BTNClass(private val context: Context, var dirName: String?, val location:
         }
         catch (e: Exception)
         {
-            Log.e(TAG, e.toString())
+            Log.e(tag, e.toString())
         }
     }
 

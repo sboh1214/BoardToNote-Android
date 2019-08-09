@@ -14,18 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
+import com.unitech.boardtonote.adapter.BTNAdapter
+import com.unitech.boardtonote.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_popup.view.*
-import kotlinx.android.synthetic.main.item_main.view.*
 import java.io.File
 
 const val requestImageGet = 1
-const val authSignIn = 1
-
-private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
 {
+    private val tag = "MainActivity"
+
     private lateinit var btnAdapter: RecyclerView.Adapter<*>
     private lateinit var btnManager: RecyclerView.LayoutManager
     private var btnList = arrayListOf<BTNClass>()
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        Log.i(TAG, "onCreate")
+        Log.i(tag, "onCreate")
 
         setContentView(R.layout.activity_main)
         setSupportActionBar(Toolbar_Main)
@@ -88,8 +88,8 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
     {
         if (System.currentTimeMillis() <= time + 2000)
         {
-            Log.v(TAG, "Press Back Button 2 time $time")
-            Log.i(TAG, "Exit Application.")
+            Log.v(tag, "Press Back Button 2 time $time")
+            Log.i(tag, "Exit Application.")
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_HOME)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         }
         else
         {
-            Log.v(TAG, "Press Back Button 1 time $time")
+            Log.v(tag, "Press Back Button 1 time $time")
             time = System.currentTimeMillis()
             Snackbar.make(Linear_Main, "Press back on more time to exit.", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
             return
@@ -205,50 +205,6 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         }
 
     }
-}
-
-class BTNAdapter(private val btnList: ArrayList<BTNClass>,
-                 private val itemClick: (BTNClass) -> Unit,
-                 private val itemLongClick: (BTNClass) -> Boolean,
-                 private val itemMoreClick: (BTNClass, View) -> Boolean) :
-        RecyclerView.Adapter<BTNAdapter.BTNHolder>()
-{
-    inner class BTNHolder(item: View) : RecyclerView.ViewHolder(item)
-    {
-        fun bind(btnClass: BTNClass, itemClick: (BTNClass) -> Unit, itemLongClick: (BTNClass) -> Boolean, itemMoreClick: (BTNClass, View) -> Boolean)
-        {
-            itemView.Title_Text.text = btnClass.dirName
-            itemView.setOnClickListener { itemClick(btnClass) }
-            itemView.setOnLongClickListener { itemLongClick(btnClass) }
-            itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
-        }
-    }
-
-    fun rename(btnClass: BTNClass, name: String)
-    {
-        btnClass.rename(name)
-        notifyDataSetChanged()
-    }
-
-    fun delete(btnClass: BTNClass)
-    {
-        btnClass.delete()
-        btnList.remove(btnClass)
-        notifyDataSetChanged()
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BTNHolder
-    {
-        val item = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
-        return BTNHolder(item)
-    }
-
-    override fun onBindViewHolder(holder: BTNHolder, position: Int)
-    {
-        holder.bind(btnList[position], itemClick, itemLongClick, itemMoreClick)
-    }
-
-    override fun getItemCount() = btnList.size
 }
 
 class PopupFragment(private var btnClass: BTNClass) : BottomSheetDialogFragment()

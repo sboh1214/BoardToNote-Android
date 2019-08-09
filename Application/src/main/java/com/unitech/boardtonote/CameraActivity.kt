@@ -12,10 +12,10 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import io.fabric.sdk.android.Fabric
 
-private const val TAG = "CameraActivity"
-
 class CameraActivity : AppCompatActivity()
 {
+    private val TAG = "CameraActivity"
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)

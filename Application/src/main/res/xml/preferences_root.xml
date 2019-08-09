@@ -8,7 +8,7 @@
         app:key="Preference_Theme"
         app:title="App Theme" />
     <Preference
-        app:fragment="com.unitech.boardtonote.SettingsActivity$ImageFragment"
+        app:fragment="com.unitech.boardtonote.settings.ImageFragment"
         app:icon="@drawable/ic_image_dark"
         app:key="Preference_ImageProcessing"
         app:title="Image Processing" />
@@ -19,7 +19,7 @@
         app:title="Developer Options" />
 
     <Preference
-        app:fragment="com.unitech.boardtonote.SettingsActivity$AboutFragment"
+        app:fragment="com.unitech.boardtonote.settings.AboutFragment"
         app:icon="@drawable/ic_info_dark"
         app:key="Preference_About"
         app:title="About" />
