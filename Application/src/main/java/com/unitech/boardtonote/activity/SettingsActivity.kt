@@ -1,12 +1,12 @@
-package com.unitech.boardtonote.settings
+package com.unitech.boardtonote.activity
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.unitech.boardtonote.MainActivity
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.settings.RootFragment
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity(),

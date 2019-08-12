@@ -5,22 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.unitech.boardtonote.BTNClass
-import com.unitech.boardtonote.R
+import com.unitech.boardtonote.data.BTNInterface
 import kotlinx.android.synthetic.main.item_edit.view.*
 
-class BlockAdapter(private val blockList: ArrayList<BTNClass.BlockClass>,
-                   private val itemClick: (BTNClass.BlockClass) -> Unit,
-                   private val itemLongClick: (BTNClass.BlockClass) -> Boolean,
-                   private val itemMoreClick: (BTNClass.BlockClass, View) -> Boolean) :
+
+class BlockAdapter(private val blockList: ArrayList<BTNInterface.BlockClass>,
+                   private val itemClick: (BTNInterface.BlockClass) -> Unit,
+                   private val itemLongClick: (BTNInterface.BlockClass) -> Boolean,
+                   private val itemMoreClick: (BTNInterface.BlockClass, View) -> Boolean) :
         RecyclerView.Adapter<BlockAdapter.BlockHolder>()
 {
     inner class BlockHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener
     {
-        fun bind(blockClass: BTNClass.BlockClass,
-                 itemClick: (BTNClass.BlockClass) -> Unit,
-                 itemLongClick: (BTNClass.BlockClass) -> Boolean,
-                 itemMoreClick: (BTNClass.BlockClass, View) -> Boolean)
+        fun bind(blockClass: BTNInterface.BlockClass,
+                 itemClick: (BTNInterface.BlockClass) -> Unit,
+                 itemLongClick: (BTNInterface.BlockClass) -> Boolean,
+                 itemMoreClick: (BTNInterface.BlockClass, View) -> Boolean)
         {
             itemView.Text_Content.text = blockClass.text
             itemView.setOnClickListener { itemClick(blockClass) }
@@ -36,7 +36,7 @@ class BlockAdapter(private val blockList: ArrayList<BTNClass.BlockClass>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlockHolder
     {
-        val item = LayoutInflater.from(parent.context).inflate(R.layout.item_edit, parent, false)
+        val item = LayoutInflater.from(parent.context).inflate(com.unitech.boardtonote.R.layout.item_edit, parent, false)
         return BlockHolder(item)
     }
 

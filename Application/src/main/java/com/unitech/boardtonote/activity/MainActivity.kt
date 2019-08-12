@@ -1,34 +1,44 @@
-package com.unitech.boardtonote
+package com.unitech.boardtonote.activity
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StableIdKeyProvider
+import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.unitech.boardtonote.Constant
+import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.BTNAdapter
-import com.unitech.boardtonote.settings.SettingsActivity
+import com.unitech.boardtonote.adapter.MyLookup
+import com.unitech.boardtonote.data.LocalBTNClass
+import com.unitech.boardtonote.fragment.PopupFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_popup.view.*
 import java.io.File
 
-const val requestImageGet = 1
 
 class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
 {
     private val tag = "MainActivity"
 
-    private lateinit var btnAdapter: RecyclerView.Adapter<*>
+    private lateinit var btnAdapter: RecyclerView.Adapter<BTNAdapter.BTNHolder>
     private lateinit var btnManager: RecyclerView.LayoutManager
-    private var btnList = arrayListOf<BTNClass>()
+    private var btnList = arrayListOf<LocalBTNClass>()
+    private lateinit var tracker: SelectionTracker<Long>
 
     private var time: Long = 0
 
@@ -48,14 +58,32 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
 
         btnManager = LinearLayoutManager(this)
         getDirs(this)
-        btnAdapter = BTNAdapter(btnList, { btnClass -> itemClick(btnClass) },
-                { btnClass -> itemLongClick(btnClass) }, { btnClass, _ -> itemMoreClick(btnClass) })
+        btnAdapter = BTNAdapter(btnList,
+                { btnClass -> itemClick(btnClass) },
+                { btnClass, _ -> itemMoreClick(btnClass) })
 
         Recycler_Main.apply {
             setHasFixedSize(true)
             layoutManager = btnManager
             adapter = btnAdapter
         }
+
+        tracker = SelectionTracker.Builder<Long>(
+                "mySelection",
+                Recycler_Main,
+                StableIdKeyProvider(Recycler_Main),
+                MyLookup(Recycler_Main),
+                StorageStrategy.createLongStorage()
+        ).withSelectionPredicate(
+                SelectionPredicates.createSelectAnything()
+        ).build()
+
+        (btnAdapter as BTNAdapter).tracker = tracker
+
+        tracker.addObserver(
+                object : SelectionTracker.SelectionObserver<Long>()
+                {
+                })
 
         Camera_Fab.setOnClickListener {
             val intent = Intent(this, CameraActivity::class.java)
@@ -65,21 +93,39 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         Gallery_Fab.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
-            startActivityForResult(intent, requestImageGet)
+            startActivityForResult(intent, Constant.requestImageGet)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
-        if (requestCode == requestImageGet && resultCode == RESULT_OK && data != null)
+        if (requestCode == Constant.requestImageGet && resultCode == RESULT_OK && data != null)
         {
             val uri = data.data!!
-            val btnClass = BTNClass(this@MainActivity, null, BTNClass.Location.LOCAL)
+            val btnClass = LocalBTNClass(this@MainActivity, null)
             btnClass.copyOriPic(uri)
             val intent = Intent(this@MainActivity, EditActivity::class.java)
             intent.putExtra("dirName", btnClass.dirName)
-            intent.putExtra("location", btnClass.location.value)
             startActivity(intent)
+        }
+        else if (requestCode == Constant.requestSignIn)
+        {
+            val response = IdpResponse.fromResultIntent(data)
+
+            if (resultCode == RESULT_OK)
+            {
+                val user = FirebaseAuth.getInstance().currentUser
+                Log.i(tag, "firebase sign in success")
+                Log.v(tag, "displayName : ${user?.displayName}")
+                Log.v(tag, "email       : ${user?.email}")
+                Log.v(tag, "uid         : ${user?.uid}")
+                Log.v(tag, "photoUrl    : ${user?.photoUrl}")
+                Snackbar.make(Linear_Main, "Welcome ${user?.displayName}!", Snackbar.LENGTH_SHORT).show()
+            }
+            else
+            {
+                Log.e(tag, response?.error.toString())
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -104,28 +150,22 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         }
     }
 
-    private fun itemClick(btnClass: BTNClass)
+    private fun itemClick(btnClass: LocalBTNClass)
     {
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dirName", btnClass.dirName)
-        intent.putExtra("location", btnClass.location.value)
         startActivity(intent)
         return
     }
 
-    private fun itemLongClick(btnClass: BTNClass): Boolean
-    {
-        return true
-    }
-
-    private fun itemMoreClick(btnClass: BTNClass): Boolean
+    private fun itemMoreClick(btnClass: LocalBTNClass): Boolean
     {
         val fragment = PopupFragment(btnClass)
         fragment.show(supportFragmentManager, "fragment_popup")
         return true
     }
 
-    override fun rename(btnClass: BTNClass)
+    override fun rename(btnClass: LocalBTNClass)
     {
         val srcName = btnClass.dirName
         var dstName: String?
@@ -151,7 +191,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         }.show()
     }
 
-    override fun delete(btnClass: BTNClass)
+    override fun delete(btnClass: LocalBTNClass)
     {
         (btnAdapter as BTNAdapter).delete(btnClass)
         Snackbar.make(Linear_Main, "${btnClass.dirName} deleted", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
@@ -169,7 +209,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
             if (dirList[i].name.substringAfterLast('.') == "btn")
             {
                 val dirName = dirList[i].name.substringBeforeLast('.')
-                btnList.add(BTNClass(context, dirName, BTNClass.Location.LOCAL))
+                btnList.add(LocalBTNClass(context, dirName))
             }
         }
     }
@@ -193,6 +233,14 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
             }
             R.id.Menu_Account ->
             {
+                val providers = arrayListOf(
+                        AuthUI.IdpConfig.EmailBuilder().build(),
+                        AuthUI.IdpConfig.GoogleBuilder().build())
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build(), Constant.requestSignIn)
                 true
             }
             R.id.Menu_Setting ->
@@ -204,40 +252,5 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
             else              -> false
         }
 
-    }
-}
-
-class PopupFragment(private var btnClass: BTNClass) : BottomSheetDialogFragment()
-{
-    private lateinit var popupListener: PopupListener
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-    {
-        val view = inflater.inflate(R.layout.fragment_popup, container, false)
-        view.Text_Title.text = btnClass.dirName
-        view.Button_Rename.setOnClickListener {
-            popupListener.rename(btnClass)
-            dismiss()
-        }
-        view.Button_Delete.setOnClickListener {
-            popupListener.delete(btnClass)
-            dismiss()
-        }
-        return view
-    }
-
-    override fun onAttach(context: Context)
-    {
-        if (context is PopupListener)
-        {
-            popupListener = context
-        }
-        super.onAttach(context)
-    }
-
-    interface PopupListener
-    {
-        fun rename(btnClass: BTNClass)
-        fun delete(btnClass: BTNClass)
     }
 }

@@ -25,6 +25,16 @@
     <string name="process">Process</string>
     <string name="crop_image">Crop Image</string>
     <string name="account">Account</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="get_picture">Get Picture</string>
+    <string name="notes">Notes</string>
+
+    <!--Theme Settings-->
+    <string name="Theme_Light">light</string>
+    <string name="Theme_Dark">dark</string>
+    <string name="Theme_Default">default</string>
 
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">2290284624342086</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb2290284624342086</string>
 </resources>

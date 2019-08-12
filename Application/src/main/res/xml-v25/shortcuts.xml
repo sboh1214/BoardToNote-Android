@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_camera_dark"
+        android:shortcutId="take"
+        android:shortcutLongLabel="@string/take_picture"
+        android:shortcutShortLabel="@string/take_picture">
+        <categories android:name="android.shortcut.conversation" />
+        <intent
+            android:action="shortcut.take"
+            android:targetClass="com.unitech.boardtonote.activity.CameraActivity"
+            android:targetPackage="com.unitech.boardtonote" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_collections_dark"
+        android:shortcutId="get"
+        android:shortcutLongLabel="@string/get_picture"
+        android:shortcutShortLabel="@string/get_picture">
+        <categories android:name="android.shortcut.conversation" />
+        <intent
+            android:action="shortcut.get"
+            android:targetClass="com.unitech.boardtonote.activity.CameraActivity"
+            android:targetPackage="com.unitech.boardtonote" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_bookmark_dark"
+        android:shortcutId="list"
+        android:shortcutLongLabel="@string/notes"
+        android:shortcutShortLabel="@string/notes">
+        <categories android:name="android.shortcut.conversation" />
+        <intent
+            android:action="shortcut.list"
+            android:targetClass="com.unitech.boardtonote.activity.MainActivity"
+            android:targetPackage="com.unitech.boardtonote" />
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetClass="com.unitech.boardtonote.activity.CameraActivity"
+            android:targetPackage="com.unitech.boardtonote" />
+    </shortcut>
+</shortcuts>

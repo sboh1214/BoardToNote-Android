@@ -2,15 +2,18 @@ package com.unitech.boardtonote.settings
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.helper.ThemeHelper
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class RootFragment : PreferenceFragmentCompat()
@@ -18,6 +21,16 @@ class RootFragment : PreferenceFragmentCompat()
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
     {
         setPreferencesFromResource(R.xml.preferences_root, rootKey)
+
+        val themePreference = findPreference<ListPreference>("Preference_Theme")
+        themePreference!!.value = ThemeHelper.loadTheme(activity!!)
+        themePreference.setOnPreferenceChangeListener { _, newValue ->
+            val themeOption = newValue as String
+            ThemeHelper.applyTheme(themeOption)
+            ThemeHelper.saveTheme(activity!!, themeOption)
+            Log.v(tag, "Theme : $themeOption")
+            true
+        }
 
         val dev = findPreference<Preference>("Preference_Dev")
         dev!!.setOnPreferenceClickListener {

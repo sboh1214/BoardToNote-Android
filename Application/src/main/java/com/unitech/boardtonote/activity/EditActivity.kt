@@ -1,4 +1,4 @@
-package com.unitech.boardtonote
+package com.unitech.boardtonote.activity
 
 import android.content.Context
 import android.content.Intent
@@ -14,7 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.BlockAdapter
+import com.unitech.boardtonote.data.BTNInterface
+import com.unitech.boardtonote.data.LocalBTNClass
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.content_edit.*
@@ -24,7 +27,7 @@ class EditActivity : AppCompatActivity()
 {
     private val tag = "EditActivity"
 
-    private lateinit var btnClass: BTNClass
+    private lateinit var btnClass: LocalBTNClass
 
     private lateinit var blockAdapter: RecyclerView.Adapter<*>
     private lateinit var blockManager: RecyclerView.LayoutManager
@@ -40,15 +43,14 @@ class EditActivity : AppCompatActivity()
 
         val intent = intent
         val dirName = intent.getStringExtra("dirName")
-        val location = intent.getIntExtra("location", -1)
-        if (dirName == null || location == -1)
+        if (dirName == null)
         {
-            Log.e(tag, "dirName does not exist $dirName $location")
+            Log.e(tag, "dirName does not exist $dirName")
             val mainIntent = Intent(this, MainActivity::class.java)
             mainIntent.putExtra("snackBar", "An Error Occurred : file does not exist.")
             startActivity(mainIntent)
         }
-        btnClass = BTNClass(this, dirName, BTNClass.toLocate(location))
+        btnClass = LocalBTNClass(this, dirName)
         try
         {
             Edit_Title.setText(btnClass.dirName)
@@ -82,12 +84,12 @@ class EditActivity : AppCompatActivity()
         }
         catch (e: Exception)
         {
-            Log.e(tag, "Can't open dirName : $dirName $location $e}")
+            Log.e(tag, "Can't open dirName : $dirName $e}")
             Snackbar.make(Linear_Edit, "An Error Occurred : Can't open note.", Snackbar.LENGTH_SHORT).show()
         }
     }
 
-    private fun onSuccess(content: BTNClass.ContentClass): Boolean
+    private fun onSuccess(content: BTNInterface.ContentClass): Boolean
     {
         Log.i(tag, "Recycler_Edit Init")
         blockManager = LinearLayoutManager(this)
@@ -104,21 +106,21 @@ class EditActivity : AppCompatActivity()
         return true
     }
 
-    private fun onFailure(content: BTNClass.ContentClass): Boolean
+    private fun onFailure(content: BTNInterface.ContentClass): Boolean
     {
         return true
     }
 
-    private fun itemClick(btnClass: BTNClass.BlockClass)
+    private fun itemClick(btnClass: BTNInterface.BlockClass)
     {
     }
 
-    private fun itemLongClick(btnClass: BTNClass.BlockClass): Boolean
+    private fun itemLongClick(btnClass: BTNInterface.BlockClass): Boolean
     {
         return true
     }
 
-    private fun itemMoreClick(btnClass: BTNClass.BlockClass): Boolean
+    private fun itemMoreClick(btnClass: BTNInterface.BlockClass): Boolean
     {
         return true
     }
@@ -163,6 +165,7 @@ class EditActivity : AppCompatActivity()
         {
             R.id.Menu_Share   ->
             {
+                startActivity(btnClass.share(BTNInterface.Share.PDF))
                 true
             }
             R.id.Menu_Crop    ->

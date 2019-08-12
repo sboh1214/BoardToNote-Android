@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/recycler_margin"
         app:cardCornerRadius="@dimen/recycler_radius"
+        android:id="@+id/Card_Main"
+        android:background="@drawable/state_background"
         app:cardElevation="@dimen/recycler_elevation">
 
         <androidx.constraintlayout.widget.ConstraintLayout

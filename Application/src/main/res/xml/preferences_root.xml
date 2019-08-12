@@ -9,7 +9,7 @@
         app:title="App Theme" />
     <Preference
         app:fragment="com.unitech.boardtonote.settings.ImageFragment"
-        app:icon="@drawable/ic_image_dark"
+        app:icon="@drawable/ic_collections_dark"
         app:key="Preference_ImageProcessing"
         app:title="Image Processing" />
 

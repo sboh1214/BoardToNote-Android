@@ -1,7 +1,6 @@
-package com.unitech.boardtonote
+package com.unitech.boardtonote.camera
 
 import android.Manifest
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,18 +13,22 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.AttributeSet
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.unitech.boardtonote.Constant
+import com.unitech.boardtonote.R
+import com.unitech.boardtonote.activity.EditActivity
+import com.unitech.boardtonote.activity.MainActivity
+import com.unitech.boardtonote.data.LocalBTNClass
+import com.unitech.boardtonote.fragment.ConfirmationDialog
+import com.unitech.boardtonote.fragment.ErrorDialog
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -53,7 +56,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
                 Log.i(TAG, "Captured picture with dirName $dirName")
                 val intent = Intent(context, EditActivity::class.java)
                 intent.putExtra("dirName", dirName)
-                intent.putExtra("location", BTNClass.Location.LOCAL.value)
+                intent.putExtra("location", LocalBTNClass.Location.LOCAL.value)
                 startActivity(intent)
             }
             R.id.Note_Button    ->
@@ -65,7 +68,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.type = "image/*"
-                activity!!.startActivityForResult(intent, requestImageGet)
+                activity!!.startActivityForResult(intent, Constant.requestImageGet)
             }
         }
     }
@@ -74,6 +77,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
     {
         val manager = activity?.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         val characteristics = manager.getCameraCharacteristics(cameraId)
+
     }
 
     /**
@@ -717,7 +721,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             }
             val rotation = activity!!.windowManager.defaultDisplay.rotation
 
-            val btn = BTNClass(context as Context, null,BTNClass.Location.LOCAL)
+            val btn = LocalBTNClass(context as Context, null)
             file = File(btn.oriPicPath)
 
             // This is the CaptureRequest.Builder that we use to take a picture.
@@ -917,60 +921,6 @@ class CameraFragment : Fragment(), View.OnClickListener,
     }
 }
 
-/**
- * A [TextureView] that can be adjusted to a specified aspect ratio.
- */
-class AutoFitTextureView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyle: Int = 0
-) : TextureView(context, attrs, defStyle)
-{
-
-    private var ratioWidth = 0
-    private var ratioHeight = 0
-
-    /**
-     * Sets the aspect ratio for this view. The size of the view will be measured based on the ratio
-     * calculated from the parameters. Note that the actual sizes of parameters don't matter, that
-     * is, calling setAspectRatio(2, 3) and setAspectRatio(4, 6) make the same result.
-     *
-     * @param width  Relative horizontal size
-     * @param height Relative vertical size
-     */
-    fun setAspectRatio(width: Int, height: Int)
-    {
-        if (width < 0 || height < 0)
-        {
-            throw IllegalArgumentException("Size cannot be negative.")
-        }
-        ratioWidth = width
-        ratioHeight = height
-        requestLayout()
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)
-    {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val width = MeasureSpec.getSize(widthMeasureSpec)
-        val height = MeasureSpec.getSize(heightMeasureSpec)
-        if (ratioWidth == 0 || ratioHeight == 0)
-        {
-            setMeasuredDimension(width, height)
-        } else
-        {
-            if (width < height * ratioWidth / ratioHeight)
-            {
-                setMeasuredDimension(width, width * ratioHeight / ratioWidth)
-            } else
-            {
-                setMeasuredDimension(height * ratioWidth / ratioHeight, height)
-            }
-        }
-    }
-
-}
-
 internal class CompareSizesByArea : Comparator<Size>
 {
 
@@ -1023,45 +973,4 @@ internal class ImageSaver(
             }
         }
     }
-}
-
-
-class ConfirmationDialog : DialogFragment()
-{
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-            AlertDialog.Builder(activity as Context)
-                    .setMessage(R.string.request_permission)
-                    .setPositiveButton(android.R.string.ok) { _, _ ->
-                        val requestCameraPermission = 1
-                        parentFragment?.requestPermissions(arrayOf(Manifest.permission.CAMERA),
-                                requestCameraPermission)
-                    }
-                    .setNegativeButton(android.R.string.cancel) { _, _ ->
-                        parentFragment?.activity?.finish()
-                    }
-                    .create()
-}
-
-class ErrorDialog : DialogFragment()
-{
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-            AlertDialog.Builder(activity as Context)
-                    .setMessage(arguments?.getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok) { _, _ -> activity?.finish() }
-                    .create()
-
-    companion object
-    {
-
-        @JvmStatic
-        private val ARG_MESSAGE = "message"
-
-        @JvmStatic
-        fun newInstance(message: String): ErrorDialog = ErrorDialog().apply {
-            arguments = Bundle().apply { putString(ARG_MESSAGE, message) }
-        }
-    }
-
 }
