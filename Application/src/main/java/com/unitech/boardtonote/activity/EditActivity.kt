@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -170,7 +171,15 @@ class EditActivity : AppCompatActivity()
             }
             R.id.Menu_Crop    ->
             {
+                val options = UCrop.Options()
+                options.apply {
+                    setStatusBarColor(ContextCompat.getColor(this@EditActivity, R.color.primaryDark))
+                    setToolbarColor(ContextCompat.getColor(this@EditActivity, R.color.accent))
+                    setToolbarWidgetColor(ContextCompat.getColor(this@EditActivity, R.color.accent))
+                }
+
                 UCrop.of(Uri.fromFile(File(btnClass.oriPicPath)), Uri.fromFile(File(btnClass.oriPicPath)))
+                        .withOptions(options)
                         .start(this@EditActivity)
                 true
             }

@@ -6,11 +6,10 @@
         <item name="windowNoTitle">true</item>
 
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorAccent">@color/accent</item>
         <item name="colorError">@color/error</item>
-        <item name="android:textColor">?attr/colorOnBackground</item>
-
     </style>
 
     <style name="BTN.TextView_Popup" parent="@android:style/Widget.TextView">

@@ -19,7 +19,9 @@
 
     <!-- Light Theme -->
     <color name="primary">#1976D2</color>
+    <color name="primaryDark">#0246C2</color>
     <color name="secondary">#F57C00</color>
+    <color name="accent">#234577</color>
     <color name="error">#E53935</color>
 
     <color name="light">#FFFFFF</color>

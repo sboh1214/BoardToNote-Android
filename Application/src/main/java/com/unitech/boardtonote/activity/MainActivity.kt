@@ -26,6 +26,7 @@ import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.BTNAdapter
 import com.unitech.boardtonote.adapter.MyLookup
 import com.unitech.boardtonote.data.LocalBTNClass
+import com.unitech.boardtonote.fragment.AccountDialog
 import com.unitech.boardtonote.fragment.PopupFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -114,13 +115,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
 
             if (resultCode == RESULT_OK)
             {
-                val user = FirebaseAuth.getInstance().currentUser
-                Log.i(tag, "firebase sign in success")
-                Log.v(tag, "displayName : ${user?.displayName}")
-                Log.v(tag, "email       : ${user?.email}")
-                Log.v(tag, "uid         : ${user?.uid}")
-                Log.v(tag, "photoUrl    : ${user?.photoUrl}")
-                Snackbar.make(Linear_Main, "Welcome ${user?.displayName}!", Snackbar.LENGTH_SHORT).show()
+                onSignIn()
             }
             else
             {
@@ -220,6 +215,8 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         menuInflater.inflate(R.menu.menu_main, menu)
         val searchView: SearchView = menu?.findItem(R.id.Menu_Search)?.actionView as SearchView
         searchView.queryHint = resources.getString(R.string.main_search_hint)
+        val url = FirebaseAuth.getInstance().currentUser?.photoUrl
+
         return true
     }
 
@@ -233,14 +230,22 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
             }
             R.id.Menu_Account ->
             {
-                val providers = arrayListOf(
-                        AuthUI.IdpConfig.EmailBuilder().build(),
-                        AuthUI.IdpConfig.GoogleBuilder().build())
-                startActivityForResult(
-                        AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(providers)
-                                .build(), Constant.requestSignIn)
+                val account = FirebaseAuth.getInstance().currentUser
+                if (account == null)
+                {
+                    val providers = arrayListOf(
+                            AuthUI.IdpConfig.EmailBuilder().build(),
+                            AuthUI.IdpConfig.GoogleBuilder().build())
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setAvailableProviders(providers)
+                                    .build(), Constant.requestSignIn)
+                }
+                else
+                {
+                    onSignIn()
+                }
                 true
             }
             R.id.Menu_Setting ->
@@ -251,6 +256,10 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
             }
             else              -> false
         }
+    }
 
+    private fun onSignIn()
+    {
+        AccountDialog().show(supportFragmentManager, "accountDialog")
     }
 }
