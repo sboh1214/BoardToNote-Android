@@ -45,4 +45,5 @@
     <string name="uid">UID</string>
     <string name="delete">Delete</string>
     <string name="sign_out">Sign Out</string>
+    <string name="cloud">Cloud</string>
 </resources>

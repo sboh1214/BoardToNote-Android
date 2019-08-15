@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.camera.CameraFragment
-import com.unitech.boardtonote.data.LocalBTNClass
+import com.unitech.boardtonote.data.BTNLocalClass
 
 class CameraActivity : AppCompatActivity()
 {
@@ -50,7 +50,7 @@ class CameraActivity : AppCompatActivity()
         if (requestCode == Constant.requestImageGet && resultCode == RESULT_OK && data != null)
         {
             val uri = data.data!!
-            val btnClass = LocalBTNClass(this@CameraActivity, null)
+            val btnClass = BTNLocalClass(this@CameraActivity, null)
             btnClass.copyOriPic(uri)
             val intent = Intent(this@CameraActivity, EditActivity::class.java)
             intent.putExtra("dirName", btnClass.dirName)

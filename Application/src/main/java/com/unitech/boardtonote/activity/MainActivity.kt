@@ -6,42 +6,27 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.LinearLayout
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.recyclerview.selection.SelectionPredicates
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
-import androidx.recyclerview.selection.StorageStrategy
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
-import com.unitech.boardtonote.adapter.BTNAdapter
-import com.unitech.boardtonote.adapter.MyLookup
-import com.unitech.boardtonote.data.LocalBTNClass
+import com.unitech.boardtonote.adapter.MainPagerAdapter
+import com.unitech.boardtonote.data.BTNLocalClass
 import com.unitech.boardtonote.fragment.AccountDialog
-import com.unitech.boardtonote.fragment.PopupFragment
+import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
 
 
-class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
+class MainActivity : AppCompatActivity(), SnackBarInterface
 {
     private val tag = "MainActivity"
 
-    private lateinit var btnAdapter: RecyclerView.Adapter<BTNAdapter.BTNHolder>
-    private lateinit var btnManager: RecyclerView.LayoutManager
-    private var btnList = arrayListOf<LocalBTNClass>()
-    private lateinit var tracker: SelectionTracker<Long>
-
     private var time: Long = 0
+    private lateinit var mainPagerAdapter: MainPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -51,40 +36,14 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         setContentView(R.layout.activity_main)
         setSupportActionBar(Toolbar_Main)
 
-        val snackBar = intent.getStringExtra("snackBar")
-        if (snackBar != null && snackBar != "")
+        val message = intent.getStringExtra("snackBar")
+        if (message != null && message != "")
         {
-            Snackbar.make(Linear_Main, snackBar, Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
+            snackBar(message)
         }
 
-        btnManager = LinearLayoutManager(this)
-        getDirs(this)
-        btnAdapter = BTNAdapter(btnList,
-                { btnClass -> itemClick(btnClass) },
-                { btnClass, _ -> itemMoreClick(btnClass) })
-
-        Recycler_Main.apply {
-            setHasFixedSize(true)
-            layoutManager = btnManager
-            adapter = btnAdapter
-        }
-
-        tracker = SelectionTracker.Builder<Long>(
-                "mySelection",
-                Recycler_Main,
-                StableIdKeyProvider(Recycler_Main),
-                MyLookup(Recycler_Main),
-                StorageStrategy.createLongStorage()
-        ).withSelectionPredicate(
-                SelectionPredicates.createSelectAnything()
-        ).build()
-
-        (btnAdapter as BTNAdapter).tracker = tracker
-
-        tracker.addObserver(
-                object : SelectionTracker.SelectionObserver<Long>()
-                {
-                })
+        mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
+        pager.adapter = mainPagerAdapter
 
         Camera_Fab.setOnClickListener {
             val intent = Intent(this, CameraActivity::class.java)
@@ -103,7 +62,7 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         if (requestCode == Constant.requestImageGet && resultCode == RESULT_OK && data != null)
         {
             val uri = data.data!!
-            val btnClass = LocalBTNClass(this@MainActivity, null)
+            val btnClass = BTNLocalClass(this@MainActivity, null)
             btnClass.copyOriPic(uri)
             val intent = Intent(this@MainActivity, EditActivity::class.java)
             intent.putExtra("dirName", btnClass.dirName)
@@ -140,72 +99,8 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
         {
             Log.v(tag, "Press Back Button 1 time $time")
             time = System.currentTimeMillis()
-            Snackbar.make(Linear_Main, "Press back on more time to exit.", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
+            snackBar("Press back on more time to exit.")
             return
-        }
-    }
-
-    private fun itemClick(btnClass: LocalBTNClass)
-    {
-        val intent = Intent(this, EditActivity::class.java)
-        intent.putExtra("dirName", btnClass.dirName)
-        startActivity(intent)
-        return
-    }
-
-    private fun itemMoreClick(btnClass: LocalBTNClass): Boolean
-    {
-        val fragment = PopupFragment(btnClass)
-        fragment.show(supportFragmentManager, "fragment_popup")
-        return true
-    }
-
-    override fun rename(btnClass: LocalBTNClass)
-    {
-        val srcName = btnClass.dirName
-        var dstName: String?
-
-        val container = LinearLayout(this@MainActivity)
-        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        lp.setMargins(48, 48, 48, 48)
-        val edit = EditText(this@MainActivity)
-        edit.layoutParams = lp
-        container.addView(edit)
-
-        AlertDialog.Builder(this).apply {
-            setTitle("Rename Note")
-            setView(container)
-            setPositiveButton("Rename") { _, _ ->
-                dstName = edit.text.toString()
-                (btnAdapter as BTNAdapter).rename(btnClass, dstName!!)
-                Snackbar.make(Linear_Main, "$srcName renamed to $dstName", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
-            }
-            setNegativeButton("Cancel") { _, _ ->
-                Snackbar.make(Linear_Main, "User canceled renaming $srcName", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
-            }
-        }.show()
-    }
-
-    override fun delete(btnClass: LocalBTNClass)
-    {
-        (btnAdapter as BTNAdapter).delete(btnClass)
-        Snackbar.make(Linear_Main, "${btnClass.dirName} deleted", Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
-    }
-
-    private fun getDirs(context: Context)
-    {
-        val dirList = File(context.filesDir.absolutePath + "/local").listFiles() ?: return
-        for (i in 0 until dirList.size)
-        {
-            if (!dirList[i].isDirectory)
-            {
-                continue
-            }
-            if (dirList[i].name.substringAfterLast('.') == "btn")
-            {
-                val dirName = dirList[i].name.substringBeforeLast('.')
-                btnList.add(LocalBTNClass(context, dirName))
-            }
         }
     }
 
@@ -261,5 +156,10 @@ class MainActivity : AppCompatActivity(), PopupFragment.PopupListener
     private fun onSignIn()
     {
         AccountDialog().show(supportFragmentManager, "accountDialog")
+    }
+
+    override fun snackBar(m: String)
+    {
+        Snackbar.make(Coor_Main, m, Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
     }
 }

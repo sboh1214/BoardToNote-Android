@@ -18,7 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.BlockAdapter
 import com.unitech.boardtonote.data.BTNInterface
-import com.unitech.boardtonote.data.LocalBTNClass
+import com.unitech.boardtonote.data.BTNLocalClass
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.content_edit.*
@@ -28,7 +28,7 @@ class EditActivity : AppCompatActivity()
 {
     private val tag = "EditActivity"
 
-    private lateinit var btnClass: LocalBTNClass
+    private lateinit var btnClass: BTNLocalClass
 
     private lateinit var blockAdapter: RecyclerView.Adapter<*>
     private lateinit var blockManager: RecyclerView.LayoutManager
@@ -51,7 +51,7 @@ class EditActivity : AppCompatActivity()
             mainIntent.putExtra("snackBar", "An Error Occurred : file does not exist.")
             startActivity(mainIntent)
         }
-        btnClass = LocalBTNClass(this, dirName)
+        btnClass = BTNLocalClass(this, dirName)
         try
         {
             Edit_Title.setText(btnClass.dirName)

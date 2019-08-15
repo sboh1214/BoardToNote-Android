@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/Coor_Main"
     tools:context=".activity.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -20,11 +21,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/Recycler_Main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
@@ -37,12 +33,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </androidx.viewpager.widget.ViewPager>
-
-    <LinearLayout
-        android:id="@+id/Linear_Main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/Linear_Floating"

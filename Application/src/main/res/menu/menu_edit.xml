@@ -3,15 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.unitech.boardtonote.activity.EditActivity">
     <item
-        android:id="@+id/Menu_Share"
-        android:icon="@drawable/ic_share_dark"
-        android:tint="?attr/colorControlNormal"
+        android:id="@+id/Menu_Crop"
+        android:icon="@drawable/ic_crop_dark"
         android:title="@string/share"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/Menu_Crop"
-        android:icon="@drawable/ic_crop_dark"
-        android:tint="?attr/colorControlNormal"
+        android:id="@+id/Menu_Upload"
+        android:icon="@drawable/ic_cloud_dark"
+        android:title="@string/cloud"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/Menu_Share"
+        android:icon="@drawable/ic_share_dark"
         android:title="@string/share"
         app:showAsAction="ifRoom" />
 </menu>

@@ -13,20 +13,22 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.helper.SnackBarInterface
 
 class AccountDialog : DialogFragment()
 {
+    private lateinit var snackBarInterface: SnackBarInterface
     private val user = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+        snackBarInterface = context as SnackBarInterface
         Log.i(tag, "onCreate")
         Log.v(tag, "displayName : ${user?.displayName}")
         Log.v(tag, "email       : ${user?.email}")
         Log.v(tag, "uid         : ${user?.uid}")
         Log.v(tag, "photoUrl    : ${user?.photoUrl}")
-
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
@@ -59,6 +61,7 @@ class AccountDialog : DialogFragment()
                         .signOut(context!!)
                         .addOnCompleteListener {
                             Log.i(tag, "User account signed out.")
+                            snackBarInterface.snackBar("User account signed out.")
                         }
                 dismiss()
             }
@@ -67,6 +70,7 @@ class AccountDialog : DialogFragment()
                     if (task.isSuccessful)
                     {
                         Log.i(tag, "User account deleted.")
+                        snackBarInterface.snackBar("User account deleted.")
                         dismiss()
                     }
                 }
@@ -80,6 +84,7 @@ class AccountDialog : DialogFragment()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         dialog?.window?.setBackgroundDrawableResource(R.color.transparent)
+        dialog?.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
