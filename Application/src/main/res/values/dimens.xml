@@ -9,4 +9,5 @@
     <dimen name="cursor_width">2dp</dimen>
     <dimen name="card_radius">24dp</dimen>
     <dimen name="card_elevation">24dp</dimen>
+    <dimen name="account_width">320dp</dimen>
 </resources>

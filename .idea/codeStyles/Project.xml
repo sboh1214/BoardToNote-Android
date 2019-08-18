@@ -30,6 +30,7 @@
       <option name="IF_BRACE_FORCE" value="3" />
     </codeStyleSettings>
     <codeStyleSettings language="XML">
+      <option name="FORCE_REARRANGE_MODE" value="2" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
       </indentOptions>

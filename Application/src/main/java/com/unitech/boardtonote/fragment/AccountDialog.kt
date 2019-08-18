@@ -45,7 +45,7 @@ class AccountDialog : DialogFragment()
             val editUid = view.findViewById<AppCompatTextView>(R.id.Edit_Uid)
             if (AccountHelper.user != null)
             {
-                Glide.with(view).load(AccountHelper.photoUrl).into(imageAccount)
+                Glide.with(view).load(AccountHelper.photoUrl).placeholder(R.drawable.ic_account_gray).into(imageAccount)
                 editUserName.setText(AccountHelper.userName)
                 editEmail.setText(AccountHelper.email)
                 editUid.text = AccountHelper.uid
@@ -98,8 +98,16 @@ class AccountDialog : DialogFragment()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         dialog?.window?.setBackgroundDrawableResource(R.color.transparent)
-        dialog?.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onResume()
+    {
+        // Sets the height and the width of the DialogFragment
+        val width = activity!!.resources.getDimension(R.dimen.account_width).toInt()
+        val height = ViewGroup.LayoutParams.WRAP_CONTENT
+        dialog!!.window!!.setLayout(width, height)
+        super.onResume()
     }
 }

@@ -26,4 +26,5 @@
 
     <color name="light">#FFFFFF</color>
     <color name="dark">#000000</color>
+    <color name="darkGray">#AAAAAA</color>
 </resources>

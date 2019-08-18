@@ -153,14 +153,18 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
                 windowManager.defaultDisplay.getSize(size)
                 pictureView.setImageBitmap(btnClass.decodeOriPic(size.x, null))
             }
+            else if (resultCode == RESULT_CANCELED)
+            {
+                snackBar("User canceled cropping picture")
+            }
             else
             {
-                Snackbar.make(Coor_Edit, "Error raised while cropping picture", Snackbar.LENGTH_SHORT).show()
+                snackBar("Error raised while cropping picture")
             }
         }
         else
         {
-            Snackbar.make(Coor_Edit, "Unknown error raised", Snackbar.LENGTH_SHORT).show()
+            snackBar("Unknown error raised")
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

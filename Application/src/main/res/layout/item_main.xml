@@ -52,7 +52,6 @@
                 android:layout_margin="4dp"
                 app:srcCompat="@drawable/ic_phone_dark" />
         </LinearLayout>
-
         <androidx.cardview.widget.CardView
             android:id="@+id/Card_Image"
             android:layout_width="match_parent"
