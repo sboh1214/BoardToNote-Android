@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Application Name-->
     <string name="app_name">Board To Note</string>
+
+    <!--Theme Settings-->
+    <string name="Theme_Light">light</string>
+    <string name="Theme_Dark">dark</string>
+    <string name="Theme_Default">default</string>
+
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">2290284624342086</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb2290284624342086</string>
+
     <string name="request_permission">This sample needs camera permission.</string>
     <string name="camera_error">This device does not support Camera2 API.</string>
     <string name="title_activity_main">Study Note</string>
@@ -28,15 +39,6 @@
     <string name="get_picture">Get Picture</string>
     <string name="notes">Notes</string>
 
-    <!--Theme Settings-->
-    <string name="Theme_Light">light</string>
-    <string name="Theme_Dark">dark</string>
-    <string name="Theme_Default">default</string>
-
-    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
-    <string name="facebook_application_id" translatable="false">2290284624342086</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">fb2290284624342086</string>
-
     <string name="id">ID</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -46,4 +48,10 @@
     <string name="delete">Delete</string>
     <string name="sign_out">Sign Out</string>
     <string name="cloud">Cloud</string>
+    <string name="text_to_speech">Text To Speech</string>
+    <string name="sp">sp</string>
+    <string name="block_menu">Block Menu</string>
+    <string name="copy_to_clipboard">Copy to Clipboard</string>
+    <string name="more">More</string>
+    <string name="share_this_block">Share this block</string>
 </resources>

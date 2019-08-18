@@ -15,6 +15,7 @@ import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.adapter.ListCloudAdapter
 import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.ListCloudClass
+import com.unitech.boardtonote.helper.AccountHelper
 import kotlinx.android.synthetic.main.fragment_list.*
 
 class ListCloudFragment : Fragment()
@@ -27,12 +28,16 @@ class ListCloudFragment : Fragment()
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View
     {
-
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
+        if (AccountHelper.user == null)
+        {
+            //TODO
+        }
+
         cloudList = ListCloudClass(activity as Context)
         cloudList.getDirListAsync {
             cloudManager = LinearLayoutManager(activity)
@@ -61,8 +66,8 @@ class ListCloudFragment : Fragment()
 
     private fun itemMoreClick(btnClass: BTNCloudClass): Boolean
     {
-        val fragment = PopupCloudFragment(cloudAdapter, btnClass)
-        fragment.show(activity!!.supportFragmentManager, "fragment_popup")
+        val fragment = BottomCloudFragment(cloudAdapter, btnClass)
+        fragment.show(activity!!.supportFragmentManager, "bottom_list")
         return true
     }
 }

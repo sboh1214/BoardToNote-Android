@@ -7,7 +7,7 @@ import com.unitech.boardtonote.helper.ThemeHelper;
 
 public class BoardToNote extends Application
 {
-    String tag = "Application";
+    final String tag = "Application";
 
     public void onCreate()
     {

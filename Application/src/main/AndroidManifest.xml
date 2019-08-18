@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.unitech.boardtonote">
 
-    <uses-permission android:name="android.permission.CAMERA" />
     <application
         android:name=".BoardToNote"
         android:allowBackup="true"
@@ -13,6 +12,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/BTN"
+        android:resizeableActivity="true"
         tools:targetApi="n">
         <activity
             android:name=".activity.SettingsActivity"
@@ -30,9 +30,7 @@
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
             <meta-data
@@ -58,10 +56,10 @@
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="ocr" />
     </application>
-
-    <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

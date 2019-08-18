@@ -1,11 +1,18 @@
 package com.unitech.boardtonote.data
 
 import android.content.Context
+import android.net.Uri
+import com.google.firebase.storage.FirebaseStorage
+import com.unitech.boardtonote.helper.AccountHelper
 import java.io.File
 
 class BTNCloudClass(override val context: Context, override var dirName: String?) : BTNInterface
 {
     override val tag = "BTNCloudClass"
+
+    private val firebaseUrl = "gs://board-to-note.appspot.com/"
+
+    private var state: BTNInterface.State = BTNInterface.State.LOCAL
 
     init
     {
@@ -32,8 +39,38 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
     override val dirPath: String
         get() = "$parentDirPath/$dirName.btn"
 
-    override fun rename(name: String): Boolean
+    fun download(onSuccess: () -> Boolean, onFailure: () -> Boolean)
     {
-        return super.rename(name)
+        state = BTNInterface.State.DOWNLOAD
+        val reference = FirebaseStorage.getInstance(firebaseUrl).reference
+                .child("${AccountHelper.uid}/$dirName.btn")
+        val file = File(dirPath)
+        reference.getFile(file)
+                .addOnSuccessListener {
+                    state = BTNInterface.State.SYNC
+                    onSuccess()
+                }
+                .addOnFailureListener {
+                    state = BTNInterface.State.ERROR
+                    onFailure()
+                }
+    }
+
+    fun upload(onSuccess: () -> Boolean, onFailure: () -> Boolean)
+    {
+        state = BTNInterface.State.DOWNLOAD
+        val reference = FirebaseStorage.getInstance(firebaseUrl).reference
+                .child("${AccountHelper.uid}/$dirName.btn")
+        val uri = Uri.fromFile(File(dirPath))
+        reference.putFile(uri)
+                .addOnSuccessListener {
+                    state = BTNInterface.State.SYNC
+                    onSuccess()
+                }
+                .addOnFailureListener {
+                    state = BTNInterface.State.ERROR
+                    onFailure()
+                }
+        state = BTNInterface.State.SYNC
     }
 }

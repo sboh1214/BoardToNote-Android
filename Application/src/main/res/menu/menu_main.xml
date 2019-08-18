@@ -9,12 +9,12 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/Menu_Account"
-        android:icon="@drawable/ic_account_light"
+        android:icon="@drawable/ic_account_dark"
         android:title="@string/account"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/Menu_Setting"
-        android:icon="@drawable/ic_settings_light"
+        android:icon="@drawable/ic_settings_dark"
         android:title="@string/setting"
         app:showAsAction="ifRoom"/>
 </menu>

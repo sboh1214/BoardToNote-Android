@@ -9,7 +9,7 @@ import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.ListCloudClass
 import kotlinx.android.synthetic.main.item_main.view.*
 
-class ListCloudAdapter(val listCloudClass: ListCloudClass,
+class ListCloudAdapter(private val listCloudClass: ListCloudClass,
                        private val itemClick: (BTNCloudClass) -> Unit,
                        private val itemMoreClick: (BTNCloudClass, View) -> Boolean) :
         RecyclerView.Adapter<ListCloudAdapter.ListCloudHolder>()

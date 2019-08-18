@@ -12,10 +12,10 @@ import com.unitech.boardtonote.adapter.ListLocalAdapter
 import com.unitech.boardtonote.data.BTNLocalClass
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.activity_camera.*
+import kotlinx.android.synthetic.main.bottom_list.view.*
 import kotlinx.android.synthetic.main.dialog_rename.view.*
-import kotlinx.android.synthetic.main.fragment_popup.view.*
 
-class PopupLocalFragment(private val localAdapter: ListLocalAdapter, private val btnClass: BTNLocalClass) : BottomSheetDialogFragment()
+class BottomLocalFragment(private val localAdapter: ListLocalAdapter, private val btnClass: BTNLocalClass) : BottomSheetDialogFragment()
 {
     private lateinit var snackBarInterface: SnackBarInterface
 
@@ -27,7 +27,7 @@ class PopupLocalFragment(private val localAdapter: ListLocalAdapter, private val
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        val view = inflater.inflate(R.layout.fragment_popup, container, false)
+        val view = inflater.inflate(R.layout.bottom_list, container, false)
         view.Text_Title.text = btnClass.dirName
         view.Button_Rename.setOnClickListener {
             rename(btnClass)

@@ -17,20 +17,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.BlockAdapter
+import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.data.BTNLocalClass
+import com.unitech.boardtonote.fragment.BlockDialog
+import com.unitech.boardtonote.fragment.BottomBlockFragment
+import com.unitech.boardtonote.helper.SnackBarInterface
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.content_edit.*
 import java.io.File
 
-class EditActivity : AppCompatActivity()
+class EditActivity : AppCompatActivity(), SnackBarInterface
 {
     private val tag = "EditActivity"
 
-    private lateinit var btnClass: BTNLocalClass
+    lateinit var btnClass: BTNInterface
 
-    private lateinit var blockAdapter: RecyclerView.Adapter<*>
+    lateinit var blockAdapter: BlockAdapter
     private lateinit var blockManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -44,6 +48,8 @@ class EditActivity : AppCompatActivity()
 
         val intent = intent
         val dirName = intent.getStringExtra("dirName")
+        val location = intent.getIntExtra("location", 0)
+
         if (dirName == null)
         {
             Log.e(tag, "dirName does not exist $dirName")
@@ -51,7 +57,14 @@ class EditActivity : AppCompatActivity()
             mainIntent.putExtra("snackBar", "An Error Occurred : file does not exist.")
             startActivity(mainIntent)
         }
-        btnClass = BTNLocalClass(this, dirName)
+
+        btnClass = when (location)
+        {
+            BTNInterface.Location.LOCAL.value -> BTNLocalClass(this, dirName)
+            BTNInterface.Location.CLOUD.value -> BTNCloudClass(this, dirName)
+            else                              -> throw IllegalArgumentException()
+        }
+
         try
         {
             Edit_Title.setText(btnClass.dirName)
@@ -81,7 +94,7 @@ class EditActivity : AppCompatActivity()
             val size = Point()
             windowManager.defaultDisplay.getSize(size)
             pictureView.setImageBitmap(btnClass.decodeOriPic(size.x, null))
-            btnClass.asyncGetContent({ content -> onSuccess(content) }, { content -> onFailure(content) })
+            btnClass.asyncGetContent({ content -> onSuccess(content) }, { onFailure() })
         }
         catch (e: Exception)
         {
@@ -107,13 +120,15 @@ class EditActivity : AppCompatActivity()
         return true
     }
 
-    private fun onFailure(content: BTNInterface.ContentClass): Boolean
+    private fun onFailure(): Boolean
     {
         return true
     }
 
     private fun itemClick(btnClass: BTNInterface.BlockClass)
     {
+        BlockDialog().show(supportFragmentManager, "blockDialog")
+        return
     }
 
     private fun itemLongClick(btnClass: BTNInterface.BlockClass): Boolean
@@ -123,6 +138,8 @@ class EditActivity : AppCompatActivity()
 
     private fun itemMoreClick(btnClass: BTNInterface.BlockClass): Boolean
     {
+        val fragment = BottomBlockFragment(btnClass)
+        fragment.show(this@EditActivity.supportFragmentManager, "bottom_block")
         return true
     }
 
@@ -175,7 +192,7 @@ class EditActivity : AppCompatActivity()
                 options.apply {
                     setStatusBarColor(ContextCompat.getColor(this@EditActivity, R.color.primaryDark))
                     setToolbarColor(ContextCompat.getColor(this@EditActivity, R.color.accent))
-                    setToolbarWidgetColor(ContextCompat.getColor(this@EditActivity, R.color.accent))
+                    setToolbarWidgetColor(ContextCompat.getColor(this@EditActivity, R.color.dark))
                 }
 
                 UCrop.of(Uri.fromFile(File(btnClass.oriPicPath)), Uri.fromFile(File(btnClass.oriPicPath)))
@@ -192,5 +209,10 @@ class EditActivity : AppCompatActivity()
             }
             else              -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun snackBar(m: String)
+    {
+        Snackbar.make(Coor_Edit, m, Snackbar.LENGTH_SHORT).show()
     }
 }

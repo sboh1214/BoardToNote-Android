@@ -8,27 +8,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
-import com.google.firebase.auth.FirebaseAuth
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
 
 class AccountDialog : DialogFragment()
 {
     private lateinit var snackBarInterface: SnackBarInterface
-    private val user = FirebaseAuth.getInstance().currentUser
+    private lateinit var accountInterface: AccountHelper.AccountInterface
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         snackBarInterface = context as SnackBarInterface
+        accountInterface = context as AccountHelper.AccountInterface
         Log.i(tag, "onCreate")
-        Log.v(tag, "displayName : ${user?.displayName}")
-        Log.v(tag, "email       : ${user?.email}")
-        Log.v(tag, "uid         : ${user?.uid}")
-        Log.v(tag, "photoUrl    : ${user?.photoUrl}")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
@@ -38,21 +39,21 @@ class AccountDialog : DialogFragment()
             // Get the layout inflater
             val view = activity!!.layoutInflater.inflate(R.layout.dialog_account, null)
 
-            val imageAccount = view.findViewById<androidx.appcompat.widget.AppCompatImageButton>(R.id.Image_Account)
-            val editUserName = view.findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.Edit_UserName)
-            val editEmail = view.findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.Edit_Email)
-            val editUid = view.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.Edit_Uid)
-            if (user != null)
+            val imageAccount = view.findViewById<AppCompatImageButton>(R.id.Image_Account)
+            val editUserName = view.findViewById<AppCompatEditText>(R.id.Edit_UserName)
+            val editEmail = view.findViewById<AppCompatEditText>(R.id.Edit_Email)
+            val editUid = view.findViewById<AppCompatTextView>(R.id.Edit_Uid)
+            if (AccountHelper.user != null)
             {
-                Glide.with(view).load(user.photoUrl).into(imageAccount)
-                editUserName.setText(user.displayName)
-                editEmail.setText(user.email)
-                editUid.text = user.uid
+                Glide.with(view).load(AccountHelper.photoUrl).into(imageAccount)
+                editUserName.setText(AccountHelper.userName)
+                editEmail.setText(AccountHelper.email)
+                editUid.text = AccountHelper.uid
             }
 
-            val buttonPassword = view.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.Button_Password)
-            val buttonSignOut = view.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.Button_SignOut)
-            val buttonAccountDelete = view.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.Button_AccountDelete)
+            val buttonPassword = view.findViewById<AppCompatButton>(R.id.Button_Password)
+            val buttonSignOut = view.findViewById<AppCompatButton>(R.id.Button_SignOut)
+            val buttonAccountDelete = view.findViewById<AppCompatButton>(R.id.Button_AccountDelete)
             buttonPassword.setOnClickListener {
                 dismiss()
             }
@@ -60,20 +61,33 @@ class AccountDialog : DialogFragment()
                 AuthUI.getInstance()
                         .signOut(context!!)
                         .addOnCompleteListener {
+                            accountInterface.onSignOut()
                             Log.i(tag, "User account signed out.")
                             snackBarInterface.snackBar("User account signed out.")
                         }
                 dismiss()
             }
             buttonAccountDelete.setOnClickListener {
-                user?.delete()?.addOnCompleteListener { task ->
-                    if (task.isSuccessful)
-                    {
-                        Log.i(tag, "User account deleted.")
-                        snackBarInterface.snackBar("User account deleted.")
-                        dismiss()
-                    }
-                }
+                AuthUI.getInstance()
+                        .delete(context!!)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful)
+                            {
+                                accountInterface.onSignOut()
+                                Log.i(tag, "User account deleted.")
+                                snackBarInterface.snackBar("User account deleted.")
+                            }
+                            else
+                            {
+                                Log.i(tag, "User account deleted.")
+                                snackBarInterface.snackBar("User account deleted.")
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(tag, "Fail to delete user account")
+                            Log.d(tag, e.toString())
+                            snackBarInterface.snackBar("Fail to delete user account")
+                        }
                 dismiss()
             }
             builder.setView(view)

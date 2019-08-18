@@ -98,12 +98,22 @@ interface BTNInterface
 
     enum class Share(val value: Int)
     {
-        PDF(1), ZIP(2)
+        PDF(0), ZIP(1)
     }
 
     enum class Location(val value: Int)
     {
-        LOCAL(1), CLOUD(2)
+        LOCAL(0), CLOUD(1)
+    }
+
+    enum class State(val value: Int)
+    {
+        SYNC(0),
+        DOWNLOAD(1),
+        UPLOAD(2),
+        LOCAL(3),
+        ONLINE(4),
+        ERROR(5)
     }
 
     fun makeLocalDir(name: String?)
@@ -201,7 +211,7 @@ interface BTNInterface
         }
     }
 
-    fun asyncGetContent(onSuccess: (ContentClass) -> Boolean, onFailure: (ContentClass) -> Boolean)
+    fun asyncGetContent(onSuccess: (ContentClass) -> Boolean, onFailure: () -> Boolean)
     {
         if (!File(contentPath).exists())
         {
@@ -216,10 +226,11 @@ interface BTNInterface
         }
     }
 
-    private fun analyze(onSuccess: (ContentClass) -> Boolean, onFailure: (ContentClass) -> Boolean)
+    private fun analyze(onSuccess: (ContentClass) -> Boolean, onFailure: () -> Boolean)
     {
         if (oriPic == null)
         {
+            onFailure()
             return
         }
         val trace = FirebasePerformance.getInstance().newTrace("process_image")
@@ -238,7 +249,7 @@ interface BTNInterface
                 }
                 catch (e: Exception)
                 {
-                    onFailure(content)
+                    onFailure()
                     Log.e(tag, "analyze() Exception $dirName")
                 }
             }
@@ -392,5 +403,18 @@ interface BTNInterface
 
         }
         return File(zipPath)
+    }
+
+    companion object
+    {
+        fun toLocation(value: Int): Location
+        {
+            return when (value)
+            {
+                Location.LOCAL.value -> Location.LOCAL
+                Location.CLOUD.value -> Location.CLOUD
+                else                 -> throw IllegalArgumentException()
+            }
+        }
     }
 }

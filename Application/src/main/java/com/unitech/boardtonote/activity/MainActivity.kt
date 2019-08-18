@@ -2,12 +2,17 @@ package com.unitech.boardtonote.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
@@ -15,18 +20,21 @@ import com.google.firebase.auth.FirebaseAuth
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.MainPagerAdapter
+import com.unitech.boardtonote.data.BTNCloudClass
+import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.data.BTNLocalClass
 import com.unitech.boardtonote.fragment.AccountDialog
+import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), SnackBarInterface
+class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.AccountInterface
 {
     private val tag = "MainActivity"
 
     private var time: Long = 0
-    private lateinit var mainPagerAdapter: MainPagerAdapter
+    private var mainMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -42,11 +50,12 @@ class MainActivity : AppCompatActivity(), SnackBarInterface
             snackBar(message)
         }
 
-        mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
-        pager.adapter = mainPagerAdapter
+        pager.adapter = MainPagerAdapter(supportFragmentManager)
 
         Camera_Fab.setOnClickListener {
+            val location: Int = pager.currentItem
             val intent = Intent(this, CameraActivity::class.java)
+            intent.putExtra("location", location)
             startActivity(intent)
         }
 
@@ -62,9 +71,27 @@ class MainActivity : AppCompatActivity(), SnackBarInterface
         if (requestCode == Constant.requestImageGet && resultCode == RESULT_OK && data != null)
         {
             val uri = data.data!!
-            val btnClass = BTNLocalClass(this@MainActivity, null)
-            btnClass.copyOriPic(uri)
             val intent = Intent(this@MainActivity, EditActivity::class.java)
+            val btnClass: BTNInterface =
+                    when (pager.currentItem)
+                    {
+                        BTNInterface.Location.LOCAL.value ->
+                        {
+                            intent.putExtra("location", BTNInterface.Location.LOCAL.value)
+                            BTNLocalClass(this@MainActivity, null)
+                        }
+                        BTNInterface.Location.CLOUD.value ->
+                        {
+                            intent.putExtra("location", BTNInterface.Location.CLOUD.value)
+                            BTNCloudClass(this@MainActivity, null)
+                        }
+                        else                              ->
+                        {
+                            intent.putExtra("location", BTNInterface.Location.LOCAL.value)
+                            BTNLocalClass(this@MainActivity, null)
+                        }
+                    }
+            btnClass.copyOriPic(uri)
             intent.putExtra("dirName", btnClass.dirName)
             startActivity(intent)
         }
@@ -99,7 +126,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface
         {
             Log.v(tag, "Press Back Button 1 time $time")
             time = System.currentTimeMillis()
-            snackBar("Press back on more time to exit.")
+            snackBar("Press back one more time to exit.")
             return
         }
     }
@@ -108,6 +135,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface
     override fun onCreateOptionsMenu(menu: Menu?): Boolean
     {
         menuInflater.inflate(R.menu.menu_main, menu)
+        mainMenu = menu
         val searchView: SearchView = menu?.findItem(R.id.Menu_Search)?.actionView as SearchView
         searchView.queryHint = resources.getString(R.string.main_search_hint)
         val url = FirebaseAuth.getInstance().currentUser?.photoUrl
@@ -128,14 +156,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface
                 val account = FirebaseAuth.getInstance().currentUser
                 if (account == null)
                 {
-                    val providers = arrayListOf(
-                            AuthUI.IdpConfig.EmailBuilder().build(),
-                            AuthUI.IdpConfig.GoogleBuilder().build())
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setAvailableProviders(providers)
-                                    .build(), Constant.requestSignIn)
+                    signInUI()
                 }
                 else
                 {
@@ -153,9 +174,53 @@ class MainActivity : AppCompatActivity(), SnackBarInterface
         }
     }
 
-    private fun onSignIn()
+    override fun requestSignIn()
     {
+        signInUI()
+    }
+
+    override fun onSignIn()
+    {
+        super.onSignIn()
+        Glide.with(this)
+                .load(AccountHelper.photoUrl)
+                .apply(RequestOptions().circleCrop())
+                .into(object : CustomTarget<Drawable>()
+                {
+                    override fun onLoadCleared(placeholder: Drawable?)
+                    {
+
+                    }
+
+                    override fun onResourceReady(
+                            resource: Drawable,
+                            transition: Transition<in Drawable>?
+                    )
+                    {
+                        mainMenu?.findItem(R.id.Menu_Account)?.icon = resource
+                    }
+                })
         AccountDialog().show(supportFragmentManager, "accountDialog")
+    }
+
+    override fun onSignOut()
+    {
+        mainMenu?.findItem(R.id.Menu_Account)?.setIcon(R.drawable.ic_account_dark)
+    }
+
+    private fun signInUI()
+    {
+        val providers = arrayListOf(
+                AuthUI.IdpConfig.EmailBuilder().build(),
+                AuthUI.IdpConfig.GoogleBuilder().build(),
+                AuthUI.IdpConfig.FacebookBuilder().build())
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .setLogo(R.mipmap.ic_launcher)
+                        .setTheme(R.style.BTN_ActionBar)
+                        .build(), Constant.requestSignIn)
     }
 
     override fun snackBar(m: String)

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.data.BTNLocalClass
 import com.unitech.boardtonote.data.ListLocalClass
@@ -26,6 +27,7 @@ class ListLocalAdapter(val listLocalClass: ListLocalClass,
             itemView.Title_Text.text = btnClass.dirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
+            Glide.with(itemView).load(btnClass.oriPic).into(itemView.Image_Preview)
         }
     }
 

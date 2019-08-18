@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
@@ -31,7 +31,7 @@ class ListLocalFragment : Fragment()
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
-        localManager = LinearLayoutManager(activity as Context)
+        localManager = GridLayoutManager(activity as Context, 2)
         localAdapter = ListLocalAdapter(ListLocalClass(activity as Context),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass, _ -> itemMoreClick(btnClass) })
@@ -56,8 +56,8 @@ class ListLocalFragment : Fragment()
 
     private fun itemMoreClick(btnClass: BTNLocalClass): Boolean
     {
-        val fragment = PopupLocalFragment(localAdapter, btnClass)
-        fragment.show(activity!!.supportFragmentManager, "fragment_popup")
+        val fragment = BottomLocalFragment(localAdapter, btnClass)
+        fragment.show(activity!!.supportFragmentManager, "bottom_list")
         return true
     }
 }
