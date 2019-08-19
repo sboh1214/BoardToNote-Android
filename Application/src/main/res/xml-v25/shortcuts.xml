@@ -3,42 +3,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_camera_dark"
-        android:shortcutId="take"
-        android:shortcutLongLabel="@string/take_picture"
-        android:shortcutShortLabel="@string/take_picture">
+        android:icon="@drawable/shortcut_local"
+        android:shortcutId="local"
+        android:shortcutLongLabel="@string/shortcut_local"
+        android:shortcutShortLabel="@string/shortcut_local">
         <categories android:name="android.shortcut.conversation" />
         <intent
-            android:action="shortcut.take"
-            android:targetClass="com.unitech.boardtonote.activity.CameraActivity"
-            android:targetPackage="com.unitech.boardtonote" />
-    </shortcut>
-    <shortcut
-        android:enabled="true"
-        android:icon="@drawable/ic_collections_dark"
-        android:shortcutId="get"
-        android:shortcutLongLabel="@string/get_picture"
-        android:shortcutShortLabel="@string/get_picture">
-        <categories android:name="android.shortcut.conversation" />
-        <intent
-            android:action="shortcut.get"
-            android:targetClass="com.unitech.boardtonote.activity.CameraActivity"
-            android:targetPackage="com.unitech.boardtonote" />
-    </shortcut>
-    <shortcut
-        android:enabled="true"
-        android:icon="@drawable/ic_bookmark_dark"
-        android:shortcutId="list"
-        android:shortcutLongLabel="@string/notes"
-        android:shortcutShortLabel="@string/notes">
-        <categories android:name="android.shortcut.conversation" />
-        <intent
-            android:action="shortcut.list"
+            android:action="shortcut.local"
             android:targetClass="com.unitech.boardtonote.activity.MainActivity"
             android:targetPackage="com.unitech.boardtonote" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_cloud"
+        android:shortcutId="cloud"
+        android:shortcutLongLabel="@string/shortcut_cloud"
+        android:shortcutShortLabel="@string/shortcut_cloud">
+        <categories android:name="android.shortcut.conversation" />
         <intent
-            android:action="android.intent.action.MAIN"
-            android:targetClass="com.unitech.boardtonote.activity.CameraActivity"
+            android:action="shortcut.cloud"
+            android:targetClass="com.unitech.boardtonote.activity.MainActivity"
             android:targetPackage="com.unitech.boardtonote" />
     </shortcut>
 </shortcuts>

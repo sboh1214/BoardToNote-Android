@@ -12,7 +12,6 @@ import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.R
@@ -20,12 +19,11 @@ import com.unitech.boardtonote.adapter.BlockAdapter
 import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.data.BTNLocalClass
-import com.unitech.boardtonote.fragment.BlockDialog
-import com.unitech.boardtonote.fragment.BottomBlockFragment
+import com.unitech.boardtonote.fragment.BlockListFragment
 import com.unitech.boardtonote.helper.SnackBarInterface
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_edit.*
-import kotlinx.android.synthetic.main.content_edit.*
+import kotlinx.android.synthetic.main.fragment_edit.*
 import java.io.File
 
 class EditActivity : AppCompatActivity(), SnackBarInterface
@@ -35,7 +33,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
     lateinit var btnClass: BTNInterface
 
     lateinit var blockAdapter: BlockAdapter
-    private lateinit var blockManager: RecyclerView.LayoutManager
+    lateinit var blockManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -64,83 +62,34 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
             BTNInterface.Location.CLOUD.value -> BTNCloudClass(this, dirName)
             else                              -> throw IllegalArgumentException()
         }
-
-        try
-        {
-            Edit_Title.setText(btnClass.dirName)
-            Edit_Title.setOnKeyListener { _, code, event ->
-                if (event.action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER)
+        Edit_Title.setText(btnClass.dirName)
+        Edit_Title.setOnKeyListener { _, code, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER)
+            {
+                val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                input.hideSoftInputFromWindow(Edit_Title.windowToken, 0)
+                val success = btnClass.rename(Edit_Title.text.toString())
+                if (success)
                 {
-                    val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    input.hideSoftInputFromWindow(Edit_Title.windowToken, 0)
-                    val success = btnClass.rename(Edit_Title.text.toString())
-                    if (success)
-                    {
-                        true
-                    }
-                    else
-                    {
-                        Snackbar.make(Linear_Edit, "Fail to rename note", Snackbar.LENGTH_SHORT).show()
-                        Edit_Title.setText(btnClass.dirName)
-                        false
-                    }
+                    true
                 }
                 else
                 {
+                    snackBar("Fail to rename note")
+                    Edit_Title.setText(btnClass.dirName)
                     false
                 }
             }
-
-            val size = Point()
-            windowManager.defaultDisplay.getSize(size)
-            pictureView.setImageBitmap(btnClass.decodeOriPic(size.x, null))
-            btnClass.asyncGetContent({ content -> onSuccess(content) }, { onFailure() })
+            else
+            {
+                false
+            }
         }
-        catch (e: Exception)
-        {
-            Log.e(tag, "Can't open dirName : $dirName $e}")
-            Snackbar.make(Linear_Edit, "An Error Occurred : Can't open note.", Snackbar.LENGTH_SHORT).show()
-        }
-    }
 
-    private fun onSuccess(content: BTNInterface.ContentClass): Boolean
-    {
-        Log.i(tag, "Recycler_Edit Init")
-        blockManager = LinearLayoutManager(this)
-        blockAdapter = BlockAdapter(btnClass.content.blockList,
-                { btnClass -> itemClick(btnClass) },
-                { btnClass -> itemLongClick(btnClass) },
-                { btnClass, _ -> itemMoreClick(btnClass) })
-
-        Recycler_Edit.apply {
-            setHasFixedSize(true)
-            layoutManager = blockManager
-            adapter = blockAdapter
-        }
-        return true
-    }
-
-    private fun onFailure(): Boolean
-    {
-        return true
-    }
-
-    private fun itemClick(btnClass: BTNInterface.BlockClass)
-    {
-        BlockDialog().show(supportFragmentManager, "blockDialog")
-        return
-    }
-
-    private fun itemLongClick(btnClass: BTNInterface.BlockClass): Boolean
-    {
-        return true
-    }
-
-    private fun itemMoreClick(btnClass: BTNInterface.BlockClass): Boolean
-    {
-        val fragment = BottomBlockFragment(btnClass)
-        fragment.show(this@EditActivity.supportFragmentManager, "bottom_block")
-        return true
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.Frame_Edit, BlockListFragment())
+                .commit()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
@@ -151,7 +100,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
             {
                 val size = Point()
                 windowManager.defaultDisplay.getSize(size)
-                pictureView.setImageBitmap(btnClass.decodeOriPic(size.x, null))
+                Image_OriPic.setImageBitmap(btnClass.decodeOriPic(size.x, null))
             }
             else if (resultCode == RESULT_CANCELED)
             {

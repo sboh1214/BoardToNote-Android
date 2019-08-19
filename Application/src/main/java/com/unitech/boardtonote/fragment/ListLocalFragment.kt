@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.adapter.ListLocalAdapter
@@ -31,7 +31,7 @@ class ListLocalFragment : Fragment()
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
-        localManager = GridLayoutManager(activity as Context, 2)
+        localManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         localAdapter = ListLocalAdapter(ListLocalClass(activity as Context),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass, _ -> itemMoreClick(btnClass) })

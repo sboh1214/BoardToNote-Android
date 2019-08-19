@@ -51,6 +51,10 @@ interface BTNInterface
         {
             return try
             {
+                if (!File(oriPicPath).exists())
+                {
+                    return null
+                }
                 BitmapFactory.decodeFile(oriPicPath)
             }
             catch (e: Exception)
@@ -173,9 +177,20 @@ interface BTNInterface
         }
     }
 
+    fun getOriPicRatio(): Float?
+    {
+        if (oriPic == null)
+        {
+            return null
+        }
+        val height = oriPic!!.width.toFloat()
+        val width = oriPic!!.height.toFloat()
+        return (width / height)
+    }
+
     fun decodeOriPic(width: Int, height: Int?): Bitmap?
     {
-        try
+        return try
         {
             val options = BitmapFactory.Options()
             options.outWidth = width
@@ -183,14 +198,12 @@ interface BTNInterface
             {
                 options.outHeight = height
             }
-            return BitmapFactory.decodeFile(oriPicPath, options)
+            BitmapFactory.decodeFile(oriPicPath, options)
         }
         catch (e: Exception)
         {
-
+            null
         }
-
-        return null
     }
 
     fun rename(name: String): Boolean

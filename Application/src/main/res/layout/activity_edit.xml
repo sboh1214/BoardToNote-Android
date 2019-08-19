@@ -7,11 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".activity.EditActivity">
 
-    <LinearLayout
-        android:id="@+id/Linear_Edit"
+    <FrameLayout
+        android:id="@+id/Frame_Edit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -34,14 +34,13 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:hint="@string/edit_title"
+                    android:importantForAutofill="no"
                     android:inputType="text"
                     android:singleLine="true"
                     android:textCursorDrawable="@drawable/ic_cursor"
                     android:textSize="20sp" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_edit" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

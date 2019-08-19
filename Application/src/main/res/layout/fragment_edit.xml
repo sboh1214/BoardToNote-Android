@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/Constraint_Edit"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/pictureView"
+        android:id="@+id/Image_OriPic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="@string/original_picture"
-        app:layout_constraintBottom_toTopOf="@id/Recycler_Edit"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/Recycler_Edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,10 +22,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/Recycler_Edit"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pictureView" />
+        app:layout_constraintTop_toBottomOf="@id/Image_OriPic" />
 </androidx.constraintlayout.widget.ConstraintLayout>

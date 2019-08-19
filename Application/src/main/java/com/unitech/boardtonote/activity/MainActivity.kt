@@ -51,6 +51,20 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         }
 
         pager.adapter = MainPagerAdapter(supportFragmentManager)
+        if (intent.action == "shortcut.local")
+        {
+            Log.i(tag, "shortcut.local")
+            pager.currentItem = 0
+        }
+        else if (intent.action == "shortcut.cloud")
+        {
+            Log.i(tag, "shortcut.cloud")
+            pager.currentItem = 1
+        }
+        else
+        {
+            pager.currentItem = 0
+        }
 
         Camera_Fab.setOnClickListener {
             val location: Int = pager.currentItem

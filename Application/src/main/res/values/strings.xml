@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Application Name-->
+    <!-- Application Name -->
     <string name="app_name">Board To Note</string>
 
-    <!--Theme Settings-->
+    <!-- Theme Settings -->
     <string name="Theme_Light">light</string>
     <string name="Theme_Dark">dark</string>
     <string name="Theme_Default">default</string>
+
+    <!-- Shortcuts -->
+    <string name="shortcut_local">Local Notes</string>
+    <string name="shortcut_cloud">Cloud Notes</string>
 
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
     <string name="facebook_application_id" translatable="false">2290284624342086</string>
@@ -54,4 +58,5 @@
     <string name="copy_to_clipboard">Copy to Clipboard</string>
     <string name="more">More</string>
     <string name="share_this_block">Share this block</string>
+    <string name="edit">Edit</string>
 </resources>

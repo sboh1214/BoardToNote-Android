@@ -10,6 +10,8 @@ import com.unitech.boardtonote.fragment.ListLocalFragment
 class MainPagerAdapter(fm: FragmentManager)
     : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
 {
+    private var item: Int = 0
+
     override fun getCount(): Int = 2
 
     override fun getItem(position: Int): Fragment

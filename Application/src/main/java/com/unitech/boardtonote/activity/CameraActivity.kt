@@ -19,18 +19,6 @@ class CameraActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
 
-        if (intent.action == "shortcut.take")
-        {
-            Log.i(tag, "shortcut.take")
-        }
-        if (intent.action == "shortcut.get")
-        {
-            Log.i(tag, "shortcut.get")
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            startActivityForResult(intent, Constant.requestImageGet)
-        }
-
         if (Build.VERSION.SDK_INT < 21)
         {
             Log.w(tag, "Android SDK : " + Build.VERSION.SDK_INT.toString())

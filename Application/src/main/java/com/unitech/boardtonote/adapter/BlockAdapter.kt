@@ -1,6 +1,5 @@
 package com.unitech.boardtonote.adapter
 
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,7 @@ class BlockAdapter(private val blockList: ArrayList<BTNInterface.BlockClass>,
                    private val itemMoreClick: (BTNInterface.BlockClass, View) -> Boolean) :
         RecyclerView.Adapter<BlockAdapter.BlockHolder>()
 {
-    inner class BlockHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnCreateContextMenuListener
+    inner class BlockHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
         fun bind(blockClass: BTNInterface.BlockClass,
                  itemClick: (BTNInterface.BlockClass) -> Unit,
@@ -26,11 +25,6 @@ class BlockAdapter(private val blockList: ArrayList<BTNInterface.BlockClass>,
             itemView.setOnClickListener { itemClick(blockClass) }
             itemView.setOnLongClickListener { itemLongClick(blockClass) }
             itemView.Button_More.setOnClickListener { itemMoreClick(blockClass, itemView) }
-        }
-
-        override fun onCreateContextMenu(menu: ContextMenu?, view: View?, info: ContextMenu.ContextMenuInfo?)
-        {
-
         }
     }
 

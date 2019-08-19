@@ -28,7 +28,7 @@ class BottomBlockFragment(private val block: BTNInterface.BlockClass)
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
-        snackBarInterface = context as SnackBarInterface
+        snackBarInterface = activity as SnackBarInterface
         editActivity = activity as EditActivity
         tts = TextToSpeech(activity!!.applicationContext, TextToSpeech.OnInitListener {
             fun onInit(status: Int)
