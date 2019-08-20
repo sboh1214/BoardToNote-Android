@@ -52,11 +52,13 @@ class ListCloudClass(val context: Context)
         return
     }
 
-    fun moveFromLocal(localClass: BTNLocalClass): BTNCloudClass
+    fun moveFromLocal(localList: ListLocalClass, localClass: BTNLocalClass): BTNCloudClass
     {
-        File(localClass.dirPath).copyRecursively(File(localClass.dirPath), true)
-        File(localClass.dirPath).deleteRecursively()
         val cloudClass = BTNCloudClass(context, localClass.dirName)
+        File(localClass.dirPath).copyRecursively(File(cloudClass.dirPath), true)
+        File(localClass.dirPath).deleteRecursively()
+        File(localClass.dirPath).delete()
+        localList.delete(localClass)
         dirList.add(cloudClass)
         cloudClass.upload()
         return cloudClass

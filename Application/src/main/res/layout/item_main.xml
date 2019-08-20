@@ -25,36 +25,36 @@
             android:layout_margin="8dp"
             android:background="@color/transparent"
             android:contentDescription="@string/more_button"
-            app:layout_constraintBottom_toBottomOf="@id/Image_Location"
+            app:layout_constraintBottom_toBottomOf="@id/Title_Text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/Title_Text"
-            app:layout_constraintTop_toTopOf="@id/Image_Location"
+            app:layout_constraintTop_toTopOf="@id/Title_Text"
             app:srcCompat="@drawable/ic_more" />
 
         <TextView
             android:id="@+id/Title_Text"
             android:layout_width="0dp"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:maxLines="1"
+            android:maxLines="2"
             android:text="@string/error"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/Image_Location"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/Button_More"
             app:layout_constraintStart_toEndOf="@id/Image_Location"
-            app:layout_constraintTop_toTopOf="@id/Image_Location" />
+            app:layout_constraintTop_toBottomOf="@id/Card_Image" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/Image_Location"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/Title_Text"
             app:layout_constraintEnd_toStartOf="@id/Title_Text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Card_Image"
+            app:layout_constraintTop_toTopOf="@id/Title_Text"
             app:srcCompat="@drawable/ic_phone_dark" />
 
         <androidx.cardview.widget.CardView

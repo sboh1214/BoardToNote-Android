@@ -43,11 +43,11 @@ class ListLocalFragment : Fragment()
 
         val metrics = DisplayMetrics()
         mainActivity.windowManager.defaultDisplay.getMetrics(metrics)
-        val dp: Int = metrics.widthPixels / (metrics.densityDpi / 160)
+        val dp: Int = metrics.widthPixels / (metrics.densityDpi / 180)
 
         Recycler_Local.apply {
             setHasFixedSize(true)
-            layoutManager = StaggeredGridLayoutManager(dp / 240, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager = StaggeredGridLayoutManager(dp / 300, StaggeredGridLayoutManager.VERTICAL)
             adapter = mainActivity.localAdapter
             itemAnimator = DefaultItemAnimator()
         }

@@ -41,7 +41,7 @@ class BottomLocalFragment(private val localAdapter: ListLocalAdapter, private va
             dismiss()
         }
         view.Button_Upload.setOnClickListener {
-            val cloudClass = mainActivity.cloudList.moveFromLocal(btnClass)
+            val cloudClass = mainActivity.cloudList.moveFromLocal(mainActivity.localList, btnClass)
             mainActivity.localAdapter.notifyDataSetChanged()
             mainActivity.cloudAdapter.notifyDataSetChanged()
             dismiss()

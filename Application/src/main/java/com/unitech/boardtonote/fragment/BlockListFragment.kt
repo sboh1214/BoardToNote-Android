@@ -38,8 +38,8 @@ class BlockListFragment : Fragment()
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
         super.onActivityCreated(savedInstanceState)
-        loadImage()
         editActivity.btnClass.asyncGetContent({ content -> onSuccess(content) }, { onFailure() })
+        loadImage()
     }
 
     private fun onSuccess(content: BTNInterface.ContentClass): Boolean
@@ -82,10 +82,11 @@ class BlockListFragment : Fragment()
         val ratio = editActivity.btnClass.getOriPicRatio()
         if (ratio != null)
         {
-            val value = (point.x.toFloat() * ratio).toInt()
-            Image_OriPic.layoutParams.height = value
+            val imageHeight = (point.x.toFloat() * ratio).toInt()
+            Image_OriPic.layoutParams.height = imageHeight
             Image_OriPic.requestLayout()
         }
+
     }
 
     private fun itemLongClick(btnClass: BTNInterface.BlockClass): Boolean

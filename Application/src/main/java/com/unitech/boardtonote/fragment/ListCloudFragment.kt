@@ -2,6 +2,7 @@ package com.unitech.boardtonote.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,9 +45,14 @@ class ListCloudFragment : Fragment()
         mainActivity.cloudAdapter = ListCloudAdapter(mainActivity.cloudList,
                 { btnClass -> itemClick(btnClass) },
                 { btnClass, _ -> itemMoreClick(btnClass) })
+
+        val metrics = DisplayMetrics()
+        mainActivity.windowManager.defaultDisplay.getMetrics(metrics)
+        val dp: Int = metrics.widthPixels / (metrics.densityDpi / 180)
+
         Recycler_Cloud.apply {
             setHasFixedSize(true)
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager = StaggeredGridLayoutManager(dp / 300, StaggeredGridLayoutManager.VERTICAL)
             adapter = mainActivity.cloudAdapter
             itemAnimator = DefaultItemAnimator()
         }
