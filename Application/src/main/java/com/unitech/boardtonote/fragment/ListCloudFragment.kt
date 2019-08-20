@@ -41,8 +41,7 @@ class ListCloudFragment : Fragment()
         {
 
         }
-        mainActivity.cloudList = ListCloudClass(activity!!)
-        mainActivity.cloudAdapter = ListCloudAdapter(mainActivity.cloudList,
+        mainActivity.cloudAdapter = ListCloudAdapter(ListCloudClass(activity!!),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass, _ -> itemMoreClick(btnClass) })
 
@@ -55,6 +54,11 @@ class ListCloudFragment : Fragment()
             layoutManager = StaggeredGridLayoutManager(dp / 300, StaggeredGridLayoutManager.VERTICAL)
             adapter = mainActivity.cloudAdapter
             itemAnimator = DefaultItemAnimator()
+        }
+
+        mainActivity.cloudAdapter.listCloudClass.getDirListAsync {
+            mainActivity.cloudAdapter.notifyDataSetChanged()
+            true
         }
         super.onActivityCreated(savedInstanceState)
     }
@@ -69,7 +73,7 @@ class ListCloudFragment : Fragment()
 
     private fun itemMoreClick(btnClass: BTNCloudClass): Boolean
     {
-        val fragment = BottomCloudFragment(mainActivity.cloudAdapter, btnClass)
+        val fragment = BottomCloudFragment(btnClass)
         fragment.show(activity!!.supportFragmentManager, "bottom_local")
         return true
     }

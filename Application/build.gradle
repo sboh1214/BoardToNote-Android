@@ -61,10 +61,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:18.0.1'
     implementation 'com.google.firebase:firebase-storage:18.1.1'
 
-    implementation 'com.facebook.android:facebook-android-sdk:5.1.0'
+    implementation 'com.facebook.android:facebook-android-sdk:5.4.0'
     implementation 'com.github.yalantis:ucrop:2.2.3-native'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0.pr1'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-    implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '1.2.4'
+    implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.1.2'
 }

@@ -33,4 +33,11 @@
         <item name="android:layout_height">1dp</item>
     </style>
 
+    <style name="BTN.Dialog_Edit">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:layout_margin">24dp</item>
+    </style>
+
 </resources>

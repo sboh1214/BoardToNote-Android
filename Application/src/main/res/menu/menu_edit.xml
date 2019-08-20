@@ -8,8 +8,8 @@
         android:title="@string/share"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/Menu_Upload"
-        android:icon="@drawable/ic_cloud_dark"
+        android:id="@+id/Menu_LocationState"
+        android:icon="@drawable/ic_error_dark"
         android:title="@string/cloud"
         app:showAsAction="ifRoom" />
     <item

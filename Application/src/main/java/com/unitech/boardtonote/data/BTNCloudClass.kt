@@ -1,6 +1,8 @@
 package com.unitech.boardtonote.data
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
@@ -10,12 +12,25 @@ import java.io.File
 
 class BTNCloudClass(override val context: Context, override var dirName: String?) : BTNInterface
 {
+    override val location = BTNInterface.Location.CLOUD
+
+    override val oriPic: Bitmap? by lazy {
+        try
+        {
+            BitmapFactory.decodeFile(oriPicPath)
+        }
+        catch (e: Exception)
+        {
+            Log.e(tag, e.toString())
+            null
+        }
+    }
     override val tag = "BTNCloudClass"
 
     private val firebaseUrl = "gs://board-to-note.appspot.com/"
 
     var onState: (State) -> Boolean = { true }
-    private var state: State = State.UNKNOWN
+    var state: State = State.UNKNOWN
         set(value)
         {
             field = value
@@ -30,7 +45,8 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
         LOCAL(3),
         ONLINE(4),
         ERROR(5),
-        UNKNOWN(6)
+        UNKNOWN(6),
+        DELETE(7)
     }
 
     init
@@ -58,20 +74,29 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
     override val dirPath: String
         get() = "$parentDirPath/$dirName.btn"
 
-    fun download(onSuccess: () -> Boolean, onFailure: () -> Boolean)
+    fun download()
     {
         state = State.DOWNLOAD
+        Log.d(tag, "Downloading...")
         val reference = FirebaseStorage.getInstance(firebaseUrl).reference
                 .child("${AccountHelper.uid}/$dirName.btn")
         val file = File(dirPath)
         reference.getFile(file)
-                .addOnSuccessListener { state = State.SYNC }
-                .addOnFailureListener { state = State.ERROR }
+                .addOnSuccessListener {
+                    state = State.SYNC
+                    Log.d(tag, "Download Success")
+                }
+                .addOnFailureListener {
+                    state = State.ERROR
+                    Log.d(tag, "Download Failed")
+                    Log.e(tag, it.toString())
+                }
     }
 
     fun upload()
     {
         state = State.UPLOAD
+        Log.d(tag, "Uploading...")
         val reference = FirebaseStorage.getInstance(firebaseUrl).reference
                 .child("user/${AccountHelper.uid}/$dirName.btn")
         ZipHelper.zip(context, dirPath, dirName ?: "temp")
@@ -84,7 +109,24 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
                 .addOnFailureListener {
                     state = State.ERROR
                     Log.d(tag, "Upload Failed")
+                    Log.e(tag, it.toString())
                 }
-        state = State.SYNC
+    }
+
+    fun delete()
+    {
+        state = State.DELETE
+        Log.d(tag, "Deleting...")
+        val reference = FirebaseStorage.getInstance(firebaseUrl).reference
+                .child("user/${AccountHelper.uid}/$dirName.btn")
+        reference.delete()
+                .addOnCanceledListener {
+                    state = State.SYNC
+                    Log.d(tag, "Delete Success")
+                }
+                .addOnFailureListener {
+                    state = State.ERROR
+                    Log.d(tag, "Delete Failed")
+                }
     }
 }

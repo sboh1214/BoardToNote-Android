@@ -9,23 +9,23 @@ import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.MainActivity
-import com.unitech.boardtonote.adapter.ListLocalAdapter
 import com.unitech.boardtonote.data.BTNLocalClass
+import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.bottom_local.view.*
 import kotlinx.android.synthetic.main.dialog_rename.view.*
 
-class BottomLocalFragment(private val localAdapter: ListLocalAdapter, private val btnClass: BTNLocalClass) : BottomSheetDialogFragment()
+class BottomLocalFragment(private val btnClass: BTNLocalClass) : BottomSheetDialogFragment()
 {
-    private lateinit var mainActivity: MainActivity
+    private lateinit var mA: MainActivity
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
         snackBarInterface = context as SnackBarInterface
-        mainActivity = context as MainActivity
+        mA = context as MainActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
@@ -41,9 +41,15 @@ class BottomLocalFragment(private val localAdapter: ListLocalAdapter, private va
             dismiss()
         }
         view.Button_Upload.setOnClickListener {
-            val cloudClass = mainActivity.cloudList.moveFromLocal(mainActivity.localList, btnClass)
-            mainActivity.localAdapter.notifyDataSetChanged()
-            mainActivity.cloudAdapter.notifyDataSetChanged()
+            if (AccountHelper.user == null)
+            {
+                snackBarInterface.snackBar("You should log in first.")
+                dismiss()
+                return@setOnClickListener
+            }
+            mA.cloudAdapter.listCloudClass.moveFromLocal(mA.localAdapter.listLocalClass, btnClass)
+            mA.localAdapter.notifyDataSetChanged()
+            mA.cloudAdapter.notifyDataSetChanged()
             dismiss()
         }
         return view
@@ -59,8 +65,8 @@ class BottomLocalFragment(private val localAdapter: ListLocalAdapter, private va
             val view = layoutInflater.inflate(R.layout.dialog_rename, container, false)
             setPositiveButton("Rename") { _, _ ->
                 dstName = view.Edit_Rename.text.toString()
-                localAdapter.listLocalClass.rename(btnLocalClass, view.Edit_Rename.text.toString())
-                localAdapter.notifyDataSetChanged()
+                mA.localAdapter.listLocalClass.rename(btnLocalClass, view.Edit_Rename.text.toString())
+                mA.localAdapter.notifyDataSetChanged()
                 snackBarInterface.snackBar("$srcName renamed to $dstName")
             }
             setNegativeButton("Cancel") { _, _ ->
@@ -72,8 +78,8 @@ class BottomLocalFragment(private val localAdapter: ListLocalAdapter, private va
 
     fun delete(btnLocalClass: BTNLocalClass)
     {
-        localAdapter.listLocalClass.delete(btnLocalClass)
-        localAdapter.notifyDataSetChanged()
+        mA.localAdapter.listLocalClass.delete(btnLocalClass)
+        mA.localAdapter.notifyDataSetChanged()
         snackBarInterface.snackBar("${btnClass.dirName} deleted")
     }
 }

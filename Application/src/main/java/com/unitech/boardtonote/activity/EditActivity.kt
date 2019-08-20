@@ -12,7 +12,6 @@ import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.BlockAdapter
@@ -33,7 +32,8 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
     lateinit var btnClass: BTNInterface
 
     lateinit var blockAdapter: BlockAdapter
-    lateinit var blockManager: RecyclerView.LayoutManager
+
+    private lateinit var editMenu: Menu
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -127,6 +127,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
     override fun onCreateOptionsMenu(menu: Menu?): Boolean
     {
         menuInflater.inflate(R.menu.menu_edit, menu)
+        editMenu = menu!!
         return true
     }
 
@@ -161,6 +162,25 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
                 return true
             }
             else              -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun showLocationAndState(location: BTNInterface.Location, state: BTNCloudClass.State)
+    {
+        val menu = editMenu.findItem(R.id.Menu_LocationState)
+        when (location)
+        {
+            BTNInterface.Location.LOCAL -> menu.setIcon(R.drawable.ic_cloud_local_dark)
+            BTNInterface.Location.CLOUD ->
+            {
+                when (state)
+                {
+                    BTNCloudClass.State.SYNC     -> menu.setIcon(R.drawable.ic_cloud_dark)
+                    BTNCloudClass.State.DOWNLOAD -> menu.setIcon(R.drawable.ic_cloud_download_dark)
+                    BTNCloudClass.State.UPLOAD   -> menu.setIcon(R.drawable.ic_cloud_upload_dark)
+                    else                         -> menu.setIcon(R.drawable.ic_error_dark)
+                }
+            }
         }
     }
 

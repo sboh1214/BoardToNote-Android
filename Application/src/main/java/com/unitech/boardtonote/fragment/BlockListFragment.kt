@@ -45,7 +45,6 @@ class BlockListFragment : Fragment()
     private fun onSuccess(content: BTNInterface.ContentClass): Boolean
     {
         Log.i(tag, "Recycler_Edit Init")
-        editActivity.blockManager = LinearLayoutManager(editActivity)
         editActivity.blockAdapter = BlockAdapter(content.blockList,
                 { btnClass -> itemClick(btnClass) },
                 { btnClass -> itemLongClick(btnClass) },
@@ -53,7 +52,7 @@ class BlockListFragment : Fragment()
 
         Recycler_Edit.apply {
             setHasFixedSize(false)
-            layoutManager = editActivity.blockManager
+            layoutManager = LinearLayoutManager(editActivity)
             adapter = editActivity.blockAdapter
         }
         return true

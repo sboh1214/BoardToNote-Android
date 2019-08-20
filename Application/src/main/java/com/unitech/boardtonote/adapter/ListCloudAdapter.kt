@@ -10,7 +10,7 @@ import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.ListCloudClass
 import kotlinx.android.synthetic.main.item_main.view.*
 
-class ListCloudAdapter(private val listCloudClass: ListCloudClass,
+class ListCloudAdapter(val listCloudClass: ListCloudClass,
                        private val itemClick: (BTNCloudClass) -> Unit,
                        private val itemMoreClick: (BTNCloudClass, View) -> Boolean) :
         RecyclerView.Adapter<ListCloudAdapter.ListCloudHolder>()
@@ -28,32 +28,36 @@ class ListCloudAdapter(private val listCloudClass: ListCloudClass,
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
             Glide.with(itemView).load(btnClass.oriPic).into(itemView.Image_Preview)
-            btnClass.onState = { state ->
-                when (state)
-                {
-                    BTNCloudClass.State.UPLOAD   ->
-                    {
-                        itemView.Image_Location.setImageResource(R.drawable.ic_cloud_upload_dark)
-                        true
-                    }
-                    BTNCloudClass.State.DOWNLOAD ->
-                    {
-                        itemView.Image_Location.setImageResource(R.drawable.ic_cloud_download_dark)
-                        true
-                    }
-                    BTNCloudClass.State.SYNC     ->
-                    {
-                        itemView.Image_Location.setImageResource(R.drawable.ic_cloud_dark)
-                        true
-                    }
-                    else                         ->
-                    {
-                        itemView.Image_Location.setImageResource(R.drawable.ic_error_dark)
-                        false
-                    }
-                }
-            }
+            showState(itemView, btnClass.state)
+            btnClass.onState = { state -> showState(itemView, state) }
             return true
+        }
+    }
+
+    private fun showState(itemView: View, state: BTNCloudClass.State): Boolean
+    {
+        return when (state)
+        {
+            BTNCloudClass.State.UPLOAD   ->
+            {
+                itemView.Image_Location.setImageResource(R.drawable.ic_cloud_upload_dark)
+                true
+            }
+            BTNCloudClass.State.DOWNLOAD ->
+            {
+                itemView.Image_Location.setImageResource(R.drawable.ic_cloud_download_dark)
+                true
+            }
+            BTNCloudClass.State.SYNC     ->
+            {
+                itemView.Image_Location.setImageResource(R.drawable.ic_cloud_dark)
+                true
+            }
+            else                         ->
+            {
+                itemView.Image_Location.setImageResource(R.drawable.ic_error_dark)
+                false
+            }
         }
     }
 
@@ -65,10 +69,10 @@ class ListCloudAdapter(private val listCloudClass: ListCloudClass,
 
     override fun onBindViewHolder(holder: ListCloudHolder, position: Int)
     {
-        holder.bind(listCloudClass.dirList[position], itemClick, itemMoreClick)
+        holder.bind(listCloudClass.cloudList[position], itemClick, itemMoreClick)
     }
 
-    override fun getItemCount() = listCloudClass.dirList.size
+    override fun getItemCount() = listCloudClass.cloudList.size
 
     override fun getItemId(position: Int): Long = position.toLong()
 }

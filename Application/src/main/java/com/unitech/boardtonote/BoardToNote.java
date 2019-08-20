@@ -7,6 +7,7 @@ import com.unitech.boardtonote.helper.ThemeHelper;
 
 public class BoardToNote extends Application
 {
+    @SuppressWarnings("WeakerAccess")
     final String tag = "Application";
 
     public void onCreate()

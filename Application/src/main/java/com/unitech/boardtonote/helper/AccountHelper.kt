@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseUser
 object AccountHelper
 {
     var user: FirebaseUser? = null
+        get() = FirebaseAuth.getInstance().currentUser
 
     val userName: String?
         get() = user?.displayName

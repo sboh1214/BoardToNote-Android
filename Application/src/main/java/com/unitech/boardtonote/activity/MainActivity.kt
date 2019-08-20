@@ -22,7 +22,9 @@ import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.ListCloudAdapter
 import com.unitech.boardtonote.adapter.ListLocalAdapter
 import com.unitech.boardtonote.adapter.MainPagerAdapter
-import com.unitech.boardtonote.data.*
+import com.unitech.boardtonote.data.BTNCloudClass
+import com.unitech.boardtonote.data.BTNInterface
+import com.unitech.boardtonote.data.BTNLocalClass
 import com.unitech.boardtonote.fragment.AccountDialog
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
@@ -36,8 +38,6 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
     private var time: Long = 0
     private var mainMenu: Menu? = null
 
-    lateinit var localList: ListLocalClass
-    lateinit var cloudList: ListCloudClass
     lateinit var localAdapter: ListLocalAdapter
     lateinit var cloudAdapter: ListCloudAdapter
 
@@ -161,8 +161,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         mainMenu = menu
         val searchView: SearchView = menu?.findItem(R.id.Menu_Search)?.actionView as SearchView
         searchView.queryHint = resources.getString(R.string.main_search_hint)
-        val url = FirebaseAuth.getInstance().currentUser?.photoUrl
-
+        showProfile()
         return true
     }
 
@@ -205,24 +204,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
     override fun onSignIn()
     {
         super.onSignIn()
-        Glide.with(this)
-                .load(AccountHelper.photoUrl)
-                .apply(RequestOptions().circleCrop())
-                .into(object : CustomTarget<Drawable>()
-                {
-                    override fun onLoadCleared(placeholder: Drawable?)
-                    {
-
-                    }
-
-                    override fun onResourceReady(
-                            resource: Drawable,
-                            transition: Transition<in Drawable>?
-                    )
-                    {
-                        mainMenu?.findItem(R.id.Menu_Account)?.icon = resource
-                    }
-                })
+        showProfile()
         AccountDialog().show(supportFragmentManager, "accountDialog")
     }
 
@@ -244,6 +226,28 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
                         .setLogo(R.mipmap.ic_launcher)
                         .setTheme(R.style.BTN_ActionBar)
                         .build(), Constant.requestSignIn)
+    }
+
+    private fun showProfile()
+    {
+        Glide.with(this)
+                .load(AccountHelper.photoUrl)
+                .apply(RequestOptions().circleCrop())
+                .into(object : CustomTarget<Drawable>()
+                {
+                    override fun onLoadCleared(placeholder: Drawable?)
+                    {
+
+                    }
+
+                    override fun onResourceReady(
+                            resource: Drawable,
+                            transition: Transition<in Drawable>?
+                    )
+                    {
+                        mainMenu?.findItem(R.id.Menu_Account)?.icon = resource
+                    }
+                })
     }
 
     override fun snackBar(m: String)

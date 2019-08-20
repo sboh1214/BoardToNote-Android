@@ -8,22 +8,23 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.R
-import com.unitech.boardtonote.adapter.ListCloudAdapter
+import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.data.BTNCloudClass
-import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.bottom_local.view.*
-import kotlinx.android.synthetic.main.dialog_rename.*
+import kotlinx.android.synthetic.main.bottom_cloud.view.*
+import kotlinx.android.synthetic.main.dialog_rename.view.*
 
-class BottomCloudFragment(private val cloudAdapter: ListCloudAdapter, private val btnClass: BTNCloudClass) : BottomSheetDialogFragment()
+class BottomCloudFragment(private val btnClass: BTNCloudClass) : BottomSheetDialogFragment()
 {
+    private lateinit var mainActivity: MainActivity
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
         snackBarInterface = context as SnackBarInterface
+        mainActivity = context as MainActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
@@ -41,7 +42,7 @@ class BottomCloudFragment(private val cloudAdapter: ListCloudAdapter, private va
         return view
     }
 
-    private fun rename(btnClass: BTNInterface)
+    private fun rename(btnCloudClass: BTNCloudClass)
     {
         val srcName = btnClass.dirName
         var dstName: String?
@@ -50,9 +51,9 @@ class BottomCloudFragment(private val cloudAdapter: ListCloudAdapter, private va
             setTitle("Rename Note")
             val view = layoutInflater.inflate(R.layout.dialog_rename, container, false)
             setPositiveButton("Rename") { _, _ ->
-                dstName = Edit_Rename.toString()
-                //cloudAdapter.listCloudClass.rename(Edit_Rename.text.toString())
-                cloudAdapter.notifyDataSetChanged()
+                dstName = view.Edit_Rename.text.toString()
+                mainActivity.cloudAdapter.listCloudClass.rename(btnCloudClass, view.Edit_Rename.text.toString())
+                mainActivity.cloudAdapter.notifyDataSetChanged()
                 snackBarInterface.snackBar("$srcName renamed to $dstName")
             }
             setNegativeButton("Cancel") { _, _ ->
@@ -62,10 +63,10 @@ class BottomCloudFragment(private val cloudAdapter: ListCloudAdapter, private va
         }.show()
     }
 
-    fun delete(btnClass: BTNInterface)
+    fun delete(btnClass: BTNCloudClass)
     {
-        //cloudAdapter.listCloudClass.delete()
-        cloudAdapter.notifyDataSetChanged()
+        mainActivity.cloudAdapter.listCloudClass.delete(btnClass)
+        mainActivity.cloudAdapter.notifyDataSetChanged()
         snackBarInterface.snackBar("${btnClass.dirName} deleted")
     }
 }

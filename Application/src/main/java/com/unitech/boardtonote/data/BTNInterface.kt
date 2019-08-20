@@ -6,6 +6,7 @@ import android.graphics.*
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Build
+import android.os.ParcelFileDescriptor
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
@@ -20,6 +21,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.google.firebase.perf.FirebasePerformance
 import java.io.BufferedOutputStream
 import java.io.File
+import java.io.FileDescriptor
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,6 +29,7 @@ import java.util.zip.ZipOutputStream
 
 interface BTNInterface
 {
+    val location: Location
     val tag: String
 
     val context: Context
@@ -47,22 +50,6 @@ interface BTNInterface
         get() = "$dirPath.zip"
 
     val oriPic: Bitmap?
-        get()
-        {
-            return try
-            {
-                if (!File(oriPicPath).exists())
-                {
-                    return null
-                }
-                BitmapFactory.decodeFile(oriPicPath)
-            }
-            catch (e: Exception)
-            {
-                Log.e(tag, e.toString())
-                null
-            }
-        }
 
     var content: ContentClass
 
@@ -134,12 +121,14 @@ interface BTNInterface
     {
         return try
         {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val outputStream = FileOutputStream(File(oriPicPath))
-            inputStream?.copyTo(outputStream, DEFAULT_BUFFER_SIZE)
-            inputStream?.close()
-            outputStream.close()
-            true
+            val parcelFileDescriptor: ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
+                    ?: return false
+            val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
+            val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+            val stream = FileOutputStream(oriPicPath)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            parcelFileDescriptor.close()
+            return true
         }
         catch (e: Exception)
         {

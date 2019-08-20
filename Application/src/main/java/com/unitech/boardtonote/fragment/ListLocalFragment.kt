@@ -19,13 +19,12 @@ import kotlinx.android.synthetic.main.fragment_local.*
 
 class ListLocalFragment : Fragment()
 {
-    private lateinit var mainActivity: MainActivity
+    private lateinit var mA: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        mainActivity = context as MainActivity
-        mainActivity.localList = ListLocalClass(activity!!)
+        mA = context as MainActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -37,18 +36,18 @@ class ListLocalFragment : Fragment()
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
-        mainActivity.localAdapter = ListLocalAdapter(mainActivity.localList,
+        mA.localAdapter = ListLocalAdapter(ListLocalClass(activity!!),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass, _ -> itemMoreClick(btnClass) })
 
         val metrics = DisplayMetrics()
-        mainActivity.windowManager.defaultDisplay.getMetrics(metrics)
+        mA.windowManager.defaultDisplay.getMetrics(metrics)
         val dp: Int = metrics.widthPixels / (metrics.densityDpi / 180)
 
         Recycler_Local.apply {
             setHasFixedSize(true)
             layoutManager = StaggeredGridLayoutManager(dp / 300, StaggeredGridLayoutManager.VERTICAL)
-            adapter = mainActivity.localAdapter
+            adapter = mA.localAdapter
             itemAnimator = DefaultItemAnimator()
         }
 
@@ -65,7 +64,7 @@ class ListLocalFragment : Fragment()
 
     private fun itemMoreClick(btnClass: BTNLocalClass): Boolean
     {
-        val fragment = BottomLocalFragment(mainActivity.localAdapter, btnClass)
+        val fragment = BottomLocalFragment(btnClass)
         fragment.show(activity!!.supportFragmentManager, "bottom_local")
         return true
     }

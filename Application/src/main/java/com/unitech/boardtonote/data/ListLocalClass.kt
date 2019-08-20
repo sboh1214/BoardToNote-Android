@@ -52,6 +52,7 @@ class ListLocalClass(val context: Context)
         {
             val dir = File(btnLocalClass.dirPath)
             dir.deleteRecursively()
+            dir.delete()
             localList.remove(btnLocalClass)
             true
         }

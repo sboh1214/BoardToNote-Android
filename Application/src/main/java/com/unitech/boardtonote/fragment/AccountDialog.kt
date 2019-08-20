@@ -55,6 +55,7 @@ class AccountDialog : DialogFragment()
             val buttonSignOut = view.findViewById<AppCompatButton>(R.id.Button_SignOut)
             val buttonAccountDelete = view.findViewById<AppCompatButton>(R.id.Button_AccountDelete)
             buttonPassword.setOnClickListener {
+
                 dismiss()
             }
             buttonSignOut.setOnClickListener {

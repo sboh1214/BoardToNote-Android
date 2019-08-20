@@ -5,7 +5,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Card_Main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/recycler_margin"
@@ -55,7 +54,7 @@
             app:layout_constraintEnd_toStartOf="@id/Title_Text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/Title_Text"
-            app:srcCompat="@drawable/ic_phone_dark" />
+            app:srcCompat="@drawable/ic_cloud_local_dark" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/Card_Image"
