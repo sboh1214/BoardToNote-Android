@@ -78,26 +78,7 @@ interface BTNInterface
             val language: List<String?>,
             @JsonIgnore
             val frame: Rect?,
-            val lines: List<LineClass>
-    )
-
-    data class LineClass
-    (
-            val text: String,
-            val confidence: Float?,
-            val language: List<String?>,
-            @JsonIgnore
-            val frame: Rect?,
-            val lines: List<ElementClass>
-    )
-
-    data class ElementClass
-    (
-            val text: String,
-            val confidence: Float?,
-            val language: List<String?>,
-            @JsonIgnore
-            val frame: Rect?
+            var fontSize: Float
     )
 
     enum class Share(val value: Int)
@@ -108,16 +89,6 @@ interface BTNInterface
     enum class Location(val value: Int)
     {
         LOCAL(0), CLOUD(1)
-    }
-
-    enum class State(val value: Int)
-    {
-        SYNC(0),
-        DOWNLOAD(1),
-        UPLOAD(2),
-        LOCAL(3),
-        ONLINE(4),
-        ERROR(5)
     }
 
     fun makeLocalDir(name: String?)
@@ -281,21 +252,7 @@ interface BTNInterface
         for (b in visionText.textBlocks)
         {
             Log.v(tag, "saveVisionText block ${b.text.replace("\n", " ")}")
-            val lines = arrayListOf<LineClass>()
-            for (l in b.lines)
-            {
-                Log.v(tag, "saveVisionText line ${l.text.replace("\n", " ")}")
-                val elements = arrayListOf<ElementClass>()
-                for (e in l.elements)
-                {
-                    Log.v(tag, "saveVisionText block ${e.text.replace("\n", " ")}")
-                    val elementClass = ElementClass(e.text, e.confidence, e.recognizedLanguages.map { lang -> lang.languageCode }, e.boundingBox)
-                    elements.add(elementClass)
-                }
-                val lineClass = LineClass(l.text, l.confidence, l.recognizedLanguages.map { lang -> lang.languageCode }, l.boundingBox, elements)
-                lines.add(lineClass)
-            }
-            val blockClass = BlockClass(b.text, b.confidence, b.recognizedLanguages.map { lang -> lang.languageCode }, b.boundingBox, lines)
+            val blockClass = BlockClass(b.text, b.confidence, b.recognizedLanguages.map { lang -> lang.languageCode }, b.boundingBox, 14f)
             list.add(blockClass)
         }
         content = ContentClass(list)
@@ -416,6 +373,19 @@ interface BTNInterface
 
         }
         return File(zipPath)
+    }
+
+    fun saveContent()
+    {
+        try
+        {
+            val mapper = jacksonObjectMapper()
+            mapper.writerWithDefaultPrettyPrinter().writeValue(File(contentPath), content)
+        }
+        catch (e: Exception)
+        {
+            Log.e(tag, e.toString())
+        }
     }
 
     companion object

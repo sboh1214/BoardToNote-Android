@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.ListCloudClass
@@ -21,11 +22,38 @@ class ListCloudAdapter(private val listCloudClass: ListCloudClass,
 
     inner class ListCloudHolder(item: View) : RecyclerView.ViewHolder(item)
     {
-        fun bind(btnClass: BTNCloudClass, itemClick: (BTNCloudClass) -> Unit, itemMoreClick: (BTNCloudClass, View) -> Boolean)
+        fun bind(btnClass: BTNCloudClass, itemClick: (BTNCloudClass) -> Unit, itemMoreClick: (BTNCloudClass, View) -> Boolean): Boolean
         {
             itemView.Title_Text.text = btnClass.dirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
+            Glide.with(itemView).load(btnClass.oriPic).into(itemView.Image_Preview)
+            btnClass.onState = { state ->
+                when (state)
+                {
+                    BTNCloudClass.State.UPLOAD   ->
+                    {
+                        itemView.Image_Location.setImageResource(R.drawable.ic_cloud_upload_dark)
+                        true
+                    }
+                    BTNCloudClass.State.DOWNLOAD ->
+                    {
+                        itemView.Image_Location.setImageResource(R.drawable.ic_cloud_download_dark)
+                        true
+                    }
+                    BTNCloudClass.State.SYNC     ->
+                    {
+                        itemView.Image_Location.setImageResource(R.drawable.ic_cloud_dark)
+                        true
+                    }
+                    else                         ->
+                    {
+                        itemView.Image_Location.setImageResource(R.drawable.ic_error_dark)
+                        false
+                    }
+                }
+            }
+            return true
         }
     }
 

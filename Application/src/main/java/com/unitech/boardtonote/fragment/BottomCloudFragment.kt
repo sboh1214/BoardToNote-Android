@@ -13,7 +13,7 @@ import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.bottom_list.view.*
+import kotlinx.android.synthetic.main.bottom_local.view.*
 import kotlinx.android.synthetic.main.dialog_rename.*
 
 class BottomCloudFragment(private val cloudAdapter: ListCloudAdapter, private val btnClass: BTNCloudClass) : BottomSheetDialogFragment()
@@ -28,7 +28,7 @@ class BottomCloudFragment(private val cloudAdapter: ListCloudAdapter, private va
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        val view = inflater.inflate(R.layout.bottom_block, container, false)
+        val view = inflater.inflate(R.layout.bottom_cloud, container, false)
         view.Text_Title.text = btnClass.dirName
         view.Button_Rename.setOnClickListener {
             rename(btnClass)

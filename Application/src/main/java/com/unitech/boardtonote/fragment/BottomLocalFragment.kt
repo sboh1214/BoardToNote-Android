@@ -8,26 +8,29 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.adapter.ListLocalAdapter
 import com.unitech.boardtonote.data.BTNLocalClass
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.bottom_list.view.*
+import kotlinx.android.synthetic.main.bottom_local.view.*
 import kotlinx.android.synthetic.main.dialog_rename.view.*
 
 class BottomLocalFragment(private val localAdapter: ListLocalAdapter, private val btnClass: BTNLocalClass) : BottomSheetDialogFragment()
 {
+    private lateinit var mainActivity: MainActivity
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
         snackBarInterface = context as SnackBarInterface
+        mainActivity = context as MainActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        val view = inflater.inflate(R.layout.bottom_list, container, false)
+        val view = inflater.inflate(R.layout.bottom_local, container, false)
         view.Text_Title.text = btnClass.dirName
         view.Button_Rename.setOnClickListener {
             rename(btnClass)
@@ -35,6 +38,12 @@ class BottomLocalFragment(private val localAdapter: ListLocalAdapter, private va
         }
         view.Button_Delete.setOnClickListener {
             delete(btnClass)
+            dismiss()
+        }
+        view.Button_Upload.setOnClickListener {
+            val cloudClass = mainActivity.cloudList.moveFromLocal(btnClass)
+            mainActivity.localAdapter.notifyDataSetChanged()
+            mainActivity.cloudAdapter.notifyDataSetChanged()
             dismiss()
         }
         return view

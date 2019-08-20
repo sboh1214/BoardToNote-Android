@@ -52,6 +52,7 @@ class BlockListFragment : Fragment()
                 { btnClass, _ -> itemMoreClick(btnClass) })
 
         Recycler_Edit.apply {
+            setHasFixedSize(false)
             layoutManager = editActivity.blockManager
             adapter = editActivity.blockAdapter
         }
@@ -60,24 +61,17 @@ class BlockListFragment : Fragment()
 
     private fun onFailure(): Boolean
     {
+        Log.w(tag, "Recycler_Edit Error")
         return true
     }
 
-    private fun itemClick(btnClass: BTNInterface.BlockClass)
+    private fun itemClick(blockClass: BTNInterface.BlockClass)
     {
-        BlockDialog().show(editActivity.supportFragmentManager, "blockDialog")
+        editActivity.supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.Frame_Edit, BlockFragment(blockClass))
+                .commit()
         return
-    }
-
-    private fun itemLongClick(btnClass: BTNInterface.BlockClass): Boolean
-    {
-        return true
-    }
-
-    private fun itemMoreClick(btnClass: BTNInterface.BlockClass): Boolean
-    {
-        BottomBlockFragment(btnClass).show(editActivity.supportFragmentManager, "bottom_block")
-        return true
     }
 
     private fun loadImage()
@@ -92,5 +86,16 @@ class BlockListFragment : Fragment()
             Image_OriPic.layoutParams.height = value
             Image_OriPic.requestLayout()
         }
+    }
+
+    private fun itemLongClick(btnClass: BTNInterface.BlockClass): Boolean
+    {
+        return true
+    }
+
+    private fun itemMoreClick(btnClass: BTNInterface.BlockClass): Boolean
+    {
+        BottomBlockFragment(btnClass).show(editActivity.supportFragmentManager, "bottom_block")
+        return true
     }
 }

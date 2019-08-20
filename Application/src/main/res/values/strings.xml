@@ -59,4 +59,5 @@
     <string name="more">More</string>
     <string name="share_this_block">Share this block</string>
     <string name="edit">Edit</string>
+    <string name="upload_to_cloud">Upload to Cloud</string>
 </resources>

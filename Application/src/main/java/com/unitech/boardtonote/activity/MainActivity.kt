@@ -19,10 +19,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.adapter.ListCloudAdapter
+import com.unitech.boardtonote.adapter.ListLocalAdapter
 import com.unitech.boardtonote.adapter.MainPagerAdapter
-import com.unitech.boardtonote.data.BTNCloudClass
-import com.unitech.boardtonote.data.BTNInterface
-import com.unitech.boardtonote.data.BTNLocalClass
+import com.unitech.boardtonote.data.*
 import com.unitech.boardtonote.fragment.AccountDialog
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
@@ -35,6 +35,11 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
 
     private var time: Long = 0
     private var mainMenu: Menu? = null
+
+    lateinit var localList: ListLocalClass
+    lateinit var cloudList: ListCloudClass
+    lateinit var localAdapter: ListLocalAdapter
+    lateinit var cloudAdapter: ListCloudAdapter
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -51,19 +56,23 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         }
 
         pager.adapter = MainPagerAdapter(supportFragmentManager)
-        if (intent.action == "shortcut.local")
+        when
         {
-            Log.i(tag, "shortcut.local")
-            pager.currentItem = 0
-        }
-        else if (intent.action == "shortcut.cloud")
-        {
-            Log.i(tag, "shortcut.cloud")
-            pager.currentItem = 1
-        }
-        else
-        {
-            pager.currentItem = 0
+            intent.action == "shortcut.local" ->
+            {
+                Log.i(tag, "shortcut.local")
+                pager.currentItem = 0
+            }
+            intent.action == "shortcut.cloud" ->
+            {
+                Log.i(tag, "shortcut.cloud")
+                pager.currentItem = 1
+            }
+            else                              ->
+            {
+                Log.i(tag, "not shortcut")
+                pager.currentItem = 0
+            }
         }
 
         Camera_Fab.setOnClickListener {

@@ -25,7 +25,6 @@ class BTNLocalClass(override val context: Context, override var dirName: String?
         {
             makeLocalDir(dirName)
         }
-
     }
 
     override lateinit var content: BTNInterface.ContentClass

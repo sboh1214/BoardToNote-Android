@@ -1,6 +1,5 @@
 package com.unitech.boardtonote.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,50 +7,48 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
+import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.adapter.ListCloudAdapter
 import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.ListCloudClass
 import com.unitech.boardtonote.helper.AccountHelper
-import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.android.synthetic.main.fragment_cloud.*
 
 class ListCloudFragment : Fragment()
 {
-    private lateinit var cloudAdapter: ListCloudAdapter
-    private lateinit var cloudManager: RecyclerView.LayoutManager
-    private lateinit var cloudList: ListCloudClass
+    private lateinit var mainActivity: MainActivity
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+        mainActivity = activity as MainActivity
+    }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View
     {
-        return inflater.inflate(R.layout.fragment_list, container, false)
+        return inflater.inflate(R.layout.fragment_cloud, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
         if (AccountHelper.user == null)
         {
-            //TODO
+
         }
-
-        cloudList = ListCloudClass(activity as Context)
-        cloudList.getDirListAsync {
-            cloudManager = LinearLayoutManager(activity)
-            cloudAdapter = ListCloudAdapter(ListCloudClass(activity as Context),
-                    { btnClass -> itemClick(btnClass) },
-                    { btnClass, _ -> itemMoreClick(btnClass) })
-
-            Recycler_Main.apply {
-                setHasFixedSize(true)
-                layoutManager = cloudManager
-                adapter = cloudAdapter
-                itemAnimator = DefaultItemAnimator()
-            }
-            true
+        mainActivity.cloudList = ListCloudClass(activity!!)
+        mainActivity.cloudAdapter = ListCloudAdapter(mainActivity.cloudList,
+                { btnClass -> itemClick(btnClass) },
+                { btnClass, _ -> itemMoreClick(btnClass) })
+        Recycler_Cloud.apply {
+            setHasFixedSize(true)
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            adapter = mainActivity.cloudAdapter
+            itemAnimator = DefaultItemAnimator()
         }
         super.onActivityCreated(savedInstanceState)
     }
@@ -66,8 +63,8 @@ class ListCloudFragment : Fragment()
 
     private fun itemMoreClick(btnClass: BTNCloudClass): Boolean
     {
-        val fragment = BottomCloudFragment(cloudAdapter, btnClass)
-        fragment.show(activity!!.supportFragmentManager, "bottom_list")
+        val fragment = BottomCloudFragment(mainActivity.cloudAdapter, btnClass)
+        fragment.show(activity!!.supportFragmentManager, "bottom_local")
         return true
     }
 }
