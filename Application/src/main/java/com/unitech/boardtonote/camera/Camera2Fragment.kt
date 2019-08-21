@@ -26,10 +26,10 @@ import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.activity.MainActivity
-import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.data.BTNLocalClass
 import com.unitech.boardtonote.fragment.ConfirmationDialog
 import com.unitech.boardtonote.fragment.ErrorDialog
+import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -51,25 +51,44 @@ class CameraFragment : Fragment(), View.OnClickListener,
     {
         when (view.id)
         {
-            R.id.Picture_Button ->
+            R.id.Button_Picture ->
             {
                 val dirName = captureStillPicture()
                 Log.i(TAG, "Captured picture with dirName $dirName")
                 val intent = Intent(context, EditActivity::class.java)
                 intent.putExtra("dirName", dirName)
-                intent.putExtra("location", BTNInterface.Location.LOCAL.value)
+                intent.putExtra("location", Constant.locationLocal)
                 startActivity(intent)
             }
-            R.id.Note_Button    ->
+            R.id.Button_Note    ->
             {
                 val intent = Intent(context, MainActivity::class.java)
                 startActivity(intent)
             }
-            R.id.Gallery_Button ->
+            R.id.Button_Gallery ->
             {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.type = "image/*"
                 activity!!.startActivityForResult(intent, Constant.requestImageGet)
+            }
+        }
+    }
+
+    private fun rotate(orientation: Int)
+    {
+        when (orientation)
+        {
+            Constant.orientationLandscape ->
+            {
+                Button_Gallery.rotation = 90F
+                Button_Note.rotation = 90F
+                Button_Picture.rotation = 90F
+            }
+            Constant.orientationPortrait  ->
+            {
+                Button_Gallery.rotation = 0F
+                Button_Note.rotation = 0F
+                Button_Picture.rotation = 0F
             }
         }
     }
@@ -300,9 +319,9 @@ class CameraFragment : Fragment(), View.OnClickListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
-        view.findViewById<View>(R.id.Picture_Button).setOnClickListener(this)
-        view.findViewById<View>(R.id.Note_Button).setOnClickListener(this)
-        view.findViewById<View>(R.id.Gallery_Button).setOnClickListener(this)
+        view.findViewById<View>(R.id.Button_Picture).setOnClickListener(this)
+        view.findViewById<View>(R.id.Button_Note).setOnClickListener(this)
+        view.findViewById<View>(R.id.Button_Gallery).setOnClickListener(this)
         textureView = view.findViewById(R.id.texture)
     }
 

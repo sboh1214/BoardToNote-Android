@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
@@ -27,6 +28,9 @@ class CameraActivity : AppCompatActivity()
             startActivity(intent)
             return
         }
+
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
         setContentView(R.layout.activity_camera)
         savedInstanceState ?: supportFragmentManager.beginTransaction()
                 .replace(R.id.container, CameraFragment.newInstance())

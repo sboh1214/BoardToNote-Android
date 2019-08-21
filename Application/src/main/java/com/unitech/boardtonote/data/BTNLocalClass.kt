@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import com.unitech.boardtonote.Constant
 import java.io.File
 
 /**
@@ -11,7 +12,7 @@ import java.io.File
  */
 class BTNLocalClass(override val context: Context, override var dirName: String?) : BTNInterface
 {
-    override val location = BTNInterface.Location.LOCAL
+    override val location = Constant.locationLocal
 
     override val oriPic: Bitmap? by lazy {
         try

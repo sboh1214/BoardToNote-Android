@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.activity.MainActivity
@@ -58,6 +59,7 @@ class ListLocalFragment : Fragment()
     {
         val intent = Intent(activity, EditActivity::class.java)
         intent.putExtra("dirName", btnClass.dirName)
+        intent.putExtra("location", Constant.locationLocal)
         startActivity(intent)
         return
     }

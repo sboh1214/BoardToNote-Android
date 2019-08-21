@@ -8,7 +8,7 @@ import java.io.File
 
 class ListCloudClass(val context: Context)
 {
-    private val cloudPath = "${context.filesDir.absolutePath}/cloud"
+    private val cloudPath by lazy { "${context.filesDir.absolutePath}/cloud" }
     val cloudList: ArrayList<BTNCloudClass> by lazy { getDirList(context) }
     val tag = "ListCloudClass"
 

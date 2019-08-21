@@ -3,7 +3,6 @@ package com.unitech.boardtonote.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.fragment.ListCloudFragment
 import com.unitech.boardtonote.fragment.ListLocalFragment
 
@@ -18,9 +17,9 @@ class MainPagerAdapter(fm: FragmentManager)
     {
         return when (position)
         {
-            BTNInterface.Location.LOCAL.value -> ListLocalFragment()
-            BTNInterface.Location.CLOUD.value -> ListCloudFragment()
-            else                              -> throw IllegalArgumentException("MainPagerAdapter $position")
+            0    -> ListLocalFragment()
+            1    -> ListCloudFragment()
+            else -> throw IllegalArgumentException("MainPagerAdapter $position")
         }
     }
 
@@ -28,9 +27,9 @@ class MainPagerAdapter(fm: FragmentManager)
     {
         return when (position)
         {
-            BTNInterface.Location.LOCAL.value -> "Local"
-            BTNInterface.Location.CLOUD.value -> "Cloud"
-            else                              -> throw IllegalArgumentException("MainPagerAdapter $position")
+            0    -> "Local"
+            1    -> "Cloud"
+            else -> throw IllegalArgumentException("MainPagerAdapter $position")
         }
     }
 }

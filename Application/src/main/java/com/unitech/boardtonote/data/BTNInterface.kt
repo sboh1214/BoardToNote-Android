@@ -19,6 +19,7 @@ import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.google.firebase.perf.FirebasePerformance
+import com.unitech.boardtonote.Constant
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileDescriptor
@@ -29,7 +30,7 @@ import java.util.zip.ZipOutputStream
 
 interface BTNInterface
 {
-    val location: Location
+    val location: Int
     val tag: String
 
     val context: Context
@@ -67,16 +68,6 @@ interface BTNInterface
             val frame: Rect?,
             var fontSize: Float
     )
-
-    enum class Share(val value: Int)
-    {
-        PDF(0), ZIP(1)
-    }
-
-    enum class Location(val value: Int)
-    {
-        LOCAL(0), CLOUD(1)
-    }
 
     fun makeLocalDir(name: String?)
     {
@@ -256,11 +247,11 @@ interface BTNInterface
         }
     }
 
-    fun share(share: Share): Intent
+    fun share(share: Int): Intent?
     {
-        when (share)
+        return when (share)
         {
-            Share.PDF ->
+            Constant.sharePdf ->
             {
                 val file = exportPdf()
                 val uri = if (Build.VERSION.SDK_INT >= 24)
@@ -279,9 +270,9 @@ interface BTNInterface
                     type = "application/*"
                     action = Intent.ACTION_SEND
                 }
-                return intent
+                intent
             }
-            Share.ZIP ->
+            Constant.shareZip ->
             {
                 val file = exportZip()
                 val intent = Intent()
@@ -291,10 +282,13 @@ interface BTNInterface
                     type = "application/*"
                     action = Intent.ACTION_SEND
                 }
-                return intent
+                intent
+            }
+            else              ->
+            {
+                null
             }
         }
-
     }
 
     private fun exportPdf(): File
@@ -374,19 +368,6 @@ interface BTNInterface
         catch (e: Exception)
         {
             Log.e(tag, e.toString())
-        }
-    }
-
-    companion object
-    {
-        fun toLocation(value: Int): Location
-        {
-            return when (value)
-            {
-                Location.LOCAL.value -> Location.LOCAL
-                Location.CLOUD.value -> Location.CLOUD
-                else                 -> throw IllegalArgumentException()
-            }
         }
     }
 }

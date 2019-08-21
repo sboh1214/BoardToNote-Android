@@ -1,6 +1,7 @@
 package com.unitech.boardtonote.fragment
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -42,7 +43,14 @@ class BlockListFragment : Fragment()
     {
         super.onActivityCreated(savedInstanceState)
         eA.btnClass.asyncGetContent({ content -> onSuccess(content) }, { onFailure() })
-        loadImage()
+        if (eA.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            render(Orientation.LANDSCAPE)
+        }
+        else
+        {
+            render(Orientation.PORTRAIT)
+        }
     }
 
     private fun onSuccess(content: BTNInterface.ContentClass): Boolean
@@ -76,30 +84,6 @@ class BlockListFragment : Fragment()
         return
     }
 
-    private fun loadImage()
-    {
-        val point = Point()
-        eA.windowManager.defaultDisplay.getSize(point)
-        Image_OriPic.setImageBitmap(eA.btnClass.decodeOriPic(point.x, null))
-        val ratio = eA.btnClass.getOriPicRatio()
-        if (ratio != null)
-        {
-            val imageHeight = (point.x.toFloat() * ratio).toInt()
-            Image_OriPic.layoutParams.height = imageHeight
-            Image_OriPic.requestLayout()
-            val displayMetrics = DisplayMetrics()
-            eA.windowManager.defaultDisplay.getMetrics(displayMetrics)
-            val height = displayMetrics.heightPixels
-            val param = Recycler_Edit.layoutParams
-            val type = TypedValue()
-            eA.theme.resolveAttribute(R.attr.actionBarSize, type, true)
-            val actionBarHeight = TypedValue.complexToDimensionPixelSize(type.data, eA.resources.displayMetrics)
-            param.height = height - imageHeight - actionBarHeight
-            Recycler_Edit.layoutParams = param
-        }
-
-    }
-
     private fun itemLongClick(btnClass: BTNInterface.BlockClass): Boolean
     {
         return true
@@ -109,5 +93,49 @@ class BlockListFragment : Fragment()
     {
         BottomBlockFragment(btnClass).show(eA.supportFragmentManager, "bottom_block")
         return true
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration)
+    {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            render(Orientation.LANDSCAPE)
+        }
+        else
+        {
+            render(Orientation.PORTRAIT)
+        }
+    }
+
+    private fun render(orientation: Orientation)
+    {
+        Image_OriPic.setImageBitmap(eA.btnClass.oriPic)
+        if (orientation == Orientation.PORTRAIT)
+        {
+            val ratio = eA.btnClass.getOriPicRatio()
+            if (ratio != null)
+            {
+                val point = Point()
+                eA.windowManager.defaultDisplay.getSize(point)
+                val imageHeight = (point.x.toFloat() * ratio).toInt()
+                Image_OriPic.layoutParams.height = imageHeight
+                Image_OriPic.requestLayout()
+                val displayMetrics = DisplayMetrics()
+                eA.windowManager.defaultDisplay.getMetrics(displayMetrics)
+                val height = displayMetrics.heightPixels
+                val param = Recycler_Edit.layoutParams
+                val type = TypedValue()
+                eA.theme.resolveAttribute(R.attr.actionBarSize, type, true)
+                val actionBarHeight = TypedValue.complexToDimensionPixelSize(type.data, eA.resources.displayMetrics)
+                param.height = height - imageHeight - actionBarHeight
+                Recycler_Edit.layoutParams = param
+            }
+        }
+    }
+
+    enum class Orientation
+    {
+        LANDSCAPE, PORTRAIT
     }
 }

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.ListCloudClass
@@ -27,33 +28,33 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
             itemView.Title_Text.text = btnClass.dirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
-            Glide.with(itemView).load(btnClass.oriPic).into(itemView.Image_Preview)
+            Glide.with(itemView).load(btnClass.oriPic).skipMemoryCache(true).into(itemView.Image_Preview)
             showState(itemView, btnClass.state)
             btnClass.onState = { state -> showState(itemView, state) }
             return true
         }
     }
 
-    private fun showState(itemView: View, state: BTNCloudClass.State): Boolean
+    private fun showState(itemView: View, state: Int): Boolean
     {
         return when (state)
         {
-            BTNCloudClass.State.UPLOAD   ->
+            Constant.stateUpload   ->
             {
                 itemView.Image_Location.setImageResource(R.drawable.ic_cloud_upload_dark)
                 true
             }
-            BTNCloudClass.State.DOWNLOAD ->
+            Constant.stateDownload ->
             {
                 itemView.Image_Location.setImageResource(R.drawable.ic_cloud_download_dark)
                 true
             }
-            BTNCloudClass.State.SYNC     ->
+            Constant.stateSync     ->
             {
                 itemView.Image_Location.setImageResource(R.drawable.ic_cloud_dark)
                 true
             }
-            else                         ->
+            else                   ->
             {
                 itemView.Image_Location.setImageResource(R.drawable.ic_error_dark)
                 false

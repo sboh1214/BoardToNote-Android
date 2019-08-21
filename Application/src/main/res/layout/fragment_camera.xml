@@ -28,21 +28,6 @@
             android:layout_alignParentBottom="true"/>
 
     <LinearLayout
-            android:id="@+id/info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:background="@color/transparent"
-            android:layout_margin="12dp">
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/hdr"/>
-    </LinearLayout>
-
-    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -51,7 +36,7 @@
             android:layout_margin="12dp">
 
         <ImageButton
-                android:id="@+id/Gallery_Button"
+            android:id="@+id/Button_Gallery"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
                 android:background="@color/transparent"
@@ -66,7 +51,7 @@
                 android:layout_weight="1"/>
 
         <ImageButton
-                android:id="@+id/Picture_Button"
+            android:id="@+id/Button_Picture"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
                 android:background="@color/transparent"
@@ -80,7 +65,7 @@
                 android:layout_weight="1"/>
 
         <ImageButton
-                android:id="@+id/Note_Button"
+            android:id="@+id/Button_Note"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
                 android:background="@color/transparent"

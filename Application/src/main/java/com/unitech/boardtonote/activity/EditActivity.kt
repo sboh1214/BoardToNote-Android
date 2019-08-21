@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
+import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.BlockAdapter
 import com.unitech.boardtonote.data.BTNCloudClass
@@ -48,7 +49,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
         val dirName = intent.getStringExtra("dirName")
         val location = intent.getIntExtra("location", 0)
 
-        if (dirName == null)
+        if (dirName == null || location == 0)
         {
             Log.e(tag, "dirName does not exist $dirName")
             val mainIntent = Intent(this, MainActivity::class.java)
@@ -58,9 +59,9 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
 
         btnClass = when (location)
         {
-            BTNInterface.Location.LOCAL.value -> BTNLocalClass(this, dirName)
-            BTNInterface.Location.CLOUD.value -> BTNCloudClass(this, dirName)
-            else                              -> throw IllegalArgumentException()
+            Constant.locationLocal -> BTNLocalClass(this, dirName)
+            Constant.locationCloud -> BTNCloudClass(this, dirName)
+            else                   -> throw IllegalArgumentException()
         }
         Edit_Title.setText(btnClass.dirName)
         Edit_Title.setOnKeyListener { _, code, event ->
@@ -137,7 +138,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
         {
             R.id.Menu_Share   ->
             {
-                startActivity(btnClass.share(BTNInterface.Share.PDF))
+                startActivity(btnClass.share(Constant.sharePdf))
                 true
             }
             R.id.Menu_Crop    ->
@@ -165,20 +166,20 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
         }
     }
 
-    fun showLocationAndState(location: BTNInterface.Location, state: BTNCloudClass.State)
+    fun showLocationAndState(location: Int, state: Int)
     {
         val menu = editMenu.findItem(R.id.Menu_LocationState)
         when (location)
         {
-            BTNInterface.Location.LOCAL -> menu.setIcon(R.drawable.ic_cloud_local_dark)
-            BTNInterface.Location.CLOUD ->
+            Constant.locationLocal -> menu.setIcon(R.drawable.ic_cloud_local_dark)
+            Constant.locationCloud ->
             {
                 when (state)
                 {
-                    BTNCloudClass.State.SYNC     -> menu.setIcon(R.drawable.ic_cloud_dark)
-                    BTNCloudClass.State.DOWNLOAD -> menu.setIcon(R.drawable.ic_cloud_download_dark)
-                    BTNCloudClass.State.UPLOAD   -> menu.setIcon(R.drawable.ic_cloud_upload_dark)
-                    else                         -> menu.setIcon(R.drawable.ic_error_dark)
+                    Constant.stateSync     -> menu.setIcon(R.drawable.ic_cloud_dark)
+                    Constant.stateDownload -> menu.setIcon(R.drawable.ic_cloud_download_dark)
+                    Constant.stateUpload   -> menu.setIcon(R.drawable.ic_cloud_upload_dark)
+                    else                   -> menu.setIcon(R.drawable.ic_error_dark)
                 }
             }
         }

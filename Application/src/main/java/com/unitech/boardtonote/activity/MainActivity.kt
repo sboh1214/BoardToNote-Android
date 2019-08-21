@@ -98,19 +98,19 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
             val btnClass: BTNInterface =
                     when (pager.currentItem)
                     {
-                        BTNInterface.Location.LOCAL.value ->
+                        0    ->
                         {
-                            intent.putExtra("location", BTNInterface.Location.LOCAL.value)
+                            intent.putExtra("location", Constant.locationLocal)
                             BTNLocalClass(this@MainActivity, null)
                         }
-                        BTNInterface.Location.CLOUD.value ->
+                        1    ->
                         {
-                            intent.putExtra("location", BTNInterface.Location.CLOUD.value)
+                            intent.putExtra("location", Constant.locationCloud)
                             BTNCloudClass(this@MainActivity, null)
                         }
-                        else                              ->
+                        else ->
                         {
-                            intent.putExtra("location", BTNInterface.Location.LOCAL.value)
+                            intent.putExtra("location", Constant.locationLocal)
                             BTNLocalClass(this@MainActivity, null)
                         }
                     }
