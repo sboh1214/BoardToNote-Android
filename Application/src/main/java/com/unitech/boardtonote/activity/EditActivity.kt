@@ -34,7 +34,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
 
     lateinit var blockAdapter: BlockAdapter
 
-    private lateinit var editMenu: Menu
+    private var editMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -128,7 +128,8 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
     override fun onCreateOptionsMenu(menu: Menu?): Boolean
     {
         menuInflater.inflate(R.menu.menu_edit, menu)
-        editMenu = menu!!
+        editMenu = menu
+        showLocationAndState(btnClass.location, btnClass.state)
         return true
     }
 
@@ -166,9 +167,9 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
         }
     }
 
-    fun showLocationAndState(location: Int, state: Int)
+    fun showLocationAndState(location: Int, state: Int?): Boolean
     {
-        val menu = editMenu.findItem(R.id.Menu_LocationState)
+        val menu = editMenu?.findItem(R.id.Menu_LocationState) ?: return false
         when (location)
         {
             Constant.locationLocal -> menu.setIcon(R.drawable.ic_cloud_local_dark)
@@ -183,6 +184,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
                 }
             }
         }
+        return true
     }
 
     override fun snackBar(m: String)

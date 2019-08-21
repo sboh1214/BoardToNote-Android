@@ -55,6 +55,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             {
                 val dirName = captureStillPicture()
                 Log.i(TAG, "Captured picture with dirName $dirName")
+
                 val intent = Intent(context, EditActivity::class.java)
                 intent.putExtra("dirName", dirName)
                 intent.putExtra("location", Constant.locationLocal)
@@ -117,7 +118,16 @@ class CameraFragment : Fragment(), View.OnClickListener,
             configureTransform(width, height)
         }
 
-        override fun onSurfaceTextureDestroyed(texture: SurfaceTexture) = true
+        override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean
+        {
+            Log.e(TAG, "onSurfaceTextureDestroyed")
+            if (cameraDevice != null)
+            {
+                closeCamera()
+                cameraDevice = null
+            }
+            return false
+        }
 
         override fun onSurfaceTextureUpdated(texture: SurfaceTexture) = Unit
 

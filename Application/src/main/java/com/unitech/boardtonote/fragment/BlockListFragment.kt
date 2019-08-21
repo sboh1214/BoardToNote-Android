@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.adapter.BlockAdapter
@@ -42,21 +43,21 @@ class BlockListFragment : Fragment()
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
         super.onActivityCreated(savedInstanceState)
-        eA.btnClass.asyncGetContent({ content -> onSuccess(content) }, { onFailure() })
+        eA.btnClass.asyncGetContent({ onSuccess() }, { onFailure() })
         if (eA.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
-            render(Orientation.LANDSCAPE)
+            render(Constant.orientationLandscape)
         }
         else
         {
-            render(Orientation.PORTRAIT)
+            render(Constant.orientationPortrait)
         }
     }
 
-    private fun onSuccess(content: BTNInterface.ContentClass): Boolean
+    private fun onSuccess(): Boolean
     {
         Log.i(tag, "Recycler_Edit Init")
-        eA.blockAdapter = BlockAdapter(content.blockList,
+        eA.blockAdapter = BlockAdapter(eA.btnClass,
                 { btnClass -> itemClick(btnClass) },
                 { btnClass -> itemLongClick(btnClass) },
                 { btnClass, _ -> itemMoreClick(btnClass) })
@@ -66,6 +67,7 @@ class BlockListFragment : Fragment()
             layoutManager = LinearLayoutManager(eA)
             adapter = eA.blockAdapter
         }
+        eA.blockAdapter.btnInterface.onLocationAndState = { a, b -> eA.showLocationAndState(a, b) }
         return true
     }
 
@@ -100,18 +102,18 @@ class BlockListFragment : Fragment()
         super.onConfigurationChanged(newConfig)
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
-            render(Orientation.LANDSCAPE)
+            render(Constant.orientationLandscape)
         }
         else
         {
-            render(Orientation.PORTRAIT)
+            render(Constant.orientationPortrait)
         }
     }
 
-    private fun render(orientation: Orientation)
+    private fun render(orientation: Int)
     {
         Image_OriPic.setImageBitmap(eA.btnClass.oriPic)
-        if (orientation == Orientation.PORTRAIT)
+        if (orientation == Constant.orientationPortrait)
         {
             val ratio = eA.btnClass.getOriPicRatio()
             if (ratio != null)
@@ -132,10 +134,5 @@ class BlockListFragment : Fragment()
                 Recycler_Edit.layoutParams = param
             }
         }
-    }
-
-    enum class Orientation
-    {
-        LANDSCAPE, PORTRAIT
     }
 }

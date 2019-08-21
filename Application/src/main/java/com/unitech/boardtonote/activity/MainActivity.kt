@@ -55,7 +55,8 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
             snackBar(message)
         }
 
-        pager.adapter = MainPagerAdapter(supportFragmentManager)
+        val adapter = MainPagerAdapter(supportFragmentManager)
+        pager.adapter = adapter
         when
         {
             intent.action == "shortcut.local" ->

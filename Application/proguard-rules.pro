@@ -13,6 +13,11 @@
   public *;
 }
 
+#Coroutine
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
 #Glide
 # for DexGuard only
 #-keepresourcexmlelements manifest/application/meta-data@value=GlideModule

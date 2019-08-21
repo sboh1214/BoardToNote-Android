@@ -26,4 +26,6 @@ object Constant
 
     const val orientationLandscape = 61
     const val orientationPortrait = 62
+
+    const val timestamp = "timestamp"
 }

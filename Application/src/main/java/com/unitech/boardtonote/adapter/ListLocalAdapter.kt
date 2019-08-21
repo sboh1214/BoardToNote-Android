@@ -27,7 +27,7 @@ class ListLocalAdapter(val listLocalClass: ListLocalClass,
             itemView.Title_Text.text = btnClass.dirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
-            Glide.with(itemView).load(btnClass.oriPic).into(itemView.Image_Preview)
+            Glide.with(itemView).load(btnClass.oriPic).centerInside().into(itemView.Image_Preview)
         }
     }
 

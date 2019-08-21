@@ -28,14 +28,14 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
             itemView.Title_Text.text = btnClass.dirName
             itemView.setOnClickListener { itemClick(btnClass) }
             itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
-            Glide.with(itemView).load(btnClass.oriPic).skipMemoryCache(true).into(itemView.Image_Preview)
-            showState(itemView, btnClass.state)
-            btnClass.onState = { state -> showState(itemView, state) }
+            Glide.with(itemView).load(btnClass.oriPic).centerInside().into(itemView.Image_Preview)
+            showState(itemView, btnClass, btnClass.state)
+            btnClass.onLocationAndState = { _, state -> showState(itemView, btnClass, state) }
             return true
         }
     }
 
-    private fun showState(itemView: View, state: Int): Boolean
+    private fun showState(itemView: View, btnClass: BTNCloudClass, state: Int?): Boolean
     {
         return when (state)
         {
@@ -52,6 +52,7 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
             Constant.stateSync     ->
             {
                 itemView.Image_Location.setImageResource(R.drawable.ic_cloud_dark)
+                Glide.with(itemView).load(btnClass.oriPic).centerInside().into(itemView.Image_Preview)
                 true
             }
             else                   ->

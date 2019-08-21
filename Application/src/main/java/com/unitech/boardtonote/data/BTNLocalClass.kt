@@ -12,7 +12,11 @@ import java.io.File
  */
 class BTNLocalClass(override val context: Context, override var dirName: String?) : BTNInterface
 {
+    override var onLocationAndState: (Int, Int?) -> Boolean = { _, _ -> true }
+    override val dirPath: String
+        get() = "$parentDirPath/$dirName.btn"
     override val location = Constant.locationLocal
+    override val state: Int? = null
 
     override val oriPic: Bitmap? by lazy {
         try

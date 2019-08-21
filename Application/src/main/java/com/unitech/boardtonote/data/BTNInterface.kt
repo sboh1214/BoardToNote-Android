@@ -31,6 +31,7 @@ import java.util.zip.ZipOutputStream
 interface BTNInterface
 {
     val location: Int
+    val state: Int?
     val tag: String
 
     val context: Context
@@ -38,7 +39,6 @@ interface BTNInterface
 
     val parentDirPath: String
     val dirPath: String
-        get() = "$parentDirPath/$dirName.btn"
     val oriPicPath: String
         get() = "$dirPath/OriPic.jpg"
     val contentPath: String
@@ -68,6 +68,8 @@ interface BTNInterface
             val frame: Rect?,
             var fontSize: Float
     )
+
+    var onLocationAndState: (Int, Int?) -> Boolean
 
     fun makeLocalDir(name: String?)
     {

@@ -8,7 +8,7 @@ import com.unitech.boardtonote.data.BTNInterface
 import kotlinx.android.synthetic.main.item_edit.view.*
 
 
-class BlockAdapter(private val blockList: ArrayList<BTNInterface.BlockClass>,
+class BlockAdapter(val btnInterface: BTNInterface,
                    private val itemClick: (BTNInterface.BlockClass) -> Unit,
                    private val itemLongClick: (BTNInterface.BlockClass) -> Boolean,
                    private val itemMoreClick: (BTNInterface.BlockClass, View) -> Boolean) :
@@ -36,9 +36,8 @@ class BlockAdapter(private val blockList: ArrayList<BTNInterface.BlockClass>,
 
     override fun onBindViewHolder(holder: BlockHolder, position: Int)
     {
-        holder.bind(blockList[position], itemClick, itemLongClick, itemMoreClick)
+        holder.bind(btnInterface.content.blockList[position], itemClick, itemLongClick, itemMoreClick)
     }
 
-
-    override fun getItemCount() = blockList.size
+    override fun getItemCount() = btnInterface.content.blockList.size
 }

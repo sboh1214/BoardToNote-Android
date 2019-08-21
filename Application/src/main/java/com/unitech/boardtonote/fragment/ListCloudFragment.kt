@@ -38,9 +38,10 @@ class ListCloudFragment : Fragment()
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
+        super.onActivityCreated(savedInstanceState)
         if (AccountHelper.user == null)
         {
-
+            return
         }
         mainActivity.cloudAdapter = ListCloudAdapter(ListCloudClass(activity!!),
                 { btnClass -> itemClick(btnClass) },
@@ -61,7 +62,6 @@ class ListCloudFragment : Fragment()
             mainActivity.cloudAdapter.notifyDataSetChanged()
             true
         }
-        super.onActivityCreated(savedInstanceState)
     }
 
     private fun itemClick(btnClass: BTNCloudClass)

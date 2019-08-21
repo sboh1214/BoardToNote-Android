@@ -6,14 +6,49 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageMetadata
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.ZipHelper
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class BTNCloudClass(override val context: Context, override var dirName: String?) : BTNInterface
 {
     override val location by lazy { Constant.locationCloud }
+
+    override val dirPath: String
+        get() = "$parentDirPath/$dirName.btn$localTimeStamp"
+
+    private var localTimeStamp: String = "000000000000"
+
+    private fun applyLocalTimeStamp()
+    {
+        val src = File(parentDirPath).listFiles()?.find { file -> file.name.substringBeforeLast(".") == dirName }
+        val dst = File("$parentDirPath/$dirName.btn$localTimeStamp")
+        src?.renameTo(dst)
+    }
+
+    private var cloudTimeStamp: String = "000000000000"
+
+    private fun applyCloudTimestamp()
+    {
+        val meta = StorageMetadata.Builder().setCustomMetadata(Constant.timestamp, cloudTimeStamp).build()
+        FirebaseStorage
+                .getInstance(firebaseUrl).reference
+                .child("user/${AccountHelper.uid}/$dirName.zip").updateMetadata(meta)
+                .addOnSuccessListener {
+                    Log.d(tag, "$dirName : Cloud MetaData Update Success : $cloudTimeStamp")
+                }
+                .addOnFailureListener {
+                    Log.d(tag, "$dirName : Cloud MetaData Update Failed : $cloudTimeStamp")
+                    Log.e(tag, it.toString())
+                }
+    }
+
+    override val tag = "BTNCloudClass"
+    private val firebaseUrl = "gs://board-to-note.appspot.com/"
 
     override val oriPic: Bitmap? by lazy {
         try
@@ -26,16 +61,12 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
             null
         }
     }
-    override val tag = "BTNCloudClass"
-
-    private val firebaseUrl = "gs://board-to-note.appspot.com/"
-
-    var onState: (Int) -> Boolean = { true }
-    var state: Int = Constant.stateUnknown
+    override var onLocationAndState: (Int, Int?) -> Boolean = { _, _ -> true }
+    override var state: Int = Constant.stateUnknown
         set(value)
         {
             field = value
-            onState(value)
+            onLocationAndState(location, value)
         }
 
     init
@@ -47,12 +78,28 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
         // make local directory if it does not exist
         if (dirName == null)
         {
-            makeLocalDir(null)
+            makeCloudDir(null)
         }
-        else if (!File(dirPath).exists())
+        val find = File(parentDirPath).listFiles()?.find { file -> file.name.substringBeforeLast(".") == dirName }
+        if (find == null)
         {
-            makeLocalDir(dirName)
+            makeCloudDir(dirName)
         }
+
+        localTimeStamp = File(parentDirPath).listFiles()!!.find { it.nameWithoutExtension == dirName }?.name?.substringAfterLast(".")?.drop(3)!!
+
+        FirebaseStorage
+                .getInstance(firebaseUrl).reference
+                .child("user/${AccountHelper.uid}/$dirName.zip").metadata
+                .addOnSuccessListener {
+                    cloudTimeStamp = it.getCustomMetadata(Constant.timestamp)
+                    when
+                    {
+                        localTimeStamp > cloudTimeStamp -> upload()
+                        localTimeStamp < cloudTimeStamp -> download()
+                        else                            -> state = Constant.stateSync
+                    }
+                }
     }
 
     override lateinit var content: BTNInterface.ContentClass
@@ -60,20 +107,20 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
     override val parentDirPath: String
         get() = "${context.filesDir.path}/cloud"
 
-    override val dirPath: String
-        get() = "$parentDirPath/$dirName.btn"
-
-    fun download()
+    private fun download()
     {
         state = Constant.stateDownload
-        Log.d(tag, "Downloading...")
+        Log.d(tag, "$dirName : Downloading...")
         val reference = FirebaseStorage.getInstance(firebaseUrl).reference
-                .child("${AccountHelper.uid}/$dirName.btn")
-        val file = File(dirPath)
+                .child("user/${AccountHelper.uid}/$dirName.zip")
+        val file = File("${context.cacheDir}/$dirName.zip")
         reference.getFile(file)
                 .addOnSuccessListener {
+                    localTimeStamp = cloudTimeStamp
+                    applyLocalTimeStamp()
+                    ZipHelper.unzip(file.path, dirPath)
                     state = Constant.stateSync
-                    Log.d(tag, "Download Success")
+                    Log.d(tag, "$dirName : Download Success")
                 }
                 .addOnFailureListener {
                     state = Constant.stateError
@@ -82,17 +129,44 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
                 }
     }
 
-    fun upload()
+    private fun upload()
     {
         state = Constant.stateUpload
         Log.d(tag, "Uploading...")
         val reference = FirebaseStorage.getInstance(firebaseUrl).reference
-                .child("user/${AccountHelper.uid}/$dirName.btn")
-        ZipHelper.zip(context, dirPath, dirName ?: "temp")
-        val uri = Uri.fromFile(File("${context.cacheDir.path}/${dirName ?: "temp"}.zip"))
+                .child("user/${AccountHelper.uid}/$dirName.zip")
+        val path = ZipHelper.zip(context, dirPath, dirName!!)
+        val uri = Uri.fromFile(File(path))
         reference.putFile(uri)
                 .addOnSuccessListener {
                     state = Constant.stateSync
+                    cloudTimeStamp = localTimeStamp
+                    applyCloudTimestamp()
+                    Log.d(tag, "Upload Success")
+                }
+                .addOnFailureListener {
+                    state = Constant.stateError
+                    Log.d(tag, "Upload Failed")
+                    Log.e(tag, it.toString())
+                }
+    }
+
+    fun uploadWithTimeStamp()
+    {
+        val stamp = SimpleDateFormat("yyMMddhhmmss", Locale.US)
+        localTimeStamp = stamp.format(Date().time)
+        applyLocalTimeStamp()
+        state = Constant.stateUpload
+        Log.d(tag, "Uploading...")
+        val reference = FirebaseStorage.getInstance(firebaseUrl).reference
+                .child("user/${AccountHelper.uid}/$dirName.zip")
+        val path = ZipHelper.zip(context, dirPath, dirName!!)
+        val uri = Uri.fromFile(File(path))
+        reference.putFile(uri)
+                .addOnSuccessListener {
+                    state = Constant.stateSync
+                    cloudTimeStamp = localTimeStamp
+                    applyCloudTimestamp()
                     Log.d(tag, "Upload Success")
                 }
                 .addOnFailureListener {
@@ -107,15 +181,62 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
         state = Constant.stateDelete
         Log.d(tag, "Deleting...")
         val reference = FirebaseStorage.getInstance(firebaseUrl).reference
-                .child("user/${AccountHelper.uid}/$dirName.btn")
+                .child("user/${AccountHelper.uid}/$dirName.zip")
         reference.delete()
                 .addOnSuccessListener {
                     state = Constant.stateSync
+                    File(dirPath).deleteRecursively()
+                    File(dirPath).delete()
                     Log.d(tag, "Delete Success")
                 }
                 .addOnFailureListener {
                     state = Constant.stateError
                     Log.d(tag, "Delete Failed")
                 }
+    }
+
+    private fun makeCloudDir(name: String?)
+    {
+        val stamp = SimpleDateFormat("yyMMddhhmmss", Locale.US)
+        val timestamp = stamp.format(Date().time)
+        if (name == null)
+        {
+            val c: Calendar = Calendar.getInstance()
+            val d = SimpleDateFormat("yyMMdd-hhmmss", Locale.getDefault())
+            dirName = d.format(c.time)
+            val dirPath = "$parentDirPath/$dirName.btn$timestamp"
+            val dir = File(dirPath)
+            if (!dir.exists())
+            {
+                dir.mkdir()
+            }
+            Log.d(tag, "Create : $dirName $timestamp")
+            localTimeStamp = timestamp
+            return
+        }
+        else
+        {
+            dirName = name
+            var dir = File("$parentDirPath/$dirName.btn$localTimeStamp")
+            if (!dir.exists())
+            {
+                dir.mkdir()
+                Log.d(tag, "$dirName : Create : $localTimeStamp")
+                return
+            }
+            var num = 1
+            while (true)
+            {
+                dirName = name + num.toString()
+                dir = File("$parentDirPath/$dirName.btn$localTimeStamp")
+                if (!dir.exists())
+                {
+                    dir.mkdir()
+                    Log.d(tag, "$dirName : Create : $localTimeStamp")
+                    return
+                }
+                num++
+            }
+        }
     }
 }

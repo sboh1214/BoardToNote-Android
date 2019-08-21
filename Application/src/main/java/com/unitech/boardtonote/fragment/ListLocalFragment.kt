@@ -37,6 +37,7 @@ class ListLocalFragment : Fragment()
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
+        super.onActivityCreated(savedInstanceState)
         mA.localAdapter = ListLocalAdapter(ListLocalClass(activity!!),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass, _ -> itemMoreClick(btnClass) })
@@ -51,8 +52,6 @@ class ListLocalFragment : Fragment()
             adapter = mA.localAdapter
             itemAnimator = DefaultItemAnimator()
         }
-
-        super.onActivityCreated(savedInstanceState)
     }
 
     private fun itemClick(btnClass: BTNLocalClass)

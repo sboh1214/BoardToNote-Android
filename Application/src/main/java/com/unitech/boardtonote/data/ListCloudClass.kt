@@ -20,9 +20,9 @@ class ListCloudClass(val context: Context)
             {
                 return@forEach
             }
-            if (it.name.substringAfterLast('.') == "btn")
+            if (it.name.substringAfterLast('.').matches(Regex("btn\\d{12}")))
             {
-                val dirName = it.name.substringBeforeLast('.')
+                val dirName = it.name.substringBeforeLast(".")
                 arrayList.add(BTNCloudClass(context, dirName))
             }
         }
@@ -37,13 +37,10 @@ class ListCloudClass(val context: Context)
         listRef.listAll()
                 .addOnSuccessListener { listResult ->
                     listResult.items.forEach { item ->
-                        item.getFile(File("$cloudPath/${item.name}"))
-                    }
-                    File(cloudPath).listFiles()?.forEach {
-                        if (!it.isDirectory && it.name.substringAfterLast('.') == "btn")
+                        val name = item.name.substringBeforeLast(".")
+                        if (cloudList.find { btnCloudClass -> btnCloudClass.dirName == name } == null)
                         {
-                            val dirName = it.name.substringBeforeLast('.')
-                            cloudList.add(BTNCloudClass(context, dirName))
+                            cloudList.add(BTNCloudClass(context, name))
                         }
                     }
                     onSuccess()
@@ -91,13 +88,13 @@ class ListCloudClass(val context: Context)
 
     fun moveFromLocal(localList: ListLocalClass, localClass: BTNLocalClass): BTNCloudClass
     {
-        val cloudClass = BTNCloudClass(context, localClass.dirName)
+        val cloudClass = BTNCloudClass(context, localClass.dirName!!)
         File(localClass.dirPath).copyRecursively(File(cloudClass.dirPath), true)
         File(localClass.dirPath).deleteRecursively()
         File(localClass.dirPath).delete()
         localList.delete(localClass)
         cloudList.add(cloudClass)
-        cloudClass.upload()
+        cloudClass.uploadWithTimeStamp()
         return cloudClass
     }
 }
