@@ -7,8 +7,8 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/Image_OriPic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
+        android:layout_height="0dp"
+        app:layout_constraintVertical_weight="4"
         app:layout_constraintBottom_toTopOf="@id/Recycler_Edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,6 +17,7 @@
         android:id="@+id/Recycler_Edit"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintVertical_weight="6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

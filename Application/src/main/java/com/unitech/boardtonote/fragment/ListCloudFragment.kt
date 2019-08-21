@@ -51,7 +51,7 @@ class ListCloudFragment : Fragment()
 
         Recycler_Cloud.apply {
             setHasFixedSize(true)
-            layoutManager = StaggeredGridLayoutManager(dp / 300, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager = StaggeredGridLayoutManager(dp / 270, StaggeredGridLayoutManager.VERTICAL)
             adapter = mainActivity.cloudAdapter
             itemAnimator = DefaultItemAnimator()
         }

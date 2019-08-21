@@ -46,7 +46,7 @@ class ListLocalFragment : Fragment()
 
         Recycler_Local.apply {
             setHasFixedSize(true)
-            layoutManager = StaggeredGridLayoutManager(dp / 300, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager = StaggeredGridLayoutManager(dp / 270, StaggeredGridLayoutManager.VERTICAL)
             adapter = mA.localAdapter
             itemAnimator = DefaultItemAnimator()
         }

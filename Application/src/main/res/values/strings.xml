@@ -37,7 +37,6 @@
 
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="change">Change</string>
     <string name="user_name">User Name</string>
     <string name="uid">UID</string>
     <string name="delete">Delete</string>
