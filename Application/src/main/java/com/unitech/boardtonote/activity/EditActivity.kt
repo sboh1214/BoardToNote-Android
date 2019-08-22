@@ -90,6 +90,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.Frame_Edit, BlockListFragment())
+                .addToBackStack(null)
                 .commit()
     }
 
@@ -159,9 +160,17 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
             //When user pressed back button on toolbar
             android.R.id.home ->
             {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                return true
+                return if (supportFragmentManager.backStackEntryCount > 1)
+                {
+                    supportFragmentManager.popBackStackImmediate()
+                    true
+                }
+                else
+                {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
             }
             else              -> super.onOptionsItemSelected(item)
         }

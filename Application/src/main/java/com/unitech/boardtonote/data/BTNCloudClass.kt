@@ -25,6 +25,7 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
 
     private fun applyLocalTimeStamp()
     {
+        Log.d(tag, "$dirName : applyLocalTimeStamp : $localTimeStamp")
         val src = File(parentDirPath).listFiles()?.find { file -> file.name.substringBeforeLast(".") == dirName }
         val dst = File("$parentDirPath/$dirName.btn$localTimeStamp")
         src?.renameTo(dst)
@@ -87,18 +88,25 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
         }
 
         localTimeStamp = File(parentDirPath).listFiles()!!.find { it.nameWithoutExtension == dirName }?.name?.substringAfterLast(".")?.drop(3)!!
+        Log.d(tag, "$dirName : init localTimeStamp : $localTimeStamp")
 
+        Log.d(tag, "$dirName : try to initialize cloud Timestamp")
         FirebaseStorage
                 .getInstance(firebaseUrl).reference
                 .child("user/${AccountHelper.uid}/$dirName.zip").metadata
                 .addOnSuccessListener {
                     cloudTimeStamp = it.getCustomMetadata(Constant.timestamp)
+                    Log.d(tag, "$dirName : init cloudTimeStamp : $cloudTimeStamp")
                     when
                     {
                         localTimeStamp > cloudTimeStamp -> upload()
                         localTimeStamp < cloudTimeStamp -> download()
                         else                            -> state = Constant.stateSync
                     }
+                }
+                .addOnFailureListener {
+                    Log.d(tag, "$dirName : failed to init cloudTimeStamp : $cloudTimeStamp")
+                    Log.e(tag, it.toString())
                 }
     }
 
@@ -238,5 +246,11 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
                 num++
             }
         }
+    }
+
+    override fun saveContent()
+    {
+        super.saveContent()
+        uploadWithTimeStamp()
     }
 }

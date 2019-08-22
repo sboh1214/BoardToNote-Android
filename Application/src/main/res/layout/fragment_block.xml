@@ -21,6 +21,19 @@
         app:srcCompat="@drawable/ic_more" />
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/Edit_Block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@null"
+        android:gravity="start|top"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Button_Minus" />
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/Edit_Size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,19 +43,6 @@
         app:layout_constraintBottom_toBottomOf="@id/Button_Minus"
         app:layout_constraintStart_toEndOf="@id/Button_Minus"
         app:layout_constraintTop_toTopOf="@id/Button_Minus" />
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/Edit_Block"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@null"
-        android:gravity="start|top"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Button_Minus" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/Button_Plus"

@@ -61,7 +61,7 @@ interface BTNInterface
 
     data class BlockClass
     (
-            val text: String,
+            var text: String,
             val confidence: Float?,
             val language: List<String?>,
             @JsonIgnore

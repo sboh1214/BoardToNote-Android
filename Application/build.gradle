@@ -13,8 +13,8 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 23
-        versionName "0.22"
+        versionCode 24
+        versionName "0.23"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner = 'android.support.test.runner.AndroidJUnitRunner'

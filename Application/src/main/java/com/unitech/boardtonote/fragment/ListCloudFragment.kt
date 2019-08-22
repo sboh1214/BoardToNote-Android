@@ -1,8 +1,12 @@
 package com.unitech.boardtonote.fragment
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,16 +21,19 @@ import com.unitech.boardtonote.adapter.ListCloudAdapter
 import com.unitech.boardtonote.data.BTNCloudClass
 import com.unitech.boardtonote.data.ListCloudClass
 import com.unitech.boardtonote.helper.AccountHelper
+import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.fragment_cloud.*
 
 class ListCloudFragment : Fragment()
 {
-    private lateinit var mainActivity: MainActivity
+    private lateinit var mA: MainActivity
+    private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        mainActivity = activity as MainActivity
+        mA = activity as MainActivity
+        snackBarInterface = activity as SnackBarInterface
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -43,24 +50,38 @@ class ListCloudFragment : Fragment()
         {
             return
         }
-        mainActivity.cloudAdapter = ListCloudAdapter(ListCloudClass(activity!!),
+        mA.cloudAdapter = ListCloudAdapter(ListCloudClass(activity!!),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass, _ -> itemMoreClick(btnClass) })
 
         val metrics = DisplayMetrics()
-        mainActivity.windowManager.defaultDisplay.getMetrics(metrics)
+        mA.windowManager.defaultDisplay.getMetrics(metrics)
         val dp: Int = metrics.widthPixels / (metrics.densityDpi / 180)
 
         Recycler_Cloud.apply {
             setHasFixedSize(true)
             layoutManager = StaggeredGridLayoutManager(dp / 270, StaggeredGridLayoutManager.VERTICAL)
-            adapter = mainActivity.cloudAdapter
+            adapter = mA.cloudAdapter
             itemAnimator = DefaultItemAnimator()
         }
 
-        mainActivity.cloudAdapter.listCloudClass.getDirListAsync {
-            mainActivity.cloudAdapter.notifyDataSetChanged()
+        mA.cloudAdapter.listCloudClass.getDirListAsync {
+            mA.cloudAdapter.notifyDataSetChanged()
             true
+        }
+
+        val cm = mA.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
+        val isWiFi: Boolean = activeNetwork?.type == ConnectivityManager.TYPE_WIFI
+        if (!isConnected)
+        {
+            Log.d(tag, "No Internet Connection.")
+            snackBarInterface.snackBar("There is not Internet Connection")
+        }
+        else
+        {
+            Log.d(tag, "Internet Connected")
         }
     }
 

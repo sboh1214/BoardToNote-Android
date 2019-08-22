@@ -82,6 +82,7 @@ class BlockListFragment : Fragment()
         eA.supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.Frame_Edit, BlockFragment(blockClass))
+                .addToBackStack(null)
                 .commit()
         return
     }
