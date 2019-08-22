@@ -130,5 +130,16 @@
             app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Text_Uid" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/Button_Dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@color/transparent"
+            android:text="@string/dismiss"
+            android:textColor="@color/accent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Button_SignOut" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

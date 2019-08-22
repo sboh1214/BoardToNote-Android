@@ -12,7 +12,7 @@
         <item name="colorError">@color/error</item>
     </style>
 
-    <style name="BTN.ActionBar" parent="@style/Theme.MaterialComponents.DayNight" />
+    <style name="BTN.ActionBar" parent="@style/Theme.MaterialComponents.DayNight"></style>
 
     <style name="BTN.TextView_Popup" parent="@android:style/Widget.TextView">
         <item name="android:layout_height">wrap_content</item>

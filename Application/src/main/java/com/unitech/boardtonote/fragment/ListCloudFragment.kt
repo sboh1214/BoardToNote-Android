@@ -52,7 +52,7 @@ class ListCloudFragment : Fragment()
         }
         mA.cloudAdapter = ListCloudAdapter(ListCloudClass(activity!!),
                 { btnClass -> itemClick(btnClass) },
-                { btnClass, _ -> itemMoreClick(btnClass) })
+                { btnClass -> itemMoreClick(btnClass) })
 
         val metrics = DisplayMetrics()
         mA.windowManager.defaultDisplay.getMetrics(metrics)

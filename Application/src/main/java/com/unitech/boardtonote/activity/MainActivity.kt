@@ -126,6 +126,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
             if (resultCode == RESULT_OK)
             {
                 onSignIn()
+                pager.adapter = MainPagerAdapter(supportFragmentManager)
             }
             else
             {
@@ -209,8 +210,9 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         AccountDialog().show(supportFragmentManager, "accountDialog")
     }
 
-    override fun onSignOut()
+    override fun onSignOut(context: Context, adapter: ListCloudAdapter)
     {
+        super.onSignOut(context, adapter)
         mainMenu?.findItem(R.id.Menu_Account)?.setIcon(R.drawable.ic_account_dark)
     }
 

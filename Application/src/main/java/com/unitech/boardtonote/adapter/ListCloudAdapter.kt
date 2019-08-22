@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_main.view.*
 
 class ListCloudAdapter(val listCloudClass: ListCloudClass,
                        private val itemClick: (BTNCloudClass) -> Unit,
-                       private val itemMoreClick: (BTNCloudClass, View) -> Boolean) :
+                       private val itemMoreClick: (BTNCloudClass) -> Boolean) :
         RecyclerView.Adapter<ListCloudAdapter.ListCloudHolder>()
 {
     init
@@ -21,17 +21,22 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
         setHasStableIds(true)
     }
 
-    inner class ListCloudHolder(item: View) : RecyclerView.ViewHolder(item)
+    inner class ListCloudHolder(item: View) : RecyclerView.ViewHolder(item), View.OnClickListener
     {
-        fun bind(btnClass: BTNCloudClass, itemClick: (BTNCloudClass) -> Unit, itemMoreClick: (BTNCloudClass, View) -> Boolean): Boolean
+        fun bind(btnClass: BTNCloudClass): Boolean
         {
             itemView.Title_Text.text = btnClass.dirName
-            itemView.setOnClickListener { itemClick(btnClass) }
-            itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
+            itemView.setOnClickListener(this)
+            itemView.Button_Main_More.setOnClickListener { itemMoreClick(btnClass) }
             Glide.with(itemView).load(btnClass.oriPic).centerInside().into(itemView.Image_Preview)
             showState(itemView, btnClass, btnClass.state)
             btnClass.onLocationAndState = { _, state -> showState(itemView, btnClass, state) }
             return true
+        }
+
+        override fun onClick(view: View?)
+        {
+            itemClick(listCloudClass.cloudList[adapterPosition])
         }
     }
 
@@ -41,17 +46,17 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
         {
             Constant.stateUpload   ->
             {
-                itemView.Image_Location.setImageResource(R.drawable.ic_cloud_upload_dark)
+                Glide.with(itemView).asGif().load(R.raw.ic_upload_light).into(itemView.Image_Location)
                 true
             }
             Constant.stateDownload ->
             {
-                itemView.Image_Location.setImageResource(R.drawable.ic_cloud_download_dark)
+                Glide.with(itemView).asGif().load(R.raw.ic_download_light).into(itemView.Image_Location)
                 true
             }
             Constant.stateSync     ->
             {
-                itemView.Image_Location.setImageResource(R.drawable.ic_cloud_dark)
+                Glide.with(itemView).asGif().load(R.raw.ic_sync_light).into(itemView.Image_Location)
                 Glide.with(itemView).load(btnClass.oriPic).centerInside().into(itemView.Image_Preview)
                 true
             }
@@ -71,7 +76,7 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
 
     override fun onBindViewHolder(holder: ListCloudHolder, position: Int)
     {
-        holder.bind(listCloudClass.cloudList[position], itemClick, itemMoreClick)
+        holder.bind(listCloudClass.cloudList[position])
     }
 
     override fun getItemCount() = listCloudClass.cloudList.size

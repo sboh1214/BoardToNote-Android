@@ -10,8 +10,10 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
@@ -98,19 +100,17 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
     {
         if (requestCode == UCrop.REQUEST_CROP)
         {
-            if (resultCode == RESULT_OK)
+            when (resultCode)
             {
-                val size = Point()
-                windowManager.defaultDisplay.getSize(size)
-                Image_OriPic.setImageBitmap(btnClass.decodeOriPic(size.x, null))
-            }
-            else if (resultCode == RESULT_CANCELED)
-            {
-                snackBar("User canceled cropping picture")
-            }
-            else
-            {
-                snackBar("Error raised while cropping picture")
+                RESULT_OK       ->
+                {
+                    val size = Point()
+                    windowManager.defaultDisplay.getSize(size)
+                    Glide.with(Image_OriPic).load(btnClass.oriPic).centerInside().into(Image_OriPic)
+                    onImageChange()
+                }
+                RESULT_CANCELED -> snackBar("User canceled cropping picture")
+                else            -> snackBar("Error raised while cropping picture")
             }
         }
         else
@@ -118,6 +118,33 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
             snackBar("Unknown error raised")
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun onImageChange()
+    {
+        AlertDialog.Builder(this).apply {
+            setTitle("Image Change Detected")
+            setMessage("Do you want to update content?")
+            setPositiveButton("Update") { dialogInterface, _ ->
+                btnClass.analyze({ onSuccess() }, { onFailure() })
+                dialogInterface.dismiss()
+            }
+            setNegativeButton("Keep Current") { dialogInterface, _ -> dialogInterface.dismiss() }
+            show()
+        }
+    }
+
+    private fun onSuccess(): Boolean
+    {
+        blockAdapter.notifyDataSetChanged()
+        snackBar("Content Updated")
+        return true
+    }
+
+    private fun onFailure(): Boolean
+    {
+        snackBar("An error occurred. Can't analyze picture.")
+        return false
     }
 
     override fun onBackPressed()
@@ -140,7 +167,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
         {
             R.id.Menu_Share   ->
             {
-                startActivity(btnClass.share(Constant.sharePdf))
+                btnClass.share(Constant.sharePdf)
                 true
             }
             R.id.Menu_Crop    ->

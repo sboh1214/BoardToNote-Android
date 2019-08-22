@@ -9,22 +9,23 @@ import kotlinx.android.synthetic.main.item_edit.view.*
 
 
 class BlockAdapter(val btnInterface: BTNInterface,
-                   private val itemClick: (BTNInterface.BlockClass) -> Unit,
-                   private val itemLongClick: (BTNInterface.BlockClass) -> Boolean,
-                   private val itemMoreClick: (BTNInterface.BlockClass, View) -> Boolean) :
+                   private val itemClick: (BTNInterface.BlockClass, View) -> Unit,
+                   private val itemMoreClick: (BTNInterface.BlockClass) -> Boolean) :
         RecyclerView.Adapter<BlockAdapter.BlockHolder>()
 {
-    inner class BlockHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class BlockHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener
     {
-        fun bind(blockClass: BTNInterface.BlockClass,
-                 itemClick: (BTNInterface.BlockClass) -> Unit,
-                 itemLongClick: (BTNInterface.BlockClass) -> Boolean,
-                 itemMoreClick: (BTNInterface.BlockClass, View) -> Boolean)
+        fun bind(blockClass: BTNInterface.BlockClass)
         {
             itemView.Text_Content.text = blockClass.text
-            itemView.setOnClickListener { itemClick(blockClass) }
-            itemView.setOnLongClickListener { itemLongClick(blockClass) }
-            itemView.Button_More.setOnClickListener { itemMoreClick(blockClass, itemView) }
+            itemView.Text_Content.textSize = blockClass.fontSize
+            itemView.setOnClickListener(this)
+            itemView.Button_Edit_More.setOnClickListener { itemMoreClick(blockClass) }
+        }
+
+        override fun onClick(view: View?)
+        {
+            itemClick(btnInterface.content.blockList[adapterPosition], view!!)
         }
     }
 
@@ -36,7 +37,7 @@ class BlockAdapter(val btnInterface: BTNInterface,
 
     override fun onBindViewHolder(holder: BlockHolder, position: Int)
     {
-        holder.bind(btnInterface.content.blockList[position], itemClick, itemLongClick, itemMoreClick)
+        holder.bind(btnInterface.content.blockList[position])
     }
 
     override fun getItemCount() = btnInterface.content.blockList.size

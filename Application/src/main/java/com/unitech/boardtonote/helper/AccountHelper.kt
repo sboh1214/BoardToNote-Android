@@ -1,8 +1,11 @@
 package com.unitech.boardtonote.helper
 
+import android.content.Context
 import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.unitech.boardtonote.adapter.ListCloudAdapter
+import java.io.File
 
 object AccountHelper
 {
@@ -30,6 +33,14 @@ object AccountHelper
             user = FirebaseAuth.getInstance().currentUser
         }
 
-        fun onSignOut()
+        fun onSignOut(context: Context, adapter: ListCloudAdapter)
+        {
+            adapter.listCloudClass.cloudList.forEach {
+                File(it.dirPath).deleteRecursively()
+                File(it.dirPath).delete()
+                adapter.listCloudClass.cloudList.remove(it)
+            }
+            adapter.notifyDataSetChanged()
+        }
     }
 }

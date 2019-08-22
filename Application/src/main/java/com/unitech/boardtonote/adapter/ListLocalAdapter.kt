@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_main.view.*
 
 class ListLocalAdapter(val listLocalClass: ListLocalClass,
                        private val itemClick: (BTNLocalClass) -> Unit,
-                       private val itemMoreClick: (BTNLocalClass, View) -> Boolean) :
+                       private val itemMoreClick: (BTNLocalClass) -> Boolean) :
         RecyclerView.Adapter<ListLocalAdapter.LocalHolder>()
 {
     init
@@ -20,14 +20,19 @@ class ListLocalAdapter(val listLocalClass: ListLocalClass,
         setHasStableIds(true)
     }
 
-    inner class LocalHolder(item: View) : RecyclerView.ViewHolder(item)
+    inner class LocalHolder(item: View) : RecyclerView.ViewHolder(item), View.OnClickListener
     {
-        fun bind(btnClass: BTNLocalClass, itemClick: (BTNLocalClass) -> Unit, itemMoreClick: (BTNLocalClass, View) -> Boolean)
+        fun bind(btnClass: BTNLocalClass)
         {
             itemView.Title_Text.text = btnClass.dirName
-            itemView.setOnClickListener { itemClick(btnClass) }
-            itemView.Button_More.setOnClickListener { itemMoreClick(btnClass, itemView) }
+            itemView.setOnClickListener(this)
+            itemView.Button_Main_More.setOnClickListener { itemMoreClick(btnClass) }
             Glide.with(itemView).load(btnClass.oriPic).centerInside().into(itemView.Image_Preview)
+        }
+
+        override fun onClick(view: View?)
+        {
+            itemClick(listLocalClass.localList[adapterPosition])
         }
     }
 
@@ -39,10 +44,11 @@ class ListLocalAdapter(val listLocalClass: ListLocalClass,
 
     override fun onBindViewHolder(holder: LocalHolder, position: Int)
     {
-        holder.bind(listLocalClass.localList[position], itemClick, itemMoreClick)
+        holder.bind(listLocalClass.localList[position])
     }
 
     override fun getItemCount() = listLocalClass.localList.size
 
     override fun getItemId(position: Int): Long = position.toLong()
+
 }

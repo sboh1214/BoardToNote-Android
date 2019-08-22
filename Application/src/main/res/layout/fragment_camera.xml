@@ -28,51 +28,47 @@
             android:layout_alignParentBottom="true"/>
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:background="@color/transparent"
-            android:layout_margin="12dp">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/transparent"
+        android:orientation="vertical">
 
         <ImageButton
             android:id="@+id/Button_Gallery"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:background="@color/transparent"
-                android:padding="12dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_collections_white"
-                android:contentDescription="@string/gallery_button"/>
-
-        <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:contentDescription="@string/gallery_button"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_collections_white" />
 
         <ImageButton
             android:id="@+id/Button_Picture"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:background="@color/transparent"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_shutter_state"
-                android:contentDescription="@string/shutter_button"/>
-
-        <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:contentDescription="@string/shutter_button"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_shutter_state" />
 
         <ImageButton
             android:id="@+id/Button_Note"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:background="@color/transparent"
-                android:padding="12dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_bookmark"
-                android:contentDescription="@string/collection_button"/>
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:contentDescription="@string/collection_button"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_bookmark" />
 
     </LinearLayout>
 

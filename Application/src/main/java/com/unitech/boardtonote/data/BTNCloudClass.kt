@@ -51,17 +51,8 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
     override val tag = "BTNCloudClass"
     private val firebaseUrl = "gs://board-to-note.appspot.com/"
 
-    override val oriPic: Bitmap? by lazy {
-        try
-        {
-            BitmapFactory.decodeFile(oriPicPath)
-        }
-        catch (e: Exception)
-        {
-            Log.e(tag, e.toString())
-            null
-        }
-    }
+    override val oriPic: Bitmap?
+        get() = BitmapFactory.decodeFile(oriPicPath)
     override var onLocationAndState: (Int, Int?) -> Boolean = { _, _ -> true }
     override var state: Int = Constant.stateUnknown
         set(value)

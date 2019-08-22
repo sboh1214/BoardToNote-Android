@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.data.BTNInterface
@@ -23,13 +24,13 @@ class BottomBlockFragment(private val block: BTNInterface.BlockClass)
 {
     private lateinit var snackBarInterface: SnackBarInterface
     private lateinit var tts: TextToSpeech
-    private lateinit var editActivity: EditActivity
+    private lateinit var eA: EditActivity
 
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
         snackBarInterface = activity as SnackBarInterface
-        editActivity = activity as EditActivity
+        eA = activity as EditActivity
         tts = TextToSpeech(activity!!.applicationContext, TextToSpeech.OnInitListener {
             fun onInit(status: Int)
             {
@@ -63,19 +64,37 @@ class BottomBlockFragment(private val block: BTNInterface.BlockClass)
             dismiss()
         }
         view.Button_Delete.setOnClickListener {
-            editActivity.btnClass.content.blockList.remove(block)
-            editActivity.blockAdapter.notifyDataSetChanged()
+            eA.btnClass.content.blockList.remove(block)
+            eA.btnClass.saveContent()
+            eA.blockAdapter.notifyDataSetChanged()
             snackBarInterface.snackBar("Deleted Block")
             dismiss()
         }
         view.Button_Share.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, editActivity.btnClass.dirName)
+                putExtra(Intent.EXTRA_SUBJECT, eA.btnClass.dirName)
                 putExtra(Intent.EXTRA_TEXT, block.text)
             }
-            editActivity.startActivity(Intent.createChooser(intent, "Share Block"))
+            eA.startActivity(Intent.createChooser(intent, "Share Block"))
             dismiss()
+        }
+        view.Button_Edit.setOnClickListener {
+            dismiss()
+            eA.supportFragmentManager
+                    .beginTransaction()
+                    .replace(com.unitech.boardtonote.R.id.Frame_Edit, BlockFragment(block))
+                    .addToBackStack(null)
+                    .commit()
+        }
+        view.Button_Info.setOnClickListener {
+            dismiss()
+            AlertDialog.Builder(eA).apply {
+                setTitle("More Info")
+                setMessage("Text : ${block.text} \nFont Size : ${block.fontSize} \nConfidence : ${block.confidence}")
+                setPositiveButton("Dismiss") { dialogInterface, _ -> dialogInterface.dismiss() }
+                show()
+            }
         }
         return view
     }

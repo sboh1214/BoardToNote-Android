@@ -40,7 +40,7 @@ class ListLocalFragment : Fragment()
         super.onActivityCreated(savedInstanceState)
         mA.localAdapter = ListLocalAdapter(ListLocalClass(activity!!),
                 { btnClass -> itemClick(btnClass) },
-                { btnClass, _ -> itemMoreClick(btnClass) })
+                { btnClass -> itemMoreClick(btnClass) })
 
         val metrics = DisplayMetrics()
         mA.windowManager.defaultDisplay.getMetrics(metrics)

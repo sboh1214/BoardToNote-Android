@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.data.BTNCloudClass
@@ -37,6 +38,10 @@ class BottomCloudFragment(private val btnClass: BTNCloudClass) : BottomSheetDial
         }
         view.Button_Delete.setOnClickListener {
             delete(btnClass)
+            dismiss()
+        }
+        view.Button_Share.setOnClickListener {
+            btnClass.share(Constant.sharePdf)
             dismiss()
         }
         return view

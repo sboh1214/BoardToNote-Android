@@ -20,7 +20,6 @@ import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.fragment_edit.*
 
-
 class BlockListFragment : Fragment()
 {
     private lateinit var eA: EditActivity
@@ -58,9 +57,8 @@ class BlockListFragment : Fragment()
     {
         Log.i(tag, "Recycler_Edit Init")
         eA.blockAdapter = BlockAdapter(eA.btnClass,
-                { btnClass -> itemClick(btnClass) },
-                { btnClass -> itemLongClick(btnClass) },
-                { btnClass, _ -> itemMoreClick(btnClass) })
+                { btnClass, itemView -> itemClick(btnClass, itemView) },
+                { btnClass -> itemMoreClick(btnClass) })
 
         Recycler_Edit.apply {
             setHasFixedSize(true)
@@ -77,19 +75,13 @@ class BlockListFragment : Fragment()
         return true
     }
 
-    private fun itemClick(blockClass: BTNInterface.BlockClass)
+    private fun itemClick(blockClass: BTNInterface.BlockClass, itemView: View)
     {
         eA.supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.Frame_Edit, BlockFragment(blockClass))
+                .replace(R.id.Frame_Edit, BottomBlockFragment(blockClass))
                 .addToBackStack(null)
                 .commit()
-        return
-    }
-
-    private fun itemLongClick(btnClass: BTNInterface.BlockClass): Boolean
-    {
-        return true
     }
 
     private fun itemMoreClick(btnClass: BTNInterface.BlockClass): Boolean

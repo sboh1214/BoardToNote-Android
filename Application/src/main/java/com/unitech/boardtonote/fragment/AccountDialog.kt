@@ -1,6 +1,7 @@
 package com.unitech.boardtonote.fragment
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,8 +17,10 @@ import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
+import java.io.File
 
 class AccountDialog : DialogFragment()
 {
@@ -54,27 +57,33 @@ class AccountDialog : DialogFragment()
             val buttonPassword = view.findViewById<AppCompatButton>(R.id.Button_Password)
             val buttonSignOut = view.findViewById<AppCompatButton>(R.id.Button_SignOut)
             val buttonAccountDelete = view.findViewById<AppCompatButton>(R.id.Button_AccountDelete)
+            val buttonDismiss = view.findViewById<AppCompatButton>(R.id.Button_Dismiss)
             buttonPassword.setOnClickListener {
 
                 dismiss()
             }
             buttonSignOut.setOnClickListener {
+                val a = activity as Context
+                val adapter = (activity as MainActivity).cloudAdapter
                 AuthUI.getInstance()
                         .signOut(context!!)
                         .addOnCompleteListener {
-                            accountInterface.onSignOut()
+                            File("${a.filesDir.path}/cloud").delete()
+                            accountInterface.onSignOut(a, adapter)
                             Log.i(tag, "User account signed out.")
                             snackBarInterface.snackBar("User account signed out.")
                         }
                 dismiss()
             }
             buttonAccountDelete.setOnClickListener {
+                val a = activity as Context
+                val adapter = (activity as MainActivity).cloudAdapter
                 AuthUI.getInstance()
                         .delete(context!!)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful)
                             {
-                                accountInterface.onSignOut()
+                                accountInterface.onSignOut(a, adapter)
                                 Log.i(tag, "User account deleted.")
                                 snackBarInterface.snackBar("User account deleted.")
                             }
@@ -89,6 +98,9 @@ class AccountDialog : DialogFragment()
                             Log.d(tag, e.toString())
                             snackBarInterface.snackBar("Fail to delete user account")
                         }
+                dismiss()
+            }
+            buttonDismiss.setOnClickListener {
                 dismiss()
             }
             builder.setView(view)

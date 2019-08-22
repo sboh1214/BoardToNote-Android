@@ -3,7 +3,6 @@ package com.unitech.boardtonote.data
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.unitech.boardtonote.Constant
 import java.io.File
 
@@ -18,17 +17,8 @@ class BTNLocalClass(override val context: Context, override var dirName: String?
     override val location = Constant.locationLocal
     override val state: Int? = null
 
-    override val oriPic: Bitmap? by lazy {
-        try
-        {
-            BitmapFactory.decodeFile(oriPicPath)
-        }
-        catch (e: Exception)
-        {
-            Log.e(tag, e.toString())
-            null
-        }
-    }
+    override val oriPic: Bitmap?
+        get() = BitmapFactory.decodeFile(oriPicPath)
     override val tag = "BTNLocalClass"
 
     init

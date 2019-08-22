@@ -177,7 +177,7 @@ interface BTNInterface
         }
     }
 
-    fun asyncGetContent(onSuccess: (ContentClass) -> Boolean, onFailure: () -> Boolean)
+    fun asyncGetContent(onSuccess: () -> Boolean, onFailure: () -> Boolean)
     {
         if (!File(contentPath).exists())
         {
@@ -188,11 +188,11 @@ interface BTNInterface
         {
             val mapper = jacksonObjectMapper()
             content = mapper.readValue(File(contentPath))
-            onSuccess(content)
+            onSuccess()
         }
     }
 
-    private fun analyze(onSuccess: (ContentClass) -> Boolean, onFailure: () -> Boolean)
+    fun analyze(onSuccess: () -> Boolean, onFailure: () -> Boolean)
     {
         if (oriPic == null)
         {
@@ -205,22 +205,15 @@ interface BTNInterface
         val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
         detector.processImage(image).apply {
             addOnSuccessListener { firebaseVisionText ->
-                try
-                {
-                    trace.stop()
-                    saveVisionText(firebaseVisionText)
-                    Log.i(tag, "analyze() Success $dirName")
-                    Log.v(tag, firebaseVisionText.text.replace("\n", " "))
-                    onSuccess(content)
-                }
-                catch (e: Exception)
-                {
-                    onFailure()
-                    Log.e(tag, "analyze() Exception $dirName")
-                }
+                trace.stop()
+                saveVisionText(firebaseVisionText)
+                Log.i(tag, "analyze() Success $dirName")
+                Log.v(tag, firebaseVisionText.text.replace("\n", " "))
+                onSuccess()
             }
             addOnFailureListener { e ->
                 trace.stop()
+                onFailure()
                 Log.i(tag, "analyze() Failure $dirName")
                 Log.w(tag, e.toString())
             }
@@ -234,45 +227,21 @@ interface BTNInterface
         for (b in visionText.textBlocks)
         {
             Log.v(tag, "saveVisionText block ${b.text.replace("\n", " ")}")
-            val blockClass = BlockClass(b.text, b.confidence, b.recognizedLanguages.map { lang -> lang.languageCode }, b.boundingBox, 14f)
+            val blockClass = BlockClass(b.text, b.confidence, b.recognizedLanguages.map { lang -> lang.languageCode }, b.boundingBox, 22f)
             list.add(blockClass)
         }
         content = ContentClass(list)
-        try
-        {
-            val mapper = jacksonObjectMapper()
-            mapper.writerWithDefaultPrettyPrinter().writeValue(File(contentPath), content)
-        }
-        catch (e: Exception)
-        {
-            Log.e(tag, e.toString())
-        }
+        val mapper = jacksonObjectMapper()
+        mapper.writerWithDefaultPrettyPrinter().writeValue(File(contentPath), content)
     }
 
-    fun share(share: Int): Intent?
+    fun share(share: Int)
     {
-        return when (share)
+        when (share)
         {
             Constant.sharePdf ->
             {
-                val file = exportPdf()
-                val uri = if (Build.VERSION.SDK_INT >= 24)
-                {
-                    FileProvider.getUriForFile(context,
-                            context.applicationContext.packageName + ".fileprovider", file)
-                }
-                else
-                {
-                    Uri.fromFile(file)
-                }
-                val intent = Intent()
-                intent.apply {
-                    putExtra("EXTRA_SUBJECT", dirName)
-                    putExtra(Intent.EXTRA_STREAM, uri)
-                    type = "application/*"
-                    action = Intent.ACTION_SEND
-                }
-                intent
+                exportPdf()
             }
             Constant.shareZip ->
             {
@@ -284,62 +253,80 @@ interface BTNInterface
                     type = "application/*"
                     action = Intent.ACTION_SEND
                 }
-                intent
             }
             else              ->
             {
-                null
             }
         }
     }
 
-    private fun exportPdf(): File
+    private fun exportPdf()
     {
         if (Build.VERSION.SDK_INT < 19)
         {
             throw Exception()
         }
-        val document = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(612, 792, 1).create()
+        asyncGetContent({
+            val document = PdfDocument()
+            val pageInfo = PdfDocument.PageInfo.Builder(612, 792, 1).create()
 
-        val page = document.startPage(pageInfo)
+            val page = document.startPage(pageInfo)
 
-        val textPaint = TextPaint()
-        textPaint.color = Color.BLACK
-        textPaint.textSize = 12f
-        textPaint.textAlign = Paint.Align.LEFT
+            val textPaint = TextPaint()
+            textPaint.color = Color.BLACK
+            textPaint.textSize = 12f
+            textPaint.textAlign = Paint.Align.LEFT
 
-        val textTypeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
-        textPaint.typeface = textTypeface
+            val textTypeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
+            textPaint.typeface = textTypeface
 
-        var text = ""
-        this.content.blockList.forEach {
-            text += it.text
-            text += "\n"
-        }
+            var text = ""
+            this.content.blockList.forEach {
+                text += it.text
+                text += "\n"
+            }
 
-        val mTextLayout = StaticLayout(text, textPaint, page.canvas.width,
-                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+            val mTextLayout = StaticLayout(text, textPaint, page.canvas.width,
+                    Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
 
-        mTextLayout.draw(page.canvas)
-        document.finishPage(page)
+            mTextLayout.draw(page.canvas)
+            document.finishPage(page)
 
-        try
-        {
-            val mFileOutStream = FileOutputStream(File(pdfPath))
+            try
+            {
+                val mFileOutStream = FileOutputStream(File(pdfPath))
 
-            // write the document content
-            document.writeTo(mFileOutStream)
-            mFileOutStream.flush()
-            mFileOutStream.close()
+                // write the document content
+                document.writeTo(mFileOutStream)
+                mFileOutStream.flush()
+                mFileOutStream.close()
 
-        }
-        catch (e: Exception)
-        {
-            Log.e(tag, e.toString())
-        }
-        document.close()
-        return File(pdfPath)
+            }
+            catch (e: Exception)
+            {
+                Log.e(tag, e.toString())
+            }
+            document.close()
+            val file = File(pdfPath)
+            val uri = if (Build.VERSION.SDK_INT >= 24)
+            {
+                FileProvider.getUriForFile(context,
+                        context.applicationContext.packageName + ".fileprovider", file)
+            }
+            else
+            {
+                Uri.fromFile(file)
+            }
+            val intent = Intent()
+            intent.apply {
+                putExtra("EXTRA_SUBJECT", dirName)
+                putExtra(Intent.EXTRA_STREAM, uri)
+                type = "application/*"
+                action = Intent.ACTION_SEND
+            }
+            context.startActivity(intent)
+            true
+        }, { false })
     }
 
     private fun exportZip(): File
