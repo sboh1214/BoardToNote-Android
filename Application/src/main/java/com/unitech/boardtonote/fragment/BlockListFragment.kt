@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
@@ -19,6 +20,7 @@ import com.unitech.boardtonote.adapter.BlockAdapter
 import com.unitech.boardtonote.data.BTNInterface
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.fragment_edit.*
+
 
 class BlockListFragment : Fragment()
 {
@@ -79,14 +81,27 @@ class BlockListFragment : Fragment()
     {
         eA.supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.Frame_Edit, BottomBlockFragment(blockClass))
+                .replace(R.id.Frame_Edit, BlockFragment(blockClass))
                 .addToBackStack(null)
                 .commit()
     }
 
     private fun itemMoreClick(btnClass: BTNInterface.BlockClass): Boolean
     {
-        BottomBlockFragment(btnClass).show(eA.supportFragmentManager, "bottom_block")
+        val dialog = BottomBlockFragment(btnClass)
+
+        val contentView = View.inflate(context, R.layout.bottom_block, null)
+
+        val displayMetrics = activity!!.resources.displayMetrics
+
+        val width = displayMetrics.widthPixels
+        val height = displayMetrics.heightPixels
+
+        val maxHeight = (height * 0.88).toInt()
+
+        val mBehavior = BottomSheetBehavior.from(contentView.parent as View)
+        mBehavior.peekHeight = maxHeight
+        dialog.show(eA.supportFragmentManager, null)
         return true
     }
 
