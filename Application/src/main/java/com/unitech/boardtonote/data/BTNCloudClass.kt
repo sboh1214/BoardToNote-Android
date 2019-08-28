@@ -86,7 +86,7 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
                 .getInstance(firebaseUrl).reference
                 .child("user/${AccountHelper.uid}/$dirName.zip").metadata
                 .addOnSuccessListener {
-                    cloudTimeStamp = it.getCustomMetadata(Constant.timestamp)
+                    cloudTimeStamp = it.getCustomMetadata(Constant.timestamp) as String
                     Log.d(tag, "$dirName : init cloudTimeStamp : $cloudTimeStamp")
                     when
                     {
@@ -101,7 +101,7 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
                 }
     }
 
-    override lateinit var content: BTNInterface.ContentClass
+    override var content: BTNInterface.ContentClass = BTNInterface.ContentClass(arrayListOf())
 
     override val parentDirPath: String
         get() = "${context.filesDir.path}/cloud"

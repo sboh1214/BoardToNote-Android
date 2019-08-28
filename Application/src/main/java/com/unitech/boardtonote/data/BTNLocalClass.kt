@@ -39,7 +39,7 @@ class BTNLocalClass(override val context: Context, override var dirName: String?
         }
     }
 
-    override lateinit var content: BTNInterface.ContentClass
+    override var content: BTNInterface.ContentClass  = BTNInterface.ContentClass(arrayListOf())
 
     override val parentDirPath: String
         get()
