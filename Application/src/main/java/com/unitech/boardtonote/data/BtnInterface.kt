@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.ZipOutputStream
 
-interface BTNInterface
+interface BtnInterface
 {
     val location: Int
     val state: Int?
@@ -52,7 +52,7 @@ interface BTNInterface
 
     val oriPic: Bitmap?
 
-    var content: ContentClass
+    var content: ContentClass?
 
     data class ContentClass
     (
@@ -281,7 +281,7 @@ interface BTNInterface
             textPaint.typeface = textTypeface
 
             var text = ""
-            this.content.blockList.forEach {
+            this.content!!.blockList.forEach {
                 text += it.text
                 text += "\n"
             }

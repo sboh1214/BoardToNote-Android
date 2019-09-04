@@ -14,12 +14,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.activity.EditActivity
-import com.unitech.boardtonote.data.BTNInterface
+import com.unitech.boardtonote.data.BtnInterface
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.bottom_block.view.*
 import java.util.*
 
-class BottomBlockFragment(private val block: BTNInterface.BlockClass)
+class BottomBlockFragment(private val block: BtnInterface.BlockClass)
     : BottomSheetDialogFragment()
 {
     private lateinit var snackBarInterface: SnackBarInterface
@@ -64,7 +64,7 @@ class BottomBlockFragment(private val block: BTNInterface.BlockClass)
             dismiss()
         }
         view.Button_Delete.setOnClickListener {
-            eA.btnClass.content.blockList.remove(block)
+            eA.btnClass.content!!.blockList.remove(block)
             eA.btnClass.saveContent()
             eA.blockAdapter.notifyDataSetChanged()
             snackBarInterface.snackBar("Deleted Block")

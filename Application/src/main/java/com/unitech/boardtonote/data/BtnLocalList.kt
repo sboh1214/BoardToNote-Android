@@ -4,16 +4,16 @@ import android.content.Context
 import android.util.Log
 import java.io.File
 
-class ListLocalClass(val context: Context)
+class BtnLocalList(val context: Context)
 {
-    private val tag = "ListLocalClass"
+    private val tag = "BtnLocalList"
 
     val localList by lazy { getDirList(context) }
     private val localPath by lazy { "${context.filesDir.absolutePath}/local" }
 
-    private fun getDirList(context: Context): ArrayList<BTNLocalClass>
+    private fun getDirList(context: Context): ArrayList<BtnLocal>
     {
-        val arrayList = arrayListOf<BTNLocalClass>()
+        val arrayList = arrayListOf<BtnLocal>()
         File(localPath).listFiles()?.forEach {
             if (!it.isDirectory)
             {
@@ -22,15 +22,15 @@ class ListLocalClass(val context: Context)
             if (it.name.substringAfterLast('.') == "btn")
             {
                 val dirName = it.name.substringBeforeLast('.')
-                arrayList.add(BTNLocalClass(context, dirName))
+                arrayList.add(BtnLocal(context, dirName))
             }
         }
         return arrayList
     }
 
-    fun rename(btnLocalClass: BTNLocalClass, name: String): Boolean
+    fun rename(btnLocal: BtnLocal, name: String): Boolean
     {
-        val srcDir = File(btnLocalClass.dirPath)
+        val srcDir = File(btnLocal.dirPath)
         val dstDir = File("$localPath/$name.btn")
         return if (dstDir.exists())
         {
@@ -40,20 +40,20 @@ class ListLocalClass(val context: Context)
         else
         {
             srcDir.renameTo(dstDir)
-            btnLocalClass.dirName = name
+            btnLocal.dirName = name
             Log.i(tag, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
             true
         }
     }
 
-    fun delete(btnLocalClass: BTNLocalClass): Boolean
+    fun delete(btnLocal: BtnLocal): Boolean
     {
         return try
         {
-            val dir = File(btnLocalClass.dirPath)
+            val dir = File(btnLocal.dirPath)
             dir.deleteRecursively()
             dir.delete()
-            localList.remove(btnLocalClass)
+            localList.remove(btnLocal)
             true
         }
         catch (e: Exception)

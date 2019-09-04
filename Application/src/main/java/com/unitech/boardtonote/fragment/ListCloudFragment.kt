@@ -18,8 +18,8 @@ import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.adapter.ListCloudAdapter
-import com.unitech.boardtonote.data.BTNCloudClass
-import com.unitech.boardtonote.data.ListCloudClass
+import com.unitech.boardtonote.data.BtnCloud
+import com.unitech.boardtonote.data.BtnCloudList
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.fragment_cloud.*
@@ -50,7 +50,7 @@ class ListCloudFragment : Fragment()
         {
             return
         }
-        mA.cloudAdapter = ListCloudAdapter(ListCloudClass(activity!!),
+        mA.cloudAdapter = ListCloudAdapter(BtnCloudList(activity!!),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass -> itemMoreClick(btnClass) })
 
@@ -65,7 +65,7 @@ class ListCloudFragment : Fragment()
             itemAnimator = DefaultItemAnimator()
         }
 
-        mA.cloudAdapter.listCloudClass.getDirListAsync {
+        mA.cloudAdapter.btnCloudList.getDirListAsync {
             mA.cloudAdapter.notifyDataSetChanged()
             true
         }
@@ -85,18 +85,18 @@ class ListCloudFragment : Fragment()
         }
     }
 
-    private fun itemClick(btnClass: BTNCloudClass)
+    private fun itemClick(btn: BtnCloud)
     {
         val intent = Intent(activity, EditActivity::class.java)
-        intent.putExtra("dirName", btnClass.dirName)
+        intent.putExtra("dirName", btn.dirName)
         intent.putExtra("location", Constant.locationCloud)
         startActivity(intent)
         return
     }
 
-    private fun itemMoreClick(btnClass: BTNCloudClass): Boolean
+    private fun itemMoreClick(btn: BtnCloud): Boolean
     {
-        val fragment = BottomCloudFragment(btnClass)
+        val fragment = BottomCloudFragment(btn)
         fragment.show(activity!!.supportFragmentManager, "bottom_local")
         return true
     }

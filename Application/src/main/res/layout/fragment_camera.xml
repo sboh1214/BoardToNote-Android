@@ -40,34 +40,22 @@
 
         <ImageButton
             android:id="@+id/Button_Gallery"
-            android:layout_width="80dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/transparent"
+            style="@style/BTN.Button_Camera"
             android:contentDescription="@string/gallery_button"
             android:padding="12dp"
-            android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_collections_white" />
 
         <ImageButton
             android:id="@+id/Button_Picture"
-            android:layout_width="80dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/transparent"
+            style="@style/BTN.Button_Camera"
             android:contentDescription="@string/shutter_button"
-            android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_shutter_state" />
 
         <ImageButton
             android:id="@+id/Button_Note"
-            android:layout_width="80dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/transparent"
+            style="@style/BTN.Button_Camera"
             android:contentDescription="@string/collection_button"
             android:padding="12dp"
-            android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_bookmark" />
 
     </LinearLayout>

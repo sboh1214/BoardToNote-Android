@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
-import com.unitech.boardtonote.data.BTNCloudClass
-import com.unitech.boardtonote.data.ListCloudClass
+import com.unitech.boardtonote.data.BtnCloud
+import com.unitech.boardtonote.data.BtnCloudList
 import kotlinx.android.synthetic.main.item_main.view.*
 
-class ListCloudAdapter(val listCloudClass: ListCloudClass,
-                       private val itemClick: (BTNCloudClass) -> Unit,
-                       private val itemMoreClick: (BTNCloudClass) -> Boolean) :
+class ListCloudAdapter(val btnCloudList: BtnCloudList,
+                       private val itemClick: (BtnCloud) -> Unit,
+                       private val itemMoreClick: (BtnCloud) -> Boolean) :
         RecyclerView.Adapter<ListCloudAdapter.ListCloudHolder>()
 {
     init
@@ -23,24 +23,24 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
 
     inner class ListCloudHolder(item: View) : RecyclerView.ViewHolder(item), View.OnClickListener
     {
-        fun bind(btnClass: BTNCloudClass): Boolean
+        fun bind(btn: BtnCloud): Boolean
         {
-            itemView.Title_Text.text = btnClass.dirName
+            itemView.Title_Text.text = btn.dirName
             itemView.setOnClickListener(this)
-            itemView.Button_Main_More.setOnClickListener { itemMoreClick(btnClass) }
-            Glide.with(itemView).load(btnClass.oriPic).centerInside().into(itemView.Image_Preview)
-            showState(itemView, btnClass, btnClass.state)
-            btnClass.onLocationAndState = { _, state -> showState(itemView, btnClass, state) }
+            itemView.Button_Main_More.setOnClickListener { itemMoreClick(btn) }
+            Glide.with(itemView).load(btn.oriPic).centerInside().into(itemView.Image_Preview)
+            showState(itemView, btn, btn.state)
+            btn.onLocationAndState = { _, state -> showState(itemView, btn, state) }
             return true
         }
 
         override fun onClick(view: View?)
         {
-            itemClick(listCloudClass.cloudList[adapterPosition])
+            itemClick(btnCloudList.cloudList[adapterPosition])
         }
     }
 
-    private fun showState(itemView: View, btnClass: BTNCloudClass, state: Int?): Boolean
+    private fun showState(itemView: View, btn: BtnCloud, state: Int?): Boolean
     {
         return when (state)
         {
@@ -57,7 +57,7 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
             Constant.stateSync     ->
             {
                 Glide.with(itemView).asGif().load(R.raw.ic_sync_light).into(itemView.Image_Location)
-                Glide.with(itemView).load(btnClass.oriPic).centerInside().into(itemView.Image_Preview)
+                Glide.with(itemView).load(btn.oriPic).centerInside().into(itemView.Image_Preview)
                 true
             }
             else                   ->
@@ -76,10 +76,10 @@ class ListCloudAdapter(val listCloudClass: ListCloudClass,
 
     override fun onBindViewHolder(holder: ListCloudHolder, position: Int)
     {
-        holder.bind(listCloudClass.cloudList[position])
+        holder.bind(btnCloudList.cloudList[position])
     }
 
-    override fun getItemCount() = listCloudClass.cloudList.size
+    override fun getItemCount() = btnCloudList.cloudList.size
 
     override fun getItemId(position: Int): Long = position.toLong()
 }

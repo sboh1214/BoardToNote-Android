@@ -35,10 +35,10 @@ object AccountHelper
 
         fun onSignOut(context: Context, adapter: ListCloudAdapter)
         {
-            adapter.listCloudClass.cloudList.forEach {
+            adapter.btnCloudList.cloudList.forEach {
                 File(it.dirPath).deleteRecursively()
                 File(it.dirPath).delete()
-                adapter.listCloudClass.cloudList.remove(it)
+                adapter.btnCloudList.cloudList.remove(it)
             }
             adapter.notifyDataSetChanged()
         }

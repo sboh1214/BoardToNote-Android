@@ -10,14 +10,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.MainActivity
-import com.unitech.boardtonote.data.BTNLocalClass
+import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.bottom_local.view.*
 import kotlinx.android.synthetic.main.dialog_rename.view.*
 
-class BottomLocalFragment(private val btnClass: BTNLocalClass) : BottomSheetDialogFragment()
+class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment()
 {
     private lateinit var mA: MainActivity
     private lateinit var snackBarInterface: SnackBarInterface
@@ -32,13 +32,13 @@ class BottomLocalFragment(private val btnClass: BTNLocalClass) : BottomSheetDial
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val view = inflater.inflate(R.layout.bottom_local, container, false)
-        view.Text_Title.text = btnClass.dirName
+        view.Text_Title.text = btn.dirName
         view.Button_Rename.setOnClickListener {
-            rename(btnClass)
+            rename(btn)
             dismiss()
         }
         view.Button_Delete.setOnClickListener {
-            delete(btnClass)
+            delete(btn)
             dismiss()
         }
         view.Button_Upload.setOnClickListener {
@@ -48,21 +48,21 @@ class BottomLocalFragment(private val btnClass: BTNLocalClass) : BottomSheetDial
                 dismiss()
                 return@setOnClickListener
             }
-            mA.cloudAdapter.listCloudClass.moveFromLocal(mA.localAdapter.listLocalClass, btnClass)
+            mA.cloudAdapter.btnCloudList.moveFromLocal(mA.localAdapter.btnLocalList, btn)
             mA.localAdapter.notifyDataSetChanged()
             mA.cloudAdapter.notifyDataSetChanged()
             dismiss()
         }
         view.Button_Share.setOnClickListener {
-            btnClass.share(Constant.sharePdf)
+            btn.share(Constant.sharePdf)
             dismiss()
         }
         return view
     }
 
-    private fun rename(btnLocalClass: BTNLocalClass)
+    private fun rename(btnLocal: BtnLocal)
     {
-        val srcName = btnClass.dirName
+        val srcName = btn.dirName
         var dstName: String?
 
         AlertDialog.Builder(activity as Context).apply {
@@ -70,7 +70,7 @@ class BottomLocalFragment(private val btnClass: BTNLocalClass) : BottomSheetDial
             val view = layoutInflater.inflate(R.layout.dialog_rename, container, false)
             setPositiveButton("Rename") { _, _ ->
                 dstName = view.Edit_Rename.text.toString()
-                mA.localAdapter.listLocalClass.rename(btnLocalClass, view.Edit_Rename.text.toString())
+                mA.localAdapter.btnLocalList.rename(btnLocal, view.Edit_Rename.text.toString())
                 mA.localAdapter.notifyDataSetChanged()
                 snackBarInterface.snackBar("$srcName renamed to $dstName")
             }
@@ -81,10 +81,10 @@ class BottomLocalFragment(private val btnClass: BTNLocalClass) : BottomSheetDial
         }.show()
     }
 
-    fun delete(btnLocalClass: BTNLocalClass)
+    fun delete(btnLocal: BtnLocal)
     {
-        mA.localAdapter.listLocalClass.delete(btnLocalClass)
+        mA.localAdapter.btnLocalList.delete(btnLocal)
         mA.localAdapter.notifyDataSetChanged()
-        snackBarInterface.snackBar("${btnClass.dirName} deleted")
+        snackBarInterface.snackBar("${btn.dirName} deleted")
     }
 }

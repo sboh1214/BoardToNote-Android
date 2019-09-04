@@ -17,7 +17,7 @@ import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.adapter.BlockAdapter
-import com.unitech.boardtonote.data.BTNInterface
+import com.unitech.boardtonote.data.BtnInterface
 import com.unitech.boardtonote.helper.SnackBarInterface
 import kotlinx.android.synthetic.main.fragment_edit.*
 
@@ -77,7 +77,7 @@ class BlockListFragment : Fragment()
         return true
     }
 
-    private fun itemClick(blockClass: BTNInterface.BlockClass, itemView: View)
+    private fun itemClick(blockClass: BtnInterface.BlockClass, itemView: View)
     {
         eA.supportFragmentManager
                 .beginTransaction()
@@ -86,7 +86,7 @@ class BlockListFragment : Fragment()
                 .commit()
     }
 
-    private fun itemMoreClick(btnClass: BTNInterface.BlockClass): Boolean
+    private fun itemMoreClick(btnClass: BtnInterface.BlockClass): Boolean
     {
         val dialog = BottomBlockFragment(btnClass)
 

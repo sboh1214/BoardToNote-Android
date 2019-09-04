@@ -8,6 +8,13 @@
     android:id="@+id/Coor_Main"
     tools:context=".activity.MainActivity">
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         style="@style/BTN.ActionBar"
@@ -18,20 +25,12 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorAccent" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-
-    <androidx.viewpager.widget.ViewPager
-        android:layout_width="match_parent"
-        android:id="@+id/pager"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
-
         <com.google.android.material.tabs.TabLayout
+            android:id="@+id/Tab_Main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </androidx.viewpager.widget.ViewPager>
+            android:layout_height="wrap_content"
+            android:background="?attr/colorAccent" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:id="@+id/Linear_Floating"

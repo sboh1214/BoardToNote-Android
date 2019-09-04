@@ -4,18 +4,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.unitech.boardtonote.data.BTNInterface
+import com.unitech.boardtonote.data.BtnInterface
 import kotlinx.android.synthetic.main.item_edit.view.*
 
 
-class BlockAdapter(val btnInterface: BTNInterface,
-                   private val itemClick: (BTNInterface.BlockClass, View) -> Unit,
-                   private val itemMoreClick: (BTNInterface.BlockClass) -> Boolean) :
+class BlockAdapter(val btnInterface: BtnInterface,
+                   private val itemClick: (BtnInterface.BlockClass, View) -> Unit,
+                   private val itemMoreClick: (BtnInterface.BlockClass) -> Boolean) :
         RecyclerView.Adapter<BlockAdapter.BlockHolder>()
 {
     inner class BlockHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener
     {
-        fun bind(blockClass: BTNInterface.BlockClass)
+        fun bind(blockClass: BtnInterface.BlockClass)
         {
             itemView.Text_Content.text = blockClass.text
             itemView.Text_Content.textSize = blockClass.fontSize
@@ -25,7 +25,7 @@ class BlockAdapter(val btnInterface: BTNInterface,
 
         override fun onClick(view: View?)
         {
-            itemClick(btnInterface.content.blockList[adapterPosition], view!!)
+            itemClick(btnInterface.content!!.blockList[adapterPosition], view!!)
         }
     }
 
@@ -37,8 +37,8 @@ class BlockAdapter(val btnInterface: BTNInterface,
 
     override fun onBindViewHolder(holder: BlockHolder, position: Int)
     {
-        holder.bind(btnInterface.content.blockList[position])
+        holder.bind(btnInterface.content!!.blockList[position])
     }
 
-    override fun getItemCount() = btnInterface.content.blockList.size
+    override fun getItemCount() = btnInterface.content!!.blockList.size
 }

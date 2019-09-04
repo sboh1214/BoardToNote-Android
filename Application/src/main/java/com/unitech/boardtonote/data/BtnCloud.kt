@@ -14,7 +14,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BTNCloudClass(override val context: Context, override var dirName: String?) : BTNInterface
+class BtnCloud(override val context: Context, override var dirName: String?) : BtnInterface
 {
     override val location by lazy { Constant.locationCloud }
 
@@ -48,7 +48,7 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
                 }
     }
 
-    override val tag = "BTNCloudClass"
+    override val tag = "BtnCloud"
     private val firebaseUrl = "gs://board-to-note.appspot.com/"
 
     override val oriPic: Bitmap?
@@ -101,7 +101,19 @@ class BTNCloudClass(override val context: Context, override var dirName: String?
                 }
     }
 
-    override var content: BTNInterface.ContentClass = BTNInterface.ContentClass(arrayListOf())
+    override var content: BtnInterface.ContentClass? = null
+        get()
+        {
+            return if (field == null)
+            {
+                BtnInterface.ContentClass(arrayListOf())
+            }
+            else
+            {
+                field
+            }
+        }
+
 
     override val parentDirPath: String
         get() = "${context.filesDir.path}/cloud"

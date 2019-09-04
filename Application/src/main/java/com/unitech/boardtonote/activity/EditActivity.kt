@@ -18,9 +18,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.BlockAdapter
-import com.unitech.boardtonote.data.BTNCloudClass
-import com.unitech.boardtonote.data.BTNInterface
-import com.unitech.boardtonote.data.BTNLocalClass
+import com.unitech.boardtonote.data.BtnCloud
+import com.unitech.boardtonote.data.BtnInterface
+import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.fragment.BlockListFragment
 import com.unitech.boardtonote.helper.SnackBarInterface
 import com.yalantis.ucrop.UCrop
@@ -32,7 +32,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
 {
     private val tag = "EditActivity"
 
-    lateinit var btnClass: BTNInterface
+    lateinit var btnClass: BtnInterface
 
     lateinit var blockAdapter: BlockAdapter
 
@@ -61,8 +61,8 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
 
         btnClass = when (location)
         {
-            Constant.locationLocal -> BTNLocalClass(this, dirName)
-            Constant.locationCloud -> BTNCloudClass(this, dirName)
+            Constant.locationLocal -> BtnLocal(this, dirName)
+            Constant.locationCloud -> BtnCloud(this, dirName)
             else                   -> throw IllegalArgumentException()
         }
         Edit_Title.setText(btnClass.dirName)

@@ -12,7 +12,7 @@
         <item name="colorError">@color/error</item>
     </style>
 
-    <style name="BTN.ActionBar" parent="@style/Theme.MaterialComponents.DayNight"></style>
+    <style name="BTN.ActionBar" parent="@style/Theme.MaterialComponents.DayNight" />
 
     <style name="BTN.TextView_Popup" parent="@android:style/Widget.TextView">
         <item name="android:layout_height">wrap_content</item>
@@ -38,6 +38,14 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:maxLines">1</item>
         <item name="android:layout_margin">24dp</item>
+    </style>
+
+    <style name="BTN.Button_Camera">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">64dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:scaleType">fitCenter</item>
     </style>
 
 </resources>

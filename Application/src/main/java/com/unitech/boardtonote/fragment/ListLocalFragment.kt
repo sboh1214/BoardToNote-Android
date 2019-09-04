@@ -14,8 +14,8 @@ import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.adapter.ListLocalAdapter
-import com.unitech.boardtonote.data.BTNLocalClass
-import com.unitech.boardtonote.data.ListLocalClass
+import com.unitech.boardtonote.data.BtnLocal
+import com.unitech.boardtonote.data.BtnLocalList
 import kotlinx.android.synthetic.main.fragment_local.*
 
 class ListLocalFragment : Fragment()
@@ -38,7 +38,7 @@ class ListLocalFragment : Fragment()
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
         super.onActivityCreated(savedInstanceState)
-        mA.localAdapter = ListLocalAdapter(ListLocalClass(activity!!),
+        mA.localAdapter = ListLocalAdapter(BtnLocalList(activity!!),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass -> itemMoreClick(btnClass) })
 
@@ -54,18 +54,18 @@ class ListLocalFragment : Fragment()
         }
     }
 
-    private fun itemClick(btnClass: BTNLocalClass)
+    private fun itemClick(btn: BtnLocal)
     {
         val intent = Intent(activity, EditActivity::class.java)
-        intent.putExtra("dirName", btnClass.dirName)
+        intent.putExtra("dirName", btn.dirName)
         intent.putExtra("location", Constant.locationLocal)
         startActivity(intent)
         return
     }
 
-    private fun itemMoreClick(btnClass: BTNLocalClass): Boolean
+    private fun itemMoreClick(btn: BtnLocal): Boolean
     {
-        val fragment = BottomLocalFragment(btnClass)
+        val fragment = BottomLocalFragment(btn)
         fragment.show(activity!!.supportFragmentManager, "bottom_local")
         return true
     }

@@ -26,7 +26,7 @@ import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.activity.MainActivity
-import com.unitech.boardtonote.data.BTNLocalClass
+import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.fragment.ConfirmationDialog
 import com.unitech.boardtonote.fragment.ErrorDialog
 import kotlinx.android.synthetic.main.fragment_camera.*
@@ -751,7 +751,7 @@ class CameraFragment : Fragment(), View.OnClickListener,
             }
             val rotation = activity!!.windowManager.defaultDisplay.rotation
 
-            val btn = BTNLocalClass(context as Context, null)
+            val btn = BtnLocal(context as Context, null)
             file = File(btn.oriPicPath)
 
             // This is the CaptureRequest.Builder that we use to take a picture.

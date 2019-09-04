@@ -10,10 +10,10 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
-import com.unitech.boardtonote.data.BTNInterface
+import com.unitech.boardtonote.data.BtnInterface
 import kotlinx.android.synthetic.main.fragment_block.*
 
-class BlockFragment(private val blockClass: BTNInterface.BlockClass) : Fragment()
+class BlockFragment(private val blockClass: BtnInterface.BlockClass) : Fragment()
 {
     private lateinit var eA: EditActivity
 

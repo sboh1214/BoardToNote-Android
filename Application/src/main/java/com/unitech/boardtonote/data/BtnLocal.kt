@@ -6,10 +6,7 @@ import android.graphics.BitmapFactory
 import com.unitech.boardtonote.Constant
 import java.io.File
 
-/**
- * A Class for Board To Note Project File
- */
-class BTNLocalClass(override val context: Context, override var dirName: String?) : BTNInterface
+class BtnLocal(override val context: Context, override var dirName: String?) : BtnInterface
 {
     override var onLocationAndState: (Int, Int?) -> Boolean = { _, _ -> true }
     override val dirPath: String
@@ -19,7 +16,7 @@ class BTNLocalClass(override val context: Context, override var dirName: String?
 
     override val oriPic: Bitmap?
         get() = BitmapFactory.decodeFile(oriPicPath)
-    override val tag = "BTNLocalClass"
+    override val tag = "BtnLocal"
 
     init
     {
@@ -39,7 +36,18 @@ class BTNLocalClass(override val context: Context, override var dirName: String?
         }
     }
 
-    override var content: BTNInterface.ContentClass  = BTNInterface.ContentClass(arrayListOf())
+    override var content: BtnInterface.ContentClass? = null
+        get()
+        {
+            return if (field == null)
+            {
+                BtnInterface.ContentClass(arrayListOf())
+            }
+            else
+            {
+                field
+            }
+        }
 
     override val parentDirPath: String
         get()

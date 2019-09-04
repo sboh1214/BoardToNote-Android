@@ -6,15 +6,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 
-class ListCloudClass(val context: Context)
+class BtnCloudList(val context: Context)
 {
     private val cloudPath by lazy { "${context.filesDir.absolutePath}/cloud" }
-    val cloudList: ArrayList<BTNCloudClass> by lazy { getDirList(context) }
-    val tag = "ListCloudClass"
+    val cloudList: ArrayList<BtnCloud> by lazy { getDirList(context) }
+    val tag = "BtnCloudList"
 
-    private fun getDirList(context: Context): ArrayList<BTNCloudClass>
+    private fun getDirList(context: Context): ArrayList<BtnCloud>
     {
-        val arrayList = arrayListOf<BTNCloudClass>()
+        val arrayList = arrayListOf<BtnCloud>()
         File(cloudPath).listFiles()?.forEach {
             if (!it.isDirectory)
             {
@@ -23,7 +23,7 @@ class ListCloudClass(val context: Context)
             if (it.name.substringAfterLast('.').matches(Regex("btn\\d{12}")))
             {
                 val dirName = it.name.substringBeforeLast(".")
-                arrayList.add(BTNCloudClass(context, dirName))
+                arrayList.add(BtnCloud(context, dirName))
             }
         }
         return arrayList
@@ -40,7 +40,7 @@ class ListCloudClass(val context: Context)
                         val name = item.name.substringBeforeLast(".")
                         if (cloudList.find { btnCloudClass -> btnCloudClass.dirName == name } == null)
                         {
-                            cloudList.add(BTNCloudClass(context, name))
+                            cloudList.add(BtnCloud(context, name))
                         }
                     }
                     onSuccess()
@@ -50,9 +50,9 @@ class ListCloudClass(val context: Context)
         return
     }
 
-    fun rename(btnCloudClass: BTNCloudClass, name: String): Boolean
+    fun rename(btnCloud: BtnCloud, name: String): Boolean
     {
-        val srcDir = File(btnCloudClass.dirPath)
+        val srcDir = File(btnCloud.dirPath)
         val dstDir = File("$cloudPath/$name.btn")
         return if (dstDir.exists())
         {
@@ -62,21 +62,21 @@ class ListCloudClass(val context: Context)
         else
         {
             srcDir.renameTo(dstDir)
-            btnCloudClass.dirName = name
+            btnCloud.dirName = name
             Log.i(tag, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
             true
         }
     }
 
-    fun delete(btnCloudClass: BTNCloudClass): Boolean
+    fun delete(btnCloud: BtnCloud): Boolean
     {
         return try
         {
-            val dir = File(btnCloudClass.dirPath)
+            val dir = File(btnCloud.dirPath)
             dir.deleteRecursively()
             dir.delete()
-            cloudList.remove(btnCloudClass)
-            btnCloudClass.delete()
+            cloudList.remove(btnCloud)
+            btnCloud.delete()
             true
         }
         catch (e: Exception)
@@ -86,13 +86,13 @@ class ListCloudClass(val context: Context)
         }
     }
 
-    fun moveFromLocal(localList: ListLocalClass, localClass: BTNLocalClass): BTNCloudClass
+    fun moveFromLocal(localBtn: BtnLocalList, local: BtnLocal): BtnCloud
     {
-        val cloudClass = BTNCloudClass(context, localClass.dirName!!)
-        File(localClass.dirPath).copyRecursively(File(cloudClass.dirPath), true)
-        File(localClass.dirPath).deleteRecursively()
-        File(localClass.dirPath).delete()
-        localList.delete(localClass)
+        val cloudClass = BtnCloud(context, local.dirName!!)
+        File(local.dirPath).copyRecursively(File(cloudClass.dirPath), true)
+        File(local.dirPath).deleteRecursively()
+        File(local.dirPath).delete()
+        localBtn.delete(local)
         cloudList.add(cloudClass)
         cloudClass.uploadWithTimeStamp()
         return cloudClass

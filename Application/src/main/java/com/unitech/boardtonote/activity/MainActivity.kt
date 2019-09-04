@@ -22,9 +22,9 @@ import com.unitech.boardtonote.R
 import com.unitech.boardtonote.adapter.ListCloudAdapter
 import com.unitech.boardtonote.adapter.ListLocalAdapter
 import com.unitech.boardtonote.adapter.MainPagerAdapter
-import com.unitech.boardtonote.data.BTNCloudClass
-import com.unitech.boardtonote.data.BTNInterface
-import com.unitech.boardtonote.data.BTNLocalClass
+import com.unitech.boardtonote.data.BtnCloud
+import com.unitech.boardtonote.data.BtnInterface
+import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.fragment.AccountDialog
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
@@ -55,8 +55,9 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
             snackBar(message)
         }
 
-        val adapter = MainPagerAdapter(supportFragmentManager)
-        pager.adapter = adapter
+        pager.adapter = MainPagerAdapter(supportFragmentManager)
+        Tab_Main.setupWithViewPager(pager)
+
         when
         {
             intent.action == "shortcut.local" ->
@@ -96,23 +97,23 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         {
             val uri = data.data!!
             val intent = Intent(this@MainActivity, EditActivity::class.java)
-            val btnClass: BTNInterface =
+            val btnClass: BtnInterface =
                     when (pager.currentItem)
                     {
                         0    ->
                         {
                             intent.putExtra("location", Constant.locationLocal)
-                            BTNLocalClass(this@MainActivity, null)
+                            BtnLocal(this@MainActivity, null)
                         }
                         1    ->
                         {
                             intent.putExtra("location", Constant.locationCloud)
-                            BTNCloudClass(this@MainActivity, null)
+                            BtnCloud(this@MainActivity, null)
                         }
                         else ->
                         {
                             intent.putExtra("location", Constant.locationLocal)
-                            BTNLocalClass(this@MainActivity, null)
+                            BtnLocal(this@MainActivity, null)
                         }
                     }
             btnClass.copyOriPic(uri)
