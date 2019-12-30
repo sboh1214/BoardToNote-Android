@@ -6,6 +6,8 @@
       <module fileurl="file://$PROJECT_DIR$/BoardToNote_Android.iml" filepath="$PROJECT_DIR$/BoardToNote_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/Application/BoardToNote_Android-Application.iml" filepath="$PROJECT_DIR$/Application/BoardToNote_Android-Application.iml" />
       <module fileurl="file://$PROJECT_DIR$/Repos-BoardToNote_Android.iml" filepath="$PROJECT_DIR$/Repos-BoardToNote_Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Application/Repos-BoardToNote_Android-Application.iml" filepath="$PROJECT_DIR$/Application/Repos-BoardToNote_Android-Application.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sboh1214-Repos-BoardToNote_Android.iml" filepath="$PROJECT_DIR$/sboh1214-Repos-BoardToNote_Android.iml" />
     </modules>
   </component>
 </project>
