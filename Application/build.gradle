@@ -70,9 +70,9 @@ dependencies {
 
     implementation 'com.facebook.android:facebook-android-sdk:5.13.0'
     implementation 'com.github.yalantis:ucrop:2.2.3-native'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1'
-    implementation 'com.github.bumptech.glide:glide:4.10.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
-    implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.2.8'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.3.0'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
 }
