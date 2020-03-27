@@ -67,7 +67,7 @@ class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment
 
         AlertDialog.Builder(activity as Context).apply {
             setTitle("Rename Note")
-            val view = layoutInflater.inflate(R.layout.dialog_rename, container, false)
+            val view = layoutInflater.inflate(R.layout.dialog_rename, null)
             setPositiveButton("Rename") { _, _ ->
                 dstName = view.Edit_Rename.text.toString()
                 mA.localAdapter.btnLocalList.rename(btnLocal, view.Edit_Rename.text.toString())

@@ -54,7 +54,7 @@ class BottomCloudFragment(private val btn: BtnCloud) : BottomSheetDialogFragment
 
         AlertDialog.Builder(activity as Context).apply {
             setTitle("Rename Note")
-            val view = layoutInflater.inflate(R.layout.dialog_rename, container, false)
+            val view = layoutInflater.inflate(R.layout.dialog_rename, null)
             setPositiveButton("Rename") { _, _ ->
                 dstName = view.Edit_Rename.text.toString()
                 mainActivity.cloudAdapter.btnCloudList.rename(btnCloud, view.Edit_Rename.text.toString())

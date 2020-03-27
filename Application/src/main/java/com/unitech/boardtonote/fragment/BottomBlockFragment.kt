@@ -53,14 +53,7 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
             dismiss()
         }
         view.Button_TTS.setOnClickListener {
-            if (Build.VERSION.SDK_INT > 20)
-            {
-                ttsLollipop(block.text)
-            }
-            else
-            {
-                ttsKitKat(block.text)
-            }
+            ttsLollipop(block.text)
             dismiss()
         }
         view.Button_Delete.setOnClickListener {
@@ -99,15 +92,6 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
         return view
     }
 
-    @Suppress("DEPRECATION")
-    private fun ttsKitKat(text: String)
-    {
-        val map = HashMap<String, String>()
-        map[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "MessageId"
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun ttsLollipop(text: String)
     {
         val utteranceId = this.hashCode().toString() + ""

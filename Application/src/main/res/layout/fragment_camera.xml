@@ -13,51 +13,48 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.unitech.boardtonote.camera.AutoFitTextureView
-            android:id="@+id/texture"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"/>
+    <TextureView
+        android:id="@+id/view_finder"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="240dp"
+        android:layout_width="240dp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp"
-        android:background="@color/transparent"
-        android:orientation="vertical">
+    <ImageButton
+        android:id="@+id/Button_Gallery"
+        style="@style/BTN.Button_Camera"
+        android:contentDescription="@string/gallery_button"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/Button_Picture"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_collections_white" />
 
-        <ImageButton
-            android:id="@+id/Button_Gallery"
-            style="@style/BTN.Button_Camera"
-            android:contentDescription="@string/gallery_button"
-            android:padding="12dp"
-            app:srcCompat="@drawable/ic_collections_white" />
+    <ImageButton
+        android:id="@+id/Button_Picture"
+        style="@style/BTN.Button_Camera"
+        android:contentDescription="@string/shutter_button"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/Button_Note"
+        app:layout_constraintStart_toEndOf="@id/Button_Gallery"
+        app:srcCompat="@drawable/ic_shutter_state" />
 
-        <ImageButton
-            android:id="@+id/Button_Picture"
-            style="@style/BTN.Button_Camera"
-            android:contentDescription="@string/shutter_button"
-            app:srcCompat="@drawable/ic_shutter_state" />
+    <ImageButton
+        android:id="@+id/Button_Note"
+        style="@style/BTN.Button_Camera"
+        android:contentDescription="@string/collection_button"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/Button_Picture"
+        app:srcCompat="@drawable/ic_bookmark" />
 
-        <ImageButton
-            android:id="@+id/Button_Note"
-            style="@style/BTN.Button_Camera"
-            android:contentDescription="@string/collection_button"
-            android:padding="12dp"
-            app:srcCompat="@drawable/ic_bookmark" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
