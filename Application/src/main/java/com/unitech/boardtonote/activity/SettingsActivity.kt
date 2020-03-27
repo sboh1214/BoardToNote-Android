@@ -6,18 +6,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.databinding.ActivitySettingsBinding
 import com.unitech.boardtonote.settings.RootFragment
-import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity(),
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
 {
     private val titleTag = "settingsActivityTitle"
 
+    private lateinit var b: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        b = ActivitySettingsBinding.inflate(layoutInflater)
+
         if (savedInstanceState == null)
         {
             supportFragmentManager
@@ -35,8 +38,10 @@ class SettingsActivity : AppCompatActivity(),
                 setTitle(R.string.title_activity_settings)
             }
         }
-        setSupportActionBar(Toolbar_Preferences)
+        setSupportActionBar(b.ToolbarPreferences)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        setContentView(b.root)
     }
 
     override fun onSaveInstanceState(outState: Bundle)

@@ -21,10 +21,10 @@ import com.unitech.boardtonote.adapter.BlockAdapter
 import com.unitech.boardtonote.data.BtnCloud
 import com.unitech.boardtonote.data.BtnInterface
 import com.unitech.boardtonote.data.BtnLocal
+import com.unitech.boardtonote.databinding.ActivityEditBinding
 import com.unitech.boardtonote.fragment.BlockListFragment
 import com.unitech.boardtonote.helper.SnackBarInterface
 import com.yalantis.ucrop.UCrop
-import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.io.File
 
@@ -32,8 +32,9 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
 {
     private val tag = "EditActivity"
 
-    lateinit var btnClass: BtnInterface
+    private lateinit var b: ActivityEditBinding
 
+    lateinit var btnClass: BtnInterface
     lateinit var blockAdapter: BlockAdapter
 
     private var editMenu: Menu? = null
@@ -43,8 +44,9 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
 
-        setContentView(R.layout.activity_edit)
-        setSupportActionBar(Toolbar_Edit)
+        b = ActivityEditBinding.inflate(layoutInflater)
+
+        setSupportActionBar(b.ToolbarEdit)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val intent = intent
@@ -65,13 +67,13 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
             Constant.locationCloud -> BtnCloud(this, dirName)
             else                   -> throw IllegalArgumentException()
         }
-        Edit_Title.setText(btnClass.dirName)
-        Edit_Title.setOnKeyListener { _, code, event ->
+        b.EditTitle.setText(btnClass.dirName)
+        b.EditTitle.setOnKeyListener { _, code, event ->
             if (event.action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER)
             {
                 val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                input.hideSoftInputFromWindow(Edit_Title.windowToken, 0)
-                val success = btnClass.rename(Edit_Title.text.toString())
+                input.hideSoftInputFromWindow(b.EditTitle.windowToken, 0)
+                val success = btnClass.rename(b.EditTitle.text.toString())
                 if (success)
                 {
                     true
@@ -79,7 +81,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
                 else
                 {
                     snackBar("Fail to rename note")
-                    Edit_Title.setText(btnClass.dirName)
+                    b.EditTitle.setText(btnClass.dirName)
                     false
                 }
             }
@@ -88,6 +90,8 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
                 false
             }
         }
+
+        setContentView(b.root)
 
         supportFragmentManager
                 .beginTransaction()
@@ -225,6 +229,6 @@ class EditActivity : AppCompatActivity(), SnackBarInterface
 
     override fun snackBar(m: String)
     {
-        Snackbar.make(Coor_Edit, m, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(b.CoorEdit, m, Snackbar.LENGTH_SHORT).show()
     }
 }

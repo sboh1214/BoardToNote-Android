@@ -20,37 +20,36 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.unitech.boardtonote.Constant
-import com.unitech.boardtonote.R
 import com.unitech.boardtonote.data.BtnLocal
+import com.unitech.boardtonote.databinding.ActivityCameraBinding
 import java.io.File
 import java.util.concurrent.Executors
 
-private const val REQUEST_CODE_PERMISSIONS = 1000
-private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-
 class CameraActivity : AppCompatActivity(), LifecycleOwner {
+    private val REQUEST_CODE_PERMISSIONS = 1000
+    private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+
     private val tag = "CameraActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
 
+        val binding = ActivityCameraBinding.inflate(layoutInflater)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        setContentView(R.layout.activity_camera)
-
-        findViewById<ImageButton>(R.id.Button_Note).setOnClickListener {
+        binding.ButtonNote.setOnClickListener {
             val intent = Intent(this@CameraActivity, MainActivity::class.java)
             startActivity(intent)
         }
-        findViewById<ImageButton>(R.id.Button_Gallery).setOnClickListener {
+        binding.ButtonGallery.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, Constant.requestImageGet)
         }
 
-        // Add this at the end of onCreate function
-        viewFinder = findViewById(R.id.view_finder)
+        viewFinder = binding.viewFinder
+        buttonPicture = binding.ButtonPicture
         // Request camera permissions
         if (allPermissionsGranted()) {
             viewFinder.post { startCamera() }
@@ -63,10 +62,13 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
         viewFinder.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             updateTransform()
         }
+
+        setContentView(binding.root)
     }
 
     private val executor = Executors.newSingleThreadExecutor()
     private lateinit var viewFinder: TextureView
+    private lateinit var buttonPicture: ImageButton
 
     private fun startCamera() {
         // Create configuration object for the viewfinder use case
@@ -96,7 +98,7 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
 
         // Build the image capture use case and attach button click listener
         val imageCapture = ImageCapture(imageCaptureConfig)
-        findViewById<ImageButton>(R.id.Button_Picture).setOnClickListener {
+        buttonPicture.setOnClickListener {
 
             val btn = BtnLocal(this as Context, null)
             val file = File(btn.oriPicPath)
@@ -109,7 +111,7 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
                                 exc: Throwable?
                         ) {
                             val msg = "Photo capture failed: $message"
-                            Log.e("CameraXApp", msg, exc)
+                            Log.e(tag, msg, exc)
                             viewFinder.post {
                                 Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                             }
@@ -117,11 +119,11 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
 
                         override fun onImageSaved(file: File) {
                             val msg = "Photo capture succeeded: ${file.absolutePath}"
-                            Log.d("CameraXApp", msg)
+                            Log.d(tag, msg)
                             viewFinder.post {
                                 Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                             }
-                            Log.i("TAG", "Captured picture with dirName ${btn.dirName}")
+                            Log.i(tag, "Captured picture with dirName ${btn.dirName}")
 
                             val intent = Intent(this@CameraActivity, EditActivity::class.java)
                             intent.putExtra("dirName", btn.dirName)

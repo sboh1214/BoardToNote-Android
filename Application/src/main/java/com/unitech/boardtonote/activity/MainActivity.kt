@@ -25,15 +25,17 @@ import com.unitech.boardtonote.adapter.MainPagerAdapter
 import com.unitech.boardtonote.data.BtnCloud
 import com.unitech.boardtonote.data.BtnInterface
 import com.unitech.boardtonote.data.BtnLocal
+import com.unitech.boardtonote.databinding.ActivityMainBinding
 import com.unitech.boardtonote.fragment.AccountDialog
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.AccountInterface
 {
     private val tag = "MainActivity"
+
+    private lateinit var b: ActivityMainBinding
 
     private var time: Long = 0
     private var mainMenu: Menu? = null
@@ -46,8 +48,9 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
 
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(Toolbar_Main)
+        b = ActivityMainBinding.inflate(layoutInflater)
+
+        setSupportActionBar(b.ToolbarMain)
 
         val message = intent.getStringExtra("snackBar")
         if (message != null && message != "")
@@ -55,40 +58,43 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
             snackBar(message)
         }
 
-        pager.adapter = MainPagerAdapter(supportFragmentManager)
-        Tab_Main.setupWithViewPager(pager)
+        b.pager.adapter = MainPagerAdapter(supportFragmentManager)
+        b.TabMain.setupWithViewPager(b.pager)
+
 
         when
         {
             intent.action == "shortcut.local" ->
             {
                 Log.i(tag, "shortcut.local")
-                pager.currentItem = 0
+                b.pager.currentItem = 0
             }
             intent.action == "shortcut.cloud" ->
             {
                 Log.i(tag, "shortcut.cloud")
-                pager.currentItem = 1
+                b.pager.currentItem = 1
             }
             else                              ->
             {
                 Log.i(tag, "not shortcut")
-                pager.currentItem = 0
+                b.pager.currentItem = 0
             }
         }
 
-        Camera_Fab.setOnClickListener {
-            val location: Int = pager.currentItem
+        b.CameraFab.setOnClickListener {
+            val location: Int = b.pager.currentItem
             val intent = Intent(this, CameraActivity::class.java)
             intent.putExtra("location", location)
             startActivity(intent)
         }
 
-        Gallery_Fab.setOnClickListener {
+        b.GalleryFab.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, Constant.requestImageGet)
         }
+
+        setContentView(b.root)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
@@ -98,7 +104,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
             val uri = data.data!!
             val intent = Intent(this@MainActivity, EditActivity::class.java)
             val btnClass: BtnInterface =
-                    when (pager.currentItem)
+                    when (b.pager.currentItem)
                     {
                         0    ->
                         {
@@ -127,7 +133,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
             if (resultCode == RESULT_OK)
             {
                 onSignIn()
-                pager.adapter = MainPagerAdapter(supportFragmentManager)
+                b.pager.adapter = MainPagerAdapter(supportFragmentManager)
             }
             else
             {
@@ -256,6 +262,6 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
 
     override fun snackBar(m: String)
     {
-        Snackbar.make(Coor_Main, m, Snackbar.LENGTH_SHORT).setAnchorView(Linear_Floating).show()
+        Snackbar.make(b.CoorMain, m, Snackbar.LENGTH_SHORT).setAnchorView(b.LinearFloating).show()
     }
 }
