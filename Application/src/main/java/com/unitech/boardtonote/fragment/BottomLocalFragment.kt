@@ -11,39 +11,35 @@ import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.data.BtnLocal
+import com.unitech.boardtonote.databinding.BottomLocalBinding
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
-import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.bottom_local.view.*
 import kotlinx.android.synthetic.main.dialog_rename.view.*
 
-class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment()
-{
+class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment() {
     private lateinit var mA: MainActivity
+    private lateinit var b: BottomLocalBinding
     private lateinit var snackBarInterface: SnackBarInterface
 
-    override fun onAttach(context: Context)
-    {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         snackBarInterface = context as SnackBarInterface
         mA = context as MainActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-    {
-        val view = inflater.inflate(R.layout.bottom_local, container, false)
-        view.Text_Title.text = btn.dirName
-        view.Button_Rename.setOnClickListener {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        b = BottomLocalBinding.inflate(inflater, container, false)
+        b.TextTitle.text = btn.dirName
+        b.ButtonRename.setOnClickListener {
             rename(btn)
             dismiss()
         }
-        view.Button_Delete.setOnClickListener {
+        b.ButtonDelete.setOnClickListener {
             delete(btn)
             dismiss()
         }
-        view.Button_Upload.setOnClickListener {
-            if (AccountHelper.user == null)
-            {
+        b.ButtonUpload.setOnClickListener {
+            if (AccountHelper.user == null) {
                 snackBarInterface.snackBar("You should log in first.")
                 dismiss()
                 return@setOnClickListener
@@ -53,15 +49,14 @@ class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment
             mA.cloudAdapter.notifyDataSetChanged()
             dismiss()
         }
-        view.Button_Share.setOnClickListener {
+        b.ButtonShare.setOnClickListener {
             btn.share(Constant.sharePdf)
             dismiss()
         }
-        return view
+        return b.root
     }
 
-    private fun rename(btnLocal: BtnLocal)
-    {
+    private fun rename(btnLocal: BtnLocal) {
         val srcName = btn.dirName
         var dstName: String?
 
@@ -81,8 +76,7 @@ class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment
         }.show()
     }
 
-    fun delete(btnLocal: BtnLocal)
-    {
+    fun delete(btnLocal: BtnLocal) {
         mA.localAdapter.btnLocalList.delete(btnLocal)
         mA.localAdapter.notifyDataSetChanged()
         snackBarInterface.snackBar("${btn.dirName} deleted")

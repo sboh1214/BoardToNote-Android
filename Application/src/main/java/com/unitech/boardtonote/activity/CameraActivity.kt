@@ -26,8 +26,7 @@ import java.io.File
 import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity(), LifecycleOwner {
-    private val REQUEST_CODE_PERMISSIONS = 1000
-    private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+    private val requiredPermissions = arrayOf(Manifest.permission.CAMERA)
 
     private val tag = "CameraActivity"
 
@@ -35,27 +34,27 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
 
-        val binding = ActivityCameraBinding.inflate(layoutInflater)
+        val b = ActivityCameraBinding.inflate(layoutInflater)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        binding.ButtonNote.setOnClickListener {
+        b.ButtonNote.setOnClickListener {
             val intent = Intent(this@CameraActivity, MainActivity::class.java)
             startActivity(intent)
         }
-        binding.ButtonGallery.setOnClickListener {
+        b.ButtonGallery.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, Constant.requestImageGet)
         }
 
-        viewFinder = binding.viewFinder
-        buttonPicture = binding.ButtonPicture
+        viewFinder = b.viewFinder
+        buttonPicture = b.ButtonPicture
         // Request camera permissions
         if (allPermissionsGranted()) {
             viewFinder.post { startCamera() }
         } else {
             ActivityCompat.requestPermissions(
-                    this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+                    this, requiredPermissions, Constant.requestCamera)
         }
 
         // Every time the provided texture view changes, recompute layout
@@ -63,7 +62,7 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
             updateTransform()
         }
 
-        setContentView(binding.root)
+        setContentView(b.root)
     }
 
     private val executor = Executors.newSingleThreadExecutor()
@@ -163,7 +162,7 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
      */
     override fun onRequestPermissionsResult(
             requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+        if (requestCode == Constant.requestCamera) {
             if (allPermissionsGranted()) {
                 viewFinder.post { startCamera() }
             } else {
@@ -178,7 +177,7 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
     /**
      * Check if all permission specified in the manifest have been granted
      */
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+    private fun allPermissionsGranted() = requiredPermissions.all {
         ContextCompat.checkSelfPermission(
                 baseContext, it) == PackageManager.PERMISSION_GRANTED
     }

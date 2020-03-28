@@ -14,19 +14,19 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.unitech.boardtonote.Constant
-import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.adapter.ListCloudAdapter
 import com.unitech.boardtonote.data.BtnCloud
 import com.unitech.boardtonote.data.BtnCloudList
+import com.unitech.boardtonote.databinding.FragmentCloudBinding
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
-import kotlinx.android.synthetic.main.fragment_cloud.*
 
 class ListCloudFragment : Fragment()
 {
     private lateinit var mA: MainActivity
+    private lateinit var b: FragmentCloudBinding
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -40,7 +40,8 @@ class ListCloudFragment : Fragment()
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View
     {
-        return inflater.inflate(R.layout.fragment_cloud, container, false)
+        b = FragmentCloudBinding.inflate(inflater, container, false)
+        return b.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -58,7 +59,7 @@ class ListCloudFragment : Fragment()
         mA.windowManager.defaultDisplay.getMetrics(metrics)
         val dp: Int = metrics.widthPixels / (metrics.densityDpi / 180)
 
-        Recycler_Cloud.apply {
+        b.RecyclerCloud.apply {
             setHasFixedSize(true)
             layoutManager = StaggeredGridLayoutManager(dp / 270, StaggeredGridLayoutManager.VERTICAL)
             adapter = mA.cloudAdapter

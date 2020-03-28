@@ -18,13 +18,14 @@ import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.adapter.BlockAdapter
 import com.unitech.boardtonote.data.BtnInterface
+import com.unitech.boardtonote.databinding.FragmentEditBinding
 import com.unitech.boardtonote.helper.SnackBarInterface
-import kotlinx.android.synthetic.main.fragment_edit.*
 
 
 class BlockListFragment : Fragment()
 {
     private lateinit var eA: EditActivity
+    private lateinit var b: FragmentEditBinding
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onAttach(context: Context)
@@ -38,7 +39,8 @@ class BlockListFragment : Fragment()
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View
     {
-        return inflater.inflate(R.layout.fragment_edit, container, false)
+        b = FragmentEditBinding.inflate(inflater, container, false)
+        return b.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
@@ -62,7 +64,7 @@ class BlockListFragment : Fragment()
                 { btnClass, itemView -> itemClick(btnClass, itemView) },
                 { btnClass -> itemMoreClick(btnClass) })
 
-        Recycler_Edit.apply {
+        b.RecyclerEdit.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(eA)
             adapter = eA.blockAdapter
@@ -120,7 +122,7 @@ class BlockListFragment : Fragment()
 
     private fun render(orientation: Int)
     {
-        Image_OriPic.setImageBitmap(eA.btnClass.oriPic)
+        b.ImageOriPic.setImageBitmap(eA.btnClass.oriPic)
         if (orientation == Constant.orientationPortrait)
         {
             val ratio = eA.btnClass.getOriPicRatio()
@@ -129,17 +131,17 @@ class BlockListFragment : Fragment()
                 val point = Point()
                 eA.windowManager.defaultDisplay.getSize(point)
                 val imageHeight = (point.x.toFloat() * ratio).toInt()
-                Image_OriPic.layoutParams.height = imageHeight
-                Image_OriPic.requestLayout()
+                b.ImageOriPic.layoutParams.height = imageHeight
+                b.ImageOriPic.requestLayout()
                 val displayMetrics = DisplayMetrics()
                 eA.windowManager.defaultDisplay.getMetrics(displayMetrics)
                 val height = displayMetrics.heightPixels
-                val param = Recycler_Edit.layoutParams
+                val param = b.RecyclerEdit.layoutParams
                 val type = TypedValue()
                 eA.theme.resolveAttribute(R.attr.actionBarSize, type, true)
                 val actionBarHeight = TypedValue.complexToDimensionPixelSize(type.data, eA.resources.displayMetrics)
                 param.height = height - imageHeight - actionBarHeight
-                Recycler_Edit.layoutParams = param
+                b.RecyclerEdit.layoutParams = param
             }
         }
     }

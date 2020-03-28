@@ -4,19 +4,17 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.activity.EditActivity
 import com.unitech.boardtonote.data.BtnInterface
+import com.unitech.boardtonote.databinding.BottomBlockBinding
 import com.unitech.boardtonote.helper.SnackBarInterface
-import kotlinx.android.synthetic.main.bottom_block.view.*
 import java.util.*
 
 class BottomBlockFragment(private val block: BtnInterface.BlockClass)
@@ -25,6 +23,7 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
     private lateinit var snackBarInterface: SnackBarInterface
     private lateinit var tts: TextToSpeech
     private lateinit var eA: EditActivity
+    private lateinit var b: BottomBlockBinding
 
     override fun onAttach(context: Context)
     {
@@ -44,26 +43,27 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        val view = inflater.inflate(com.unitech.boardtonote.R.layout.bottom_block, container, false)
-        view.Button_Copy.setOnClickListener {
+        b = BottomBlockBinding.inflate(inflater, container, false)
+
+        b.ButtonCopy.setOnClickListener {
             val manager = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("Board To Note", block.text)
             manager.setPrimaryClip(clip)
             snackBarInterface.snackBar("Copied to Clipboard")
             dismiss()
         }
-        view.Button_TTS.setOnClickListener {
+        b.ButtonTTS.setOnClickListener {
             ttsLollipop(block.text)
             dismiss()
         }
-        view.Button_Delete.setOnClickListener {
+        b.ButtonDelete.setOnClickListener {
             eA.btnClass.content!!.blockList.remove(block)
             eA.btnClass.saveContent()
             eA.blockAdapter.notifyDataSetChanged()
             snackBarInterface.snackBar("Deleted Block")
             dismiss()
         }
-        view.Button_Share.setOnClickListener {
+        b.ButtonShare.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_SUBJECT, eA.btnClass.dirName)
@@ -72,7 +72,7 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
             eA.startActivity(Intent.createChooser(intent, "Share Block"))
             dismiss()
         }
-        view.Button_Edit.setOnClickListener {
+        b.ButtonEdit.setOnClickListener {
             dismiss()
             eA.supportFragmentManager
                     .beginTransaction()
@@ -80,7 +80,7 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
                     .addToBackStack(null)
                     .commit()
         }
-        view.Button_Info.setOnClickListener {
+        b.ButtonInfo.setOnClickListener {
             dismiss()
             AlertDialog.Builder(eA).apply {
                 setTitle("More Info")
@@ -89,7 +89,8 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
                 show()
             }
         }
-        return view
+
+        return b.root
     }
 
     private fun ttsLollipop(text: String)

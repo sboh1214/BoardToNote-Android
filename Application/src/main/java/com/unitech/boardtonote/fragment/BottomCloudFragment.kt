@@ -11,14 +11,14 @@ import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.data.BtnCloud
+import com.unitech.boardtonote.databinding.BottomCloudBinding
 import com.unitech.boardtonote.helper.SnackBarInterface
-import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.bottom_cloud.view.*
 import kotlinx.android.synthetic.main.dialog_rename.view.*
 
 class BottomCloudFragment(private val btn: BtnCloud) : BottomSheetDialogFragment()
 {
     private lateinit var mainActivity: MainActivity
+    private lateinit var b: BottomCloudBinding
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onAttach(context: Context)
@@ -30,21 +30,21 @@ class BottomCloudFragment(private val btn: BtnCloud) : BottomSheetDialogFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        val view = inflater.inflate(R.layout.bottom_cloud, container, false)
-        view.Text_Title.text = btn.dirName
-        view.Button_Rename.setOnClickListener {
+        b = BottomCloudBinding.inflate(inflater, container, false)
+        b.TextTitle.text = btn.dirName
+        b.ButtonRename.setOnClickListener {
             rename(btn)
             dismiss()
         }
-        view.Button_Delete.setOnClickListener {
+        b.ButtonDelete.setOnClickListener {
             delete(btn)
             dismiss()
         }
-        view.Button_Share.setOnClickListener {
+        b.ButtonShare.setOnClickListener {
             btn.share(Constant.sharePdf)
             dismiss()
         }
-        return view
+        return b.root
     }
 
     private fun rename(btnCloud: BtnCloud)
