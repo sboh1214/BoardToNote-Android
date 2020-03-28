@@ -1,0 +1,12 @@
+<resources>
+    <array name="array_theme">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Use System Default</item>
+    </array>
+    <array name="array_theme_value">
+        <item>@string/Theme_Light</item>
+        <item>@string/Theme_Dark</item>
+        <item>@string/Theme_Default</item>
+    </array>
+</resources>

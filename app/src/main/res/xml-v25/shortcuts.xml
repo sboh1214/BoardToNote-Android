@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_local"
+        android:shortcutId="local"
+        android:shortcutLongLabel="@string/shortcut_local"
+        android:shortcutShortLabel="@string/shortcut_local">
+        <categories android:name="android.shortcut.conversation" />
+        <intent
+            android:action="shortcut.local"
+            android:targetClass="com.unitech.boardtonote.activity.MainActivity"
+            android:targetPackage="com.unitech.boardtonote" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_cloud"
+        android:shortcutId="cloud"
+        android:shortcutLongLabel="@string/shortcut_cloud"
+        android:shortcutShortLabel="@string/shortcut_cloud">
+        <categories android:name="android.shortcut.conversation" />
+        <intent
+            android:action="shortcut.cloud"
+            android:targetClass="com.unitech.boardtonote.activity.MainActivity"
+            android:targetPackage="com.unitech.boardtonote" />
+    </shortcut>
+</shortcuts>
