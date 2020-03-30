@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
@@ -91,18 +90,6 @@ class BlockListFragment : Fragment()
     private fun itemMoreClick(btnClass: BtnInterface.BlockClass): Boolean
     {
         val dialog = BottomBlockFragment(btnClass)
-
-        val contentView = View.inflate(context, R.layout.bottom_block, null)
-
-        val displayMetrics = activity!!.resources.displayMetrics
-
-        val width = displayMetrics.widthPixels
-        val height = displayMetrics.heightPixels
-
-        val maxHeight = (height * 0.88).toInt()
-
-        val mBehavior = BottomSheetBehavior.from(contentView.parent as View)
-        mBehavior.peekHeight = maxHeight
         dialog.show(eA.supportFragmentManager, null)
         return true
     }

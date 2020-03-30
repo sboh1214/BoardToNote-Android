@@ -14,7 +14,7 @@
         app:cardCornerRadius="@dimen/recycler_radius"
         app:cardElevation="@dimen/recycler_elevation">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -23,9 +23,12 @@
                 android:id="@+id/Button_Edit_More"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:layout_margin="8dp"
                 android:background="@color/transparent"
                 android:contentDescription="@string/more_button"
-                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_more" />
 
             <TextView
@@ -34,11 +37,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
+                android:text="@string/error"
                 android:textSize="22sp"
-                android:text="@string/error" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
