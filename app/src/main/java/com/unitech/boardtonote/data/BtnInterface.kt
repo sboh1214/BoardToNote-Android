@@ -262,10 +262,6 @@ interface BtnInterface
 
     private fun exportPdf()
     {
-        if (Build.VERSION.SDK_INT < 19)
-        {
-            throw Exception()
-        }
         asyncGetContent({
             val document = PdfDocument()
             val pageInfo = PdfDocument.PageInfo.Builder(612, 792, 1).create()

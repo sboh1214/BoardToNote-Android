@@ -64,7 +64,8 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
             dismiss()
         }
         b.ButtonShare.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND).apply {
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
                 type = "text/plain"
                 putExtra(Intent.EXTRA_SUBJECT, eA.btnClass.dirName)
                 putExtra(Intent.EXTRA_TEXT, block.text)
