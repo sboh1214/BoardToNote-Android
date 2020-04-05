@@ -72,9 +72,9 @@ dependencies {
     implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
     implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 
-    implementation 'com.google.firebase:firebase-core:17.2.3'
+    implementation 'com.google.firebase:firebase-core:17.3.0'
     implementation 'com.google.firebase:firebase-auth:19.3.0'
-    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.firebase:firebase-ml-vision:24.0.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
