@@ -15,7 +15,7 @@ class DevFragment : PreferenceFragmentCompat()
     {
         setPreferencesFromResource(R.xml.preference_dev, rootKey)
 
-        val delete: Preference? = findPreference<Preference>("Preference_Delete")
+        val delete: Preference? = findPreference("Preference_Delete")
         delete!!.setOnPreferenceClickListener {
             val dir = File(activity!!.filesDir!!.path)
             dir.deleteRecursively()
@@ -23,7 +23,7 @@ class DevFragment : PreferenceFragmentCompat()
             true
         }
 
-        val crash: Preference? = findPreference<Preference>("Preference_Crash")
+        val crash: Preference? = findPreference("Preference_Crash")
         crash!!.setOnPreferenceClickListener {
             Crashlytics.getInstance().crash()
             true

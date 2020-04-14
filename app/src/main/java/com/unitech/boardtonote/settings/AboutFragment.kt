@@ -15,9 +15,9 @@ class AboutFragment : PreferenceFragmentCompat()
         setPreferencesFromResource(R.xml.preference_about, rootKey)
 
         val info = activity!!.packageManager.getPackageInfo(activity!!.packageName, 0)
-        val versionName: Preference? = findPreference<Preference>("Preference_VersionName")
+        val versionName: Preference? = findPreference("Preference_VersionName")
         versionName?.title = info.versionName
-        val versionCode: Preference? = findPreference<Preference>("Preference_VersionCode")
+        val versionCode: Preference? = findPreference("Preference_VersionCode")
         if (Build.VERSION.SDK_INT >= 28)
         {
             versionCode?.title = info.longVersionCode.toString()
