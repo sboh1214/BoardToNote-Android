@@ -13,8 +13,8 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 31
-        versionName "2020.3"
+        versionCode 33
+        versionName "2020.4"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -22,6 +22,15 @@ android {
 
     viewBinding {
         enabled = true
+    }
+
+    signingConfigs {
+        release {
+            storeFile rootProject.file("BoardToNote-Upload.jks")
+            storePassword System.getProperty("APPCENTER_KEYSTORE_PASSWORD")
+            keyAlias System.getProperty("APPCENTER_KEY_ALIAS")
+            keyPassword System.getProperty("APPCENTER_KEY_PASSWORD")
+        }
     }
 
     buildTypes {
@@ -33,19 +42,11 @@ android {
         }
 
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled true
             shrinkResources true
             proguardFile getDefaultProguardFile('proguard-android.txt')
             proguardFile 'proguard-rules.pro'
-        }
-    }
-
-    signingConfigs {
-        release {
-            storeFile rootProject.file("BoardToNote-Upload.jks")
-            storePassword System.getProperty("APPCENTER_KEYSTORE_PASSWORD")
-            keyAlias System.getProperty("APPCENTER_KEY_ALIAS")
-            keyPassword System.getProperty("APPCENTER_KEY_PASSWORD")
         }
     }
 
