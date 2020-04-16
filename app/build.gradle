@@ -13,7 +13,7 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 33
+        versionCode 35
         versionName "2020.4"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -27,9 +27,9 @@ android {
     signingConfigs {
         release {
             storeFile rootProject.file("BoardToNote-Upload.jks")
-            storePassword System.getProperty("APPCENTER_KEYSTORE_PASSWORD")
-            keyAlias System.getProperty("APPCENTER_KEY_ALIAS")
-            keyPassword System.getProperty("APPCENTER_KEY_PASSWORD")
+            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("ANDROID_KEY_ALIAS")
+            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
         }
     }
 
