@@ -26,7 +26,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile rootProject.file("BoardToNote-Upload.jks")
+            storeFile file("BoardToNote-Upload.jks")
             storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
             keyAlias "upload"
             keyPassword System.getenv("ANDROID_KEY_PASSWORD")
