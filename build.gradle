@@ -6,7 +6,9 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.2'
+        // WorkAround for NDK error : gradle 3.5.3
+        // No version of NDK matched the requested version 20.0.5594570. Versions available locally: 21.0.6113669
+        classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         classpath 'com.google.gms:google-services:4.3.3'
