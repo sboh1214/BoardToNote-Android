@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build debug APK
+      - name: Build Release AAB
         run: bash ./gradlew bundleRelease --stacktrace
       - name: Upload AAB
         uses: actions/upload-artifact@v1
