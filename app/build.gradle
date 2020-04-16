@@ -28,7 +28,7 @@ android {
         release {
             storeFile rootProject.file("BoardToNote-Upload.jks")
             storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("ANDROID_KEY_ALIAS")
+            keyAlias "upload"
             keyPassword System.getenv("ANDROID_KEY_PASSWORD")
         }
     }
