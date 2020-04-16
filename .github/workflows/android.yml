@@ -19,6 +19,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Install ndk
+        run: sdkmanager 'ndk;20.0.5594570'
       - name: Build Release AAB
         run: bash ./gradlew bundleRelease --stacktrace
       - name: Upload AAB
