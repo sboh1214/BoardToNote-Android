@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BoardToNote-Android.iml" filepath="$PROJECT_DIR$/BoardToNote-Android.iml" group="BoardToNote-Android" />
+      <module fileurl="file://$PROJECT_DIR$/app/BoardToNote-Android-app.iml" filepath="$PROJECT_DIR$/app/BoardToNote-Android-app.iml" group="BoardToNote-Android/app" />
       <module fileurl="file://$PROJECT_DIR$/Repos-BoardToNote-Android.iml" filepath="$PROJECT_DIR$/Repos-BoardToNote-Android.iml" group="BoardToNote-Android" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="BoardToNote-Android/app" />
+      <module fileurl="file://$PROJECT_DIR$/sboh1214-Repos-BoardToNote-Android.iml" filepath="$PROJECT_DIR$/sboh1214-Repos-BoardToNote-Android.iml" group="BoardToNote-Android" />
     </modules>
   </component>
 </project>
