@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BoardToNote-Android.iml" filepath="$PROJECT_DIR$/BoardToNote-Android.iml" group="BoardToNote-Android" />
+      <module fileurl="file://$PROJECT_DIR$/Repos-BoardToNote-Android.iml" filepath="$PROJECT_DIR$/Repos-BoardToNote-Android.iml" group="BoardToNote-Android" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="BoardToNote-Android/app" />
     </modules>
   </component>
