@@ -53,8 +53,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         setSupportActionBar(b.ToolbarMain)
 
         val message = intent.getStringExtra("snackBar")
-        if (message != null && message != "")
-        {
+        if (message != null && message != "") {
             snackBar(message)
         }
 
@@ -62,20 +61,16 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         b.TabMain.setupWithViewPager(b.pager)
 
 
-        when
-        {
-            intent.action == "shortcut.local" ->
-            {
+        when (intent.action) {
+            "shortcut.local" -> {
                 Log.i(tag, "shortcut.local")
                 b.pager.currentItem = 0
             }
-            intent.action == "shortcut.cloud" ->
-            {
+            "shortcut.cloud" -> {
                 Log.i(tag, "shortcut.cloud")
                 b.pager.currentItem = 1
             }
-            else                              ->
-            {
+            else -> {
                 Log.i(tag, "not shortcut")
                 b.pager.currentItem = 0
             }

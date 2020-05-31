@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.EditActivity
@@ -20,35 +19,28 @@ import com.unitech.boardtonote.helper.SnackBarInterface
 import java.util.*
 
 class BottomBlockFragment(private val block: BtnInterface.BlockClass)
-    : BottomSheetDialogFragment()
-{
+    : BottomSheetDialogFragment() {
     private lateinit var snackBarInterface: SnackBarInterface
     private lateinit var tts: TextToSpeech
     private lateinit var eA: EditActivity
     private lateinit var b: BottomBlockBinding
 
-    override fun onAttach(context: Context)
-    {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         snackBarInterface = activity as SnackBarInterface
         eA = activity as EditActivity
-        tts = TextToSpeech(activity!!.applicationContext, TextToSpeech.OnInitListener {
-            fun onInit(status: Int)
-            {
-                if (status != TextToSpeech.ERROR)
-                {
-                    tts.language = Locale.ENGLISH
-                }
+        tts = TextToSpeech(requireActivity().applicationContext, TextToSpeech.OnInitListener {
+            if (it != TextToSpeech.ERROR) {
+                tts.language = Locale.ENGLISH
             }
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-    {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         b = BottomBlockBinding.inflate(inflater, container, false)
 
         b.ButtonCopy.setOnClickListener {
-            val manager = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val manager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("Board To Note", block.text)
             manager.setPrimaryClip(clip)
             snackBarInterface.snackBar("Copied to Clipboard")
@@ -79,7 +71,7 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
             dismiss()
             eA.supportFragmentManager
                     .beginTransaction()
-                    .replace(com.unitech.boardtonote.R.id.Frame_Edit, BlockFragment(block))
+                    .replace(R.id.Frame_Edit, BlockFragment(block))
                     .addToBackStack(null)
                     .commit()
         }
@@ -96,8 +88,7 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
         return b.root
     }
 
-    private fun ttsLollipop(text: String)
-    {
+    private fun ttsLollipop(text: String) {
         val utteranceId = this.hashCode().toString() + ""
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
     }

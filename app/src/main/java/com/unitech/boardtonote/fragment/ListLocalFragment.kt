@@ -35,7 +35,7 @@ class ListLocalFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mA.localAdapter = ListLocalAdapter(BtnLocalList(activity!!),
+        mA.localAdapter = ListLocalAdapter(BtnLocalList(requireActivity()),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass -> itemMoreClick(btnClass) })
 
@@ -61,7 +61,7 @@ class ListLocalFragment : Fragment() {
 
     private fun itemMoreClick(btn: BtnLocal): Boolean {
         val fragment = BottomLocalFragment(btn)
-        fragment.show(activity!!.supportFragmentManager, "bottom_local")
+        fragment.show(requireActivity().supportFragmentManager, "bottom_local")
         return true
     }
 }

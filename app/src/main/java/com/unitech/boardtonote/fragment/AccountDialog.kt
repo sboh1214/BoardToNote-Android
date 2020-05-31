@@ -40,7 +40,7 @@ class AccountDialog : DialogFragment()
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             // Get the layout inflater
-            val view = activity!!.layoutInflater.inflate(R.layout.dialog_account, null)
+            val view = requireActivity().layoutInflater.inflate(R.layout.dialog_account, null)
 
             val imageAccount = view.findViewById<AppCompatImageButton>(R.id.Image_Account)
             val editUserName = view.findViewById<AppCompatEditText>(R.id.Edit_UserName)
@@ -66,7 +66,7 @@ class AccountDialog : DialogFragment()
                 val a = activity as Context
                 val adapter = (activity as MainActivity).cloudAdapter
                 AuthUI.getInstance()
-                        .signOut(context!!)
+                        .signOut(requireContext())
                         .addOnCompleteListener {
                             File("${a.filesDir.path}/cloud").delete()
                             accountInterface.onSignOut(a, adapter)
@@ -79,7 +79,7 @@ class AccountDialog : DialogFragment()
                 val a = activity as Context
                 val adapter = (activity as MainActivity).cloudAdapter
                 AuthUI.getInstance()
-                        .delete(context!!)
+                        .delete(requireContext())
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful)
                             {
@@ -118,7 +118,7 @@ class AccountDialog : DialogFragment()
     override fun onResume()
     {
         // Sets the height and the width of the DialogFragment
-        val width = activity!!.resources.getDimension(R.dimen.account_width).toInt()
+        val width = requireActivity().resources.getDimension(R.dimen.account_width).toInt()
         val height = ViewGroup.LayoutParams.WRAP_CONTENT
         dialog!!.window!!.setLayout(width, height)
         super.onResume()

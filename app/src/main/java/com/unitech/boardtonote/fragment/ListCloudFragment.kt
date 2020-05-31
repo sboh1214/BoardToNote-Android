@@ -51,7 +51,7 @@ class ListCloudFragment : Fragment()
         {
             return
         }
-        mA.cloudAdapter = ListCloudAdapter(BtnCloudList(activity!!),
+        mA.cloudAdapter = ListCloudAdapter(BtnCloudList(requireActivity()),
                 { btnClass -> itemClick(btnClass) },
                 { btnClass -> itemMoreClick(btnClass) })
 
@@ -98,7 +98,7 @@ class ListCloudFragment : Fragment()
     private fun itemMoreClick(btn: BtnCloud): Boolean
     {
         val fragment = BottomCloudFragment(btn)
-        fragment.show(activity!!.supportFragmentManager, "bottom_local")
+        fragment.show(requireActivity().supportFragmentManager, "bottom_local")
         return true
     }
 }

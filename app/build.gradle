@@ -13,8 +13,8 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 39
-        versionName "2020.5.3"
+        versionCode 40
+        versionName "2020.5.4"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -79,10 +79,10 @@ dependencies {
     // Optional -- UI testing with UI Automator
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 
-    // 공식 설명서 업데이트 시 업데이트 할 것
-    def camerax_version = '1.0.0-alpha06'
-    implementation "androidx.camera:camera-core:${camerax_version}"
-    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    def camerax_version = '1.0.0-beta04'
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    implementation "androidx.camera:camera-view:1.0.0-alpha11"
 
     implementation 'com.google.firebase:firebase-core:17.4.2'
     implementation 'com.google.firebase:firebase-auth:19.3.1'

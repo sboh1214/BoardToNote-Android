@@ -16,8 +16,6 @@
     <string name="facebook_application_id" translatable="false">2290284624342086</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb2290284624342086</string>
 
-    <string name="request_permission">This sample needs camera permission.</string>
-    <string name="camera_error">This device does not support Camera2 API.</string>
     <string name="title_activity_main">Study Note</string>
     <string name="search">Search</string>
     <string name="main_search_hint">Search Study Notes</string>

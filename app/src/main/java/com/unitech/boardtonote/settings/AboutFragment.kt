@@ -14,7 +14,7 @@ class AboutFragment : PreferenceFragmentCompat()
     {
         setPreferencesFromResource(R.xml.preference_about, rootKey)
 
-        val info = activity!!.packageManager.getPackageInfo(activity!!.packageName, 0)
+        val info = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0)
         val versionName: Preference? = findPreference("Preference_VersionName")
         versionName?.title = info.versionName
         val versionCode: Preference? = findPreference("Preference_VersionCode")
@@ -50,10 +50,9 @@ class AboutFragment : PreferenceFragmentCompat()
         }
     }
 
-    private fun showWebView(name: String)
-    {
-        AlertDialog.Builder(activity!!).apply {
-            val webView = WebView(activity!!)
+    private fun showWebView(name: String) {
+        AlertDialog.Builder(requireActivity()).apply {
+            val webView = WebView(requireActivity())
             webView.loadUrl("file:///android_asset/$name/index.html")
             setView(webView)
             setPositiveButton("Dismiss") { dialogInterface, _ -> dialogInterface.dismiss() }

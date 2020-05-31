@@ -39,7 +39,7 @@ class BlockFragment(private val blockClass: BtnInterface.BlockClass) : Fragment(
             onTextSizeChanged()
         }
         b.ButtonMore.setOnClickListener {
-            BottomBlockFragment(blockClass).show(activity!!.supportFragmentManager, "bottom_block")
+            BottomBlockFragment(blockClass).show(requireActivity().supportFragmentManager, "bottom_block")
         }
         onTextSizeChanged()
     }

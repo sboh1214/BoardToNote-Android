@@ -17,9 +17,9 @@ class DevFragment : PreferenceFragmentCompat()
 
         val delete: Preference? = findPreference("Preference_Delete")
         delete!!.setOnPreferenceClickListener {
-            val dir = File(activity!!.filesDir!!.path)
+            val dir = File(requireActivity().filesDir!!.path)
             dir.deleteRecursively()
-            Snackbar.make(activity!!.Linear_Settings, "Deleted all files", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(requireActivity().Linear_Settings, "Deleted all files", Snackbar.LENGTH_SHORT).show()
             true
         }
 

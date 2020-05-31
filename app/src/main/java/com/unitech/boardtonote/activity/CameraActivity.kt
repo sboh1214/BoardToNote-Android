@@ -4,18 +4,14 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Matrix
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.util.Size
-import android.view.Surface
-import android.view.TextureView
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -23,18 +19,19 @@ import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.databinding.ActivityCameraBinding
 import java.io.File
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity(), LifecycleOwner {
     private val requiredPermissions = arrayOf(Manifest.permission.CAMERA)
 
-    private val tag = "CameraActivity"
+    private lateinit var b: ActivityCameraBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
 
-        val b = ActivityCameraBinding.inflate(layoutInflater)
+        b = ActivityCameraBinding.inflate(layoutInflater)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         b.ButtonNote.setOnClickListener {
@@ -46,114 +43,74 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
             intent.type = "image/*"
             startActivityForResult(intent, Constant.requestImageGet)
         }
-
-        viewFinder = b.viewFinder
-        buttonPicture = b.ButtonPicture
+        b.ButtonPicture.setOnClickListener { takePhoto() }
         // Request camera permissions
         if (allPermissionsGranted()) {
-            viewFinder.post { startCamera() }
+            b.ViewFinder.post { startCamera() }
         } else {
             ActivityCompat.requestPermissions(
                     this, requiredPermissions, Constant.requestCamera)
         }
-
-        // Every time the provided texture view changes, recompute layout
-        viewFinder.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateTransform()
-        }
-
+        cameraExecutor = Executors.newSingleThreadExecutor()
         setContentView(b.root)
     }
 
-    private val executor = Executors.newSingleThreadExecutor()
-    private lateinit var viewFinder: TextureView
-    private lateinit var buttonPicture: ImageButton
+    private var preview: Preview? = null
+    private var imageCapture: ImageCapture? = null
+    private var camera: Camera? = null
+    private lateinit var cameraExecutor: ExecutorService
 
     private fun startCamera() {
-        // Create configuration object for the viewfinder use case
-        val previewConfig = PreviewConfig.Builder().apply {
-            setTargetResolution(Size(640, 480))
-        }.build()
-        // Build the viewfinder use case
-        val preview = Preview(previewConfig)
-        // Every time the viewfinder is updated, recompute layout
-        preview.setOnPreviewOutputUpdateListener {
-            // To update the SurfaceTexture, we have to remove it and re-add it
-            val parent = viewFinder.parent as ViewGroup
-            parent.removeView(viewFinder)
-            parent.addView(viewFinder, 0)
-
-            viewFinder.surfaceTexture = it.surfaceTexture
-            updateTransform()
-        }
-        // Create configuration object for the image capture use case
-        val imageCaptureConfig = ImageCaptureConfig.Builder()
-                .apply {
-                    // We don't set a resolution for image capture; instead, we
-                    // select a capture mode which will infer the appropriate
-                    // resolution based on aspect ration and requested mode
-                    setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY)
-                }.build()
-
-        // Build the image capture use case and attach button click listener
-        val imageCapture = ImageCapture(imageCaptureConfig)
-        buttonPicture.setOnClickListener {
-
-            val btn = BtnLocal(this as Context, null)
-            val file = File(btn.oriPicPath)
-
-            imageCapture.takePicture(file, executor,
-                    object : ImageCapture.OnImageSavedListener {
-                        override fun onError(
-                                imageCaptureError: ImageCapture.ImageCaptureError,
-                                message: String,
-                                exc: Throwable?
-                        ) {
-                            val msg = "Photo capture failed: $message"
-                            Log.e(tag, msg, exc)
-                            viewFinder.post {
-                                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                        override fun onImageSaved(file: File) {
-                            val msg = "Photo capture succeeded: ${file.absolutePath}"
-                            Log.d(tag, msg)
-                            viewFinder.post {
-                                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                            }
-                            Log.i(tag, "Captured picture with dirName ${btn.dirName}")
-
-                            val intent = Intent(this@CameraActivity, EditActivity::class.java)
-                            intent.putExtra("dirName", btn.dirName)
-                            intent.putExtra("location", Constant.locationLocal)
-                            startActivity(intent)
-                        }
-                    })
-        }
-        // Bind use cases to lifecycle
-        // If Android Studio complains about "this" being not a LifecycleOwner
-        // try rebuilding the project or updating the appcompat dependency to
-        // version 1.1.0 or higher.
-        CameraX.bindToLifecycle(this, preview, imageCapture)
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener(Runnable {
+            // Used to bind the lifecycle of cameras to the lifecycle owner
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            // Preview
+            preview = Preview.Builder().build()
+            // Select back camera
+            imageCapture = ImageCapture.Builder().build()
+            val cameraSelector = CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+                // Bind use cases to camera
+                camera = cameraProvider.bindToLifecycle(
+                        this, cameraSelector, preview, imageCapture)
+                preview?.setSurfaceProvider(b.ViewFinder.createSurfaceProvider())
+            } catch (exc: Exception) {
+                Log.e(tag, "Use case binding failed", exc)
+            }
+        }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun updateTransform() {
-        val matrix = Matrix()
-        // Compute the center of the view finder
-        val centerX = viewFinder.width / 2f
-        val centerY = viewFinder.height / 2f
-        // Correct preview output to account for display rotation
-        val rotationDegrees = when (viewFinder.display.rotation) {
-            Surface.ROTATION_0 -> 0
-            Surface.ROTATION_90 -> 90
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
-            else -> return
-        }
-        matrix.postRotate(-rotationDegrees.toFloat(), centerX, centerY)
-        // Finally, apply transformations to our TextureView
-        viewFinder.setTransform(matrix)
+    private fun takePhoto() {
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
+        // Create timestamped output file to hold the image
+        val btn = BtnLocal(this as Context, null)
+        val photoFile = File(btn.oriPicPath)
+        // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+        // Setup image capture listener which is triggered after photo has
+        // been taken
+        imageCapture.takePicture(
+                outputOptions, ContextCompat.getMainExecutor(this), object : ImageCapture.OnImageSavedCallback {
+            override fun onError(exc: ImageCaptureException) {
+                Log.e(tag, "Photo capture failed: ${exc.message}", exc)
+            }
+
+            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                val savedUri = Uri.fromFile(photoFile)
+                val msg = "Photo capture succeeded: $savedUri"
+                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                Log.d(tag, msg)
+                Log.i(tag, "Captured picture with dirName ${btn.dirName}")
+                val intent = Intent(this@CameraActivity, EditActivity::class.java)
+                intent.putExtra("dirName", btn.dirName)
+                intent.putExtra("location", Constant.locationLocal)
+                startActivity(intent)
+            }
+        })
     }
 
     /**
@@ -164,7 +121,7 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
             requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == Constant.requestCamera) {
             if (allPermissionsGranted()) {
-                viewFinder.post { startCamera() }
+                b.ViewFinder.post { startCamera() }
             } else {
                 Toast.makeText(this,
                         "Permissions not granted by the user.",
@@ -197,5 +154,9 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
     override fun onBackPressed() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+    }
+
+    companion object {
+        private const val tag = "CameraActivity"
     }
 }

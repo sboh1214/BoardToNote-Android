@@ -141,24 +141,6 @@ interface BtnInterface
         return (width / height)
     }
 
-    fun decodeOriPic(width: Int, height: Int?): Bitmap?
-    {
-        return try
-        {
-            val options = BitmapFactory.Options()
-            options.outWidth = width
-            if (height != null)
-            {
-                options.outHeight = height
-            }
-            BitmapFactory.decodeFile(oriPicPath, options)
-        }
-        catch (e: Exception)
-        {
-            null
-        }
-    }
-
     fun rename(name: String): Boolean
     {
         val srcDir = File(dirPath)

@@ -23,11 +23,11 @@ class RootFragment : PreferenceFragmentCompat()
         setPreferencesFromResource(R.xml.preferences_root, rootKey)
 
         val themePreference = findPreference<ListPreference>("Preference_Theme")
-        themePreference!!.value = ThemeHelper.loadTheme(activity!!)
+        themePreference!!.value = ThemeHelper.loadTheme(requireActivity())
         themePreference.setOnPreferenceChangeListener { _, newValue ->
             val themeOption = newValue as String
             ThemeHelper.applyTheme(themeOption)
-            ThemeHelper.saveTheme(activity!!, themeOption)
+            ThemeHelper.saveTheme(requireActivity(), themeOption)
             Log.v(tag, "Theme : $themeOption")
             true
         }
@@ -42,7 +42,7 @@ class RootFragment : PreferenceFragmentCompat()
             edit.requestFocus()
             container.addView(edit)
 
-            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(edit, 0)
             edit.setOnKeyListener { _, key, event ->
                 if (event.action == KeyEvent.ACTION_DOWN && key == KeyEvent.KEYCODE_ENTER)
@@ -58,19 +58,19 @@ class RootFragment : PreferenceFragmentCompat()
                 setPositiveButton("Unlock") { _, _ ->
                     if (edit.text.toString() == "unitech")
                     {
-                        activity!!.supportFragmentManager.beginTransaction()
+                        requireActivity().supportFragmentManager.beginTransaction()
                                 .replace(R.id.Frame_Settings, DevFragment())
                                 .addToBackStack(null)
                                 .commit()
-                        Snackbar.make(activity!!.Linear_Settings, "You are now developer!", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(requireActivity().Linear_Settings, "You are now developer!", Snackbar.LENGTH_SHORT).show()
                     }
                     else
                     {
-                        Snackbar.make(activity!!.Linear_Settings, "Password is wrong", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(requireActivity().Linear_Settings, "Password is wrong", Snackbar.LENGTH_SHORT).show()
                     }
                 }
                 setNegativeButton("Cancel") { _, _ ->
-                    Snackbar.make(activity!!.Linear_Settings, "User has canceled entering Developer Options", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(requireActivity().Linear_Settings, "User has canceled entering Developer Options", Snackbar.LENGTH_SHORT).show()
                 }
             }.show()
             true
