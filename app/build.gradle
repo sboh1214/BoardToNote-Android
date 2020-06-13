@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 29
@@ -13,15 +13,15 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 40
-        versionName "2020.5.4"
+        versionCode 41
+        versionName "2020.6.1"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures{
+        viewBinding = true
     }
 
     signingConfigs {
@@ -64,7 +64,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.recyclerview:recyclerview-selection:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta6'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta7'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference:1.1.1'
 
@@ -79,25 +79,26 @@ dependencies {
     // Optional -- UI testing with UI Automator
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 
-    def camerax_version = '1.0.0-beta04'
+    def camerax_version = '1.0.0-beta05'
     implementation "androidx.camera:camera-camera2:$camerax_version"
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
-    implementation "androidx.camera:camera-view:1.0.0-alpha11"
+    implementation "androidx.camera:camera-view:1.0.0-alpha12"
 
-    implementation 'com.google.firebase:firebase-core:17.4.2'
+    implementation 'com.google.firebase:firebase-core:17.4.3'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
+    implementation 'com.google.firebase:firebase-analytics:17.4.3'
     implementation 'com.google.firebase:firebase-perf:19.0.7'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
 
-    implementation 'com.facebook.android:facebook-android-sdk:7.0.0'
+    implementation 'com.facebook.android:facebook-android-sdk:7.0.1'
     implementation 'com.github.yalantis:ucrop:2.2.3-native'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0.rc1'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.6.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
+    implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.6.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 }

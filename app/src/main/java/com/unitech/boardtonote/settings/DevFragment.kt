@@ -3,7 +3,6 @@ package com.unitech.boardtonote.settings
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.R
 import kotlinx.android.synthetic.main.activity_settings.*
@@ -25,8 +24,7 @@ class DevFragment : PreferenceFragmentCompat()
 
         val crash: Preference? = findPreference("Preference_Crash")
         crash!!.setOnPreferenceClickListener {
-            Crashlytics.getInstance().crash()
-            true
+            throw RuntimeException("Test Crash")
         }
     }
 }
