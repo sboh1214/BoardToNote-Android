@@ -13,8 +13,8 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 41
-        versionName "2020.6.1"
+        versionCode 42
+        versionName "2020.8.1"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -67,6 +67,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-rc1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference:1.1.1'
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     def activity_version = "1.2.0-alpha07"
     implementation "androidx.activity:activity:$activity_version"

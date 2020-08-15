@@ -17,6 +17,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.unitech.boardtonote.Constant
 import com.unitech.boardtonote.R
@@ -67,6 +68,17 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         }
     }
 
+    private val signInActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        val response = IdpResponse.fromResultIntent(it.data)
+
+        if (it.resultCode == RESULT_OK) {
+            onSignIn()
+            b.pager.adapter = MainPagerAdapter(this@MainActivity)
+        } else {
+            Log.e(tag, response?.error.toString())
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
@@ -74,15 +86,19 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         b = ActivityMainBinding.inflate(layoutInflater)
 
         setSupportActionBar(b.ToolbarMain)
+        b.pager.adapter = MainPagerAdapter(this@MainActivity)
+        TabLayoutMediator(b.TabMain, b.pager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "Local"
+                1 -> "Cloud"
+                else -> "Error"
+            }
+        }.attach()
 
         val message = intent.getStringExtra("snackBar")
         if (message != null && message != "") {
             snackBar(message)
         }
-
-        b.pager.adapter = MainPagerAdapter(supportFragmentManager)
-        b.TabMain.setupWithViewPager(b.pager)
-
 
         when (intent.action) {
             "shortcut.local" -> {
@@ -111,20 +127,6 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         }
 
         setContentView(b.root)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == Constant.requestSignIn) {
-            val response = IdpResponse.fromResultIntent(data)
-
-            if (resultCode == RESULT_OK) {
-                onSignIn()
-                b.pager.adapter = MainPagerAdapter(supportFragmentManager)
-            } else {
-                Log.e(tag, response?.error.toString())
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {
@@ -196,13 +198,14 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
                 AuthUI.IdpConfig.EmailBuilder().build(),
                 AuthUI.IdpConfig.GoogleBuilder().build(),
                 AuthUI.IdpConfig.FacebookBuilder().build())
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setLogo(R.mipmap.ic_launcher)
-                        .setTheme(R.style.BTN_ActionBar)
-                        .build(), Constant.requestSignIn)
+
+        val intent = AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .setLogo(R.mipmap.ic_launcher)
+                .setTheme(R.style.BTN_ActionBar)
+                .build()
+        signInActivity.launch(intent)
     }
 
     private fun showProfile() {

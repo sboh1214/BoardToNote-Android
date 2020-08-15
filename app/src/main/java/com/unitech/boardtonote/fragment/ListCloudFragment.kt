@@ -3,10 +3,10 @@ package com.unitech.boardtonote.fragment
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +22,7 @@ import com.unitech.boardtonote.data.BtnCloudList
 import com.unitech.boardtonote.databinding.FragmentCloudBinding
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
+
 
 class ListCloudFragment : Fragment()
 {
@@ -70,24 +71,40 @@ class ListCloudFragment : Fragment()
             mA.cloudAdapter.notifyDataSetChanged()
             true
         }
+    }
 
-        val cm = mA.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
-        val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
-        val isWiFi: Boolean = activeNetwork?.type == ConnectivityManager.TYPE_WIFI
-        if (!isConnected)
-        {
-            Log.d(tag, "No Internet Connection.")
-            snackBarInterface.snackBar("There is not Internet Connection")
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            snackBarInterface.snackBar("Internet Connected")
         }
-        else
-        {
-            Log.d(tag, "Internet Connected")
+
+        override fun onLost(network: Network) {
+            snackBarInterface.snackBar("There is no Internet Connection")
         }
     }
 
-    private fun itemClick(btn: BtnCloud)
-    {
+    private fun registerNetworkCallback() {
+        val builder: NetworkRequest.Builder = NetworkRequest.Builder()
+        val manager = mA.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        manager.registerNetworkCallback(builder.build(), networkCallback)
+    }
+
+    private fun unregisterNetworkCallback() {
+        val cm = mA.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        cm.unregisterNetworkCallback(networkCallback)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerNetworkCallback()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterNetworkCallback()
+    }
+
+    private fun itemClick(btn: BtnCloud) {
         val intent = Intent(activity, EditActivity::class.java)
         intent.putExtra("dirName", btn.dirName)
         intent.putExtra("location", Constant.locationCloud)
