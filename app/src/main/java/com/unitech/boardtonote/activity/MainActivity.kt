@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.bumptech.glide.Glide
@@ -31,8 +32,7 @@ import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
 
 
-class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.AccountInterface
-{
+class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.AccountInterface {
     private val tag = "MainActivity"
 
     private lateinit var b: ActivityMainBinding
@@ -43,8 +43,31 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
     lateinit var localAdapter: ListLocalAdapter
     lateinit var cloudAdapter: ListCloudAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    private val startActivityForResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            val intent = Intent(this@MainActivity, EditActivity::class.java)
+            val btnClass: BtnInterface =
+                    when (b.pager.currentItem) {
+                        0 -> {
+                            intent.putExtra("location", Constant.locationLocal)
+                            BtnLocal(this@MainActivity, null)
+                        }
+                        1 -> {
+                            intent.putExtra("location", Constant.locationCloud)
+                            BtnCloud(this@MainActivity, null)
+                        }
+                        else -> {
+                            intent.putExtra("location", Constant.locationLocal)
+                            BtnLocal(this@MainActivity, null)
+                        }
+                    }
+            btnClass.copyOriPic(uri)
+            intent.putExtra("dirName", btnClass.dirName)
+            startActivity(intent)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
 
@@ -84,73 +107,35 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         }
 
         b.GalleryFab.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            startActivityForResult(intent, Constant.requestImageGet)
+            startActivityForResult.launch("image/*")
         }
 
         setContentView(b.root)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
-    {
-        if (requestCode == Constant.requestImageGet && resultCode == RESULT_OK && data != null)
-        {
-            val uri = data.data!!
-            val intent = Intent(this@MainActivity, EditActivity::class.java)
-            val btnClass: BtnInterface =
-                    when (b.pager.currentItem)
-                    {
-                        0    ->
-                        {
-                            intent.putExtra("location", Constant.locationLocal)
-                            BtnLocal(this@MainActivity, null)
-                        }
-                        1    ->
-                        {
-                            intent.putExtra("location", Constant.locationCloud)
-                            BtnCloud(this@MainActivity, null)
-                        }
-                        else ->
-                        {
-                            intent.putExtra("location", Constant.locationLocal)
-                            BtnLocal(this@MainActivity, null)
-                        }
-                    }
-            btnClass.copyOriPic(uri)
-            intent.putExtra("dirName", btnClass.dirName)
-            startActivity(intent)
-        }
-        else if (requestCode == Constant.requestSignIn)
-        {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == Constant.requestSignIn) {
             val response = IdpResponse.fromResultIntent(data)
 
-            if (resultCode == RESULT_OK)
-            {
+            if (resultCode == RESULT_OK) {
                 onSignIn()
                 b.pager.adapter = MainPagerAdapter(supportFragmentManager)
-            }
-            else
-            {
+            } else {
                 Log.e(tag, response?.error.toString())
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onBackPressed()
-    {
-        if (System.currentTimeMillis() <= time + 2000)
-        {
+    override fun onBackPressed() {
+        if (System.currentTimeMillis() <= time + 2000) {
             Log.v(tag, "Press Back Button 2 time $time")
             Log.i(tag, "Exit Application.")
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_HOME)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
-        }
-        else
-        {
+        } else {
             Log.v(tag, "Press Back Button 1 time $time")
             time = System.currentTimeMillis()
             snackBar("Press back one more time to exit.")
@@ -159,8 +144,7 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean
-    {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         mainMenu = menu
         val searchView: SearchView = menu?.findItem(R.id.Menu_Search)?.actionView as SearchView
@@ -169,57 +153,45 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean
-    {
-        return when (item?.itemId)
-        {
-            R.id.Menu_Search  ->
-            {
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.Menu_Search -> {
                 true
             }
-            R.id.Menu_Account ->
-            {
+            R.id.Menu_Account -> {
                 val account = FirebaseAuth.getInstance().currentUser
-                if (account == null)
-                {
+                if (account == null) {
                     signInUI()
-                }
-                else
-                {
+                } else {
                     onSignIn()
                 }
                 true
             }
-            R.id.Menu_Setting ->
-            {
+            R.id.Menu_Setting -> {
                 val intent = Intent(this as Context, SettingsActivity::class.java)
                 startActivity(intent)
                 true
             }
-            else              -> false
+            else -> false
         }
     }
 
-    override fun requestSignIn()
-    {
+    override fun requestSignIn() {
         signInUI()
     }
 
-    override fun onSignIn()
-    {
+    override fun onSignIn() {
         super.onSignIn()
         showProfile()
         AccountDialog().show(supportFragmentManager, "accountDialog")
     }
 
-    override fun onSignOut(context: Context, adapter: ListCloudAdapter)
-    {
+    override fun onSignOut(context: Context, adapter: ListCloudAdapter) {
         super.onSignOut(context, adapter)
         mainMenu?.findItem(R.id.Menu_Account)?.setIcon(R.drawable.ic_account_dark)
     }
 
-    private fun signInUI()
-    {
+    private fun signInUI() {
         val providers = arrayListOf(
                 AuthUI.IdpConfig.EmailBuilder().build(),
                 AuthUI.IdpConfig.GoogleBuilder().build(),
@@ -233,30 +205,25 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
                         .build(), Constant.requestSignIn)
     }
 
-    private fun showProfile()
-    {
+    private fun showProfile() {
         Glide.with(this)
                 .load(AccountHelper.photoUrl)
                 .apply(RequestOptions().circleCrop())
-                .into(object : CustomTarget<Drawable>()
-                {
-                    override fun onLoadCleared(placeholder: Drawable?)
-                    {
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {
 
                     }
 
                     override fun onResourceReady(
                             resource: Drawable,
                             transition: Transition<in Drawable>?
-                    )
-                    {
+                    ) {
                         mainMenu?.findItem(R.id.Menu_Account)?.icon = resource
                     }
                 })
     }
 
-    override fun snackBar(m: String)
-    {
+    override fun snackBar(m: String) {
         Snackbar.make(b.CoorMain, m, Snackbar.LENGTH_SHORT).setAnchorView(b.LinearFloating).show()
     }
 }

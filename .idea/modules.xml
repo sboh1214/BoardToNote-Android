@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BoardToNote-Android.iml" filepath="$PROJECT_DIR$/.idea/modules/BoardToNote-Android.iml" group="BoardToNote-Android" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/BoardToNote-Android.iml" filepath="$PROJECT_DIR$/.idea/BoardToNote-Android.iml" group="BoardToNote-Android" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="BoardToNote-Android/app" />
     </modules>
   </component>

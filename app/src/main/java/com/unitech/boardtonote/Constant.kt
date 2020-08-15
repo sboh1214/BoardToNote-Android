@@ -2,8 +2,8 @@ package com.unitech.boardtonote
 
 object Constant
 {
-    const val requestImageGet = 11
-    const val requestCamera = 12
+    // const val requestImageGet = 11
+    // const val requestCamera = 12
     const val requestSignIn = 13
 
     const val sharePdf = 21

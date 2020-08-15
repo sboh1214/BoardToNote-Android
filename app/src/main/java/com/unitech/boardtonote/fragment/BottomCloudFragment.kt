@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.dialog_rename.view.*
 class BottomCloudFragment(private val btn: BtnCloud) : BottomSheetDialogFragment()
 {
     private lateinit var mainActivity: MainActivity
-    private lateinit var b: BottomCloudBinding
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onAttach(context: Context)
@@ -30,7 +29,7 @@ class BottomCloudFragment(private val btn: BtnCloud) : BottomSheetDialogFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        b = BottomCloudBinding.inflate(inflater, container, false)
+        val b = BottomCloudBinding.inflate(inflater, container, false)
         b.TextTitle.text = btn.dirName
         b.ButtonRename.setOnClickListener {
             rename(btn)

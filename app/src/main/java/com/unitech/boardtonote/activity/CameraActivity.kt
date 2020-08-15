@@ -9,10 +9,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.unitech.boardtonote.Constant
@@ -27,6 +27,29 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
 
     private lateinit var b: ActivityCameraBinding
 
+    private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) {
+            b.ViewFinder.post { startCamera() }
+        } else {
+            Toast.makeText(this,
+                    "Permissions not granted by the user.",
+                    Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    private val startActivityForResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if ( uri != null) {
+            val btnClass = BtnLocal(this@CameraActivity, null)
+            btnClass.copyOriPic(uri)
+            Log.i(tag, btnClass.toString())
+            val intent = Intent(this@CameraActivity, EditActivity::class.java)
+            intent.putExtra("dirName", btnClass.dirName)
+            intent.putExtra("location", Constant.locationLocal)
+            startActivity(intent)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
@@ -39,17 +62,14 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
             startActivity(intent)
         }
         b.ButtonGallery.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            startActivityForResult(intent, Constant.requestImageGet)
+            startActivityForResult.launch("image/*")
         }
         b.ButtonPicture.setOnClickListener { takePhoto() }
         // Request camera permissions
         if (allPermissionsGranted()) {
             b.ViewFinder.post { startCamera() }
         } else {
-            ActivityCompat.requestPermissions(
-                    this, requiredPermissions, Constant.requestCamera)
+            requestPermission.launch(Manifest.permission.CAMERA)
         }
         cameraExecutor = Executors.newSingleThreadExecutor()
         setContentView(b.root)
@@ -114,41 +134,11 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     /**
-     * Process result from permission request dialog box, has the request
-     * been granted? If yes, start Camera. Otherwise display a toast
-     */
-    override fun onRequestPermissionsResult(
-            requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == Constant.requestCamera) {
-            if (allPermissionsGranted()) {
-                b.ViewFinder.post { startCamera() }
-            } else {
-                Toast.makeText(this,
-                        "Permissions not granted by the user.",
-                        Toast.LENGTH_SHORT).show()
-                finish()
-            }
-        }
-    }
-
-    /**
      * Check if all permission specified in the manifest have been granted
      */
     private fun allPermissionsGranted() = requiredPermissions.all {
         ContextCompat.checkSelfPermission(
                 baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == Constant.requestImageGet && resultCode == RESULT_OK && data != null) {
-            val uri = data.data!!
-            val btnClass = BtnLocal(this@CameraActivity, null)
-            btnClass.copyOriPic(uri)
-            val intent = Intent(this@CameraActivity, EditActivity::class.java)
-            intent.putExtra("dirName", btnClass.dirName)
-            startActivity(intent)
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {

@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.dialog_rename.view.*
 
 class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment() {
     private lateinit var mA: MainActivity
-    private lateinit var b: BottomLocalBinding
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onAttach(context: Context) {
@@ -28,7 +27,7 @@ class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        b = BottomLocalBinding.inflate(inflater, container, false)
+        val b = BottomLocalBinding.inflate(inflater, container, false)
         b.TextTitle.text = btn.dirName
         b.ButtonRename.setOnClickListener {
             rename(btn)
