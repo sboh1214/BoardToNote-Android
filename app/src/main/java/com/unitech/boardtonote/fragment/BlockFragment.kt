@@ -19,16 +19,14 @@ class BlockFragment(private val blockClass: BtnInterface.BlockClass) : Fragment(
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
-                              savedInstanceState: Bundle?): View
-    {
+                              savedInstanceState: Bundle?): View {
         eA = context as EditActivity
         b = FragmentBlockBinding.inflate(inflater, container, false)
         return b.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?)
-    {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         b.EditBlock.setText(blockClass.text)
         b.ButtonPlus.setOnClickListener {
             blockClass.fontSize += 2

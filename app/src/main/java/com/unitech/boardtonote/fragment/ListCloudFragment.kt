@@ -39,17 +39,14 @@ class ListCloudFragment : Fragment()
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
-                              savedInstanceState: Bundle?): View
-    {
+                              savedInstanceState: Bundle?): View {
         b = FragmentCloudBinding.inflate(inflater, container, false)
         return b.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?)
-    {
-        super.onActivityCreated(savedInstanceState)
-        if (AccountHelper.user == null)
-        {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (AccountHelper.user == null) {
             return
         }
         mA.cloudAdapter = ListCloudAdapter(BtnCloudList(requireActivity()),

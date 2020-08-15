@@ -36,22 +36,17 @@ class BlockListFragment : Fragment()
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
-                              savedInstanceState: Bundle?): View
-    {
+                              savedInstanceState: Bundle?): View {
         b = FragmentEditBinding.inflate(inflater, container, false)
         return b.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?)
-    {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         eA.btnClass.asyncGetContent({ onSuccess() }, { onFailure() })
-        if (eA.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
+        if (eA.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             render(Constant.orientationLandscape)
-        }
-        else
-        {
+        } else {
             render(Constant.orientationPortrait)
         }
     }
@@ -60,7 +55,7 @@ class BlockListFragment : Fragment()
     {
         Log.i(tag, "Recycler_Edit Init")
         eA.blockAdapter = BlockAdapter(eA.btnClass,
-                { btnClass, itemView -> itemClick(btnClass, itemView) },
+                { btnClass, _ -> itemClick(btnClass) },
                 { btnClass -> itemMoreClick(btnClass) })
 
         b.RecyclerEdit.apply {
@@ -78,8 +73,7 @@ class BlockListFragment : Fragment()
         return true
     }
 
-    private fun itemClick(blockClass: BtnInterface.BlockClass, itemView: View)
-    {
+    private fun itemClick(blockClass: BtnInterface.BlockClass) {
         eA.supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.Frame_Edit, BlockFragment(blockClass))

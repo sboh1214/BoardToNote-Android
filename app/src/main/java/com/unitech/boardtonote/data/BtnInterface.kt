@@ -28,8 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.ZipOutputStream
 
-interface BtnInterface
-{
+interface BtnInterface {
     val location: Int
     val state: Int?
     val tag: String
@@ -71,37 +70,29 @@ interface BtnInterface
 
     var onLocationAndState: (Int, Int?) -> Boolean
 
-    fun makeLocalDir(name: String?)
-    {
-        if (name == null)
-        {
+    fun makeLocalDir(name: String?) {
+        if (name == null) {
             val c: Calendar = Calendar.getInstance()
             val d = SimpleDateFormat("yyMMdd-hhmmss", Locale.KOREA)
             dirName = d.format(c.time)
             val dirPath = "$parentDirPath/$dirName.btn"
             val dir = File(dirPath)
-            if (!dir.exists())
-            {
+            if (!dir.exists()) {
                 dir.mkdir()
             }
             return
-        }
-        else
-        {
+        } else {
             dirName = name
             var dir = File("$parentDirPath/$dirName.btn")
-            if (!dir.exists())
-            {
+            if (!dir.exists()) {
                 dir.mkdir()
                 return
             }
             var num = 1
-            while (true)
-            {
+            while (true) {
                 dirName = name + num.toString()
                 dir = File("$parentDirPath/$dirName.btn")
-                if (!dir.exists())
-                {
+                if (!dir.exists()) {
                     dir.mkdir()
                     return
                 }
@@ -110,10 +101,8 @@ interface BtnInterface
         }
     }
 
-    fun copyOriPic(uri: Uri): Boolean
-    {
-        return try
-        {
+    fun copyOriPic(uri: Uri): Boolean {
+        return try {
             val parcelFileDescriptor: ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
                     ?: return false
             val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
@@ -122,18 +111,14 @@ interface BtnInterface
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             parcelFileDescriptor.close()
             return true
-        }
-        catch (e: Exception)
-        {
+        } catch (e: Exception) {
             Log.e(tag, e.toString())
             false
         }
     }
 
-    fun getOriPicRatio(): Float?
-    {
-        if (oriPic == null)
-        {
+    fun getOriPicRatio(): Float? {
+        if (oriPic == null) {
             return null
         }
         val height = oriPic!!.width.toFloat()
@@ -141,17 +126,13 @@ interface BtnInterface
         return (width / height)
     }
 
-    fun rename(name: String): Boolean
-    {
+    fun rename(name: String): Boolean {
         val srcDir = File(dirPath)
         val dstDir = File("${context.filesDir.absolutePath}/$name.btn")
-        return if (dstDir.exists())
-        {
+        return if (dstDir.exists()) {
             Log.w(tag, "rename failed (${srcDir.name} -> ${dstDir.name})")
             false
-        }
-        else
-        {
+        } else {
             srcDir.renameTo(dstDir)
             dirName = name
             Log.i(tag, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
@@ -159,25 +140,19 @@ interface BtnInterface
         }
     }
 
-    fun asyncGetContent(onSuccess: () -> Boolean, onFailure: () -> Boolean)
-    {
-        if (!File(contentPath).exists())
-        {
+    fun asyncGetContent(onSuccess: () -> Boolean, onFailure: () -> Boolean) {
+        if (!File(contentPath).exists()) {
             File(contentPath).canWrite()
             analyze(onSuccess, onFailure)
-        }
-        else
-        {
+        } else {
             val mapper = jacksonObjectMapper()
             content = mapper.readValue(File(contentPath))
             onSuccess()
         }
     }
 
-    fun analyze(onSuccess: () -> Boolean, onFailure: () -> Boolean)
-    {
-        if (oriPic == null)
-        {
+    fun analyze(onSuccess: () -> Boolean, onFailure: () -> Boolean) {
+        if (oriPic == null) {
             onFailure()
             return
         }
@@ -203,11 +178,9 @@ interface BtnInterface
         return
     }
 
-    private fun saveVisionText(visionText: FirebaseVisionText)
-    {
+    private fun saveVisionText(visionText: FirebaseVisionText) {
         val list = arrayListOf<BlockClass>()
-        for (b in visionText.textBlocks)
-        {
+        for (b in visionText.textBlocks) {
             Log.v(tag, "saveVisionText block ${b.text.replace("\n", " ")}")
             val blockClass = BlockClass(b.text, b.confidence, b.recognizedLanguages.map { lang -> lang.languageCode }, b.boundingBox, 22f)
             list.add(blockClass)
@@ -217,16 +190,12 @@ interface BtnInterface
         mapper.writerWithDefaultPrettyPrinter().writeValue(File(contentPath), content)
     }
 
-    fun share(share: Int)
-    {
-        when (share)
-        {
-            Constant.sharePdf ->
-            {
+    fun share(share: Int) {
+        when (share) {
+            Constant.sharePdf -> {
                 exportPdf()
             }
-            Constant.shareZip ->
-            {
+            Constant.shareZip -> {
                 val file = exportZip()
                 val intent = Intent()
                 intent.apply {
@@ -236,14 +205,12 @@ interface BtnInterface
                     action = Intent.ACTION_SEND
                 }
             }
-            else              ->
-            {
+            else -> {
             }
         }
     }
 
-    private fun exportPdf()
-    {
+    private fun exportPdf() {
         asyncGetContent({
             val document = PdfDocument()
             val pageInfo = PdfDocument.PageInfo.Builder(612, 792, 1).create()
@@ -264,14 +231,20 @@ interface BtnInterface
                 text += "\n"
             }
 
-            val mTextLayout = StaticLayout(text, textPaint, page.canvas.width,
-                    Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
-
+            val mTextLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val sb = StaticLayout.Builder.obtain(text, 0, text.length, textPaint, page.canvas.width)
+                        .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                        .setIncludePad(false)
+                sb.build()
+            } else {
+                @Suppress("DEPRECATION")
+                StaticLayout(text, textPaint, page.canvas.width,
+                        Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+            }
             mTextLayout.draw(page.canvas)
             document.finishPage(page)
 
-            try
-            {
+            try {
                 val mFileOutStream = FileOutputStream(File(pdfPath))
 
                 // write the document content
@@ -279,20 +252,15 @@ interface BtnInterface
                 mFileOutStream.flush()
                 mFileOutStream.close()
 
-            }
-            catch (e: Exception)
-            {
+            } catch (e: Exception) {
                 Log.e(tag, e.toString())
             }
             document.close()
             val file = File(pdfPath)
-            val uri = if (Build.VERSION.SDK_INT >= 24)
-            {
+            val uri = if (Build.VERSION.SDK_INT >= 24) {
                 FileProvider.getUriForFile(context,
                         context.applicationContext.packageName + ".fileprovider", file)
-            }
-            else
-            {
+            } else {
                 Uri.fromFile(file)
             }
             val intent = Intent()
@@ -307,33 +275,24 @@ interface BtnInterface
         }, { false })
     }
 
-    private fun exportZip(): File
-    {
-        val sourceFile = File(dirPath)
-        try
-        {
+    private fun exportZip(): File {
+        try {
             val fos = FileOutputStream(zipPath)
             val bos = BufferedOutputStream(fos)
             val zos = ZipOutputStream(bos)
             zos.setLevel(8)
 
-        }
-        catch (e: Exception)
-        {
+        } catch (e: Exception) {
 
         }
         return File(zipPath)
     }
 
-    fun saveContent()
-    {
-        try
-        {
+    fun saveContent() {
+        try {
             val mapper = jacksonObjectMapper()
             mapper.writerWithDefaultPrettyPrinter().writeValue(File(contentPath), content)
-        }
-        catch (e: Exception)
-        {
+        } catch (e: Exception) {
             Log.e(tag, e.toString())
         }
     }
