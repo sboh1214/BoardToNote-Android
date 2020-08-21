@@ -14,7 +14,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 44
-        versionName "2020.8.3"
+        versionName "2020.8.4"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -103,7 +103,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.1.1'
 
     implementation 'com.facebook.android:facebook-android-sdk:7.1.0'
-    implementation 'com.github.yalantis:ucrop:2.2.3-native'
+    implementation 'com.github.yalantis:ucrop:2.2.6-native'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
