@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BoardToNote-Android.iml" filepath="$PROJECT_DIR$/.idea/modules/BoardToNote-Android.iml" group="BoardToNote-Android" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="BoardToNote-Android/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/BoardToNote-Android-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/BoardToNote-Android-app.iml" group="BoardToNote-Android/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Repos-BoardToNote-Android.iml" filepath="$PROJECT_DIR$/.idea/modules/Repos-BoardToNote-Android.iml" group="BoardToNote-Android" />
     </modules>
   </component>
 </project>
