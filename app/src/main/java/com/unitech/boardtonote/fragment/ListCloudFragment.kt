@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -50,16 +51,22 @@ class ListCloudFragment : Fragment()
             return
         }
         mA.cloudAdapter = ListCloudAdapter(BtnCloudList(requireActivity()),
-                { btnClass -> itemClick(btnClass) },
-                { btnClass -> itemMoreClick(btnClass) })
+            { btnClass -> itemClick(btnClass) },
+            { btnClass -> itemMoreClick(btnClass) })
 
         val metrics = DisplayMetrics()
-        mA.windowManager.defaultDisplay.getMetrics(metrics)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            mA.display?.getRealMetrics(metrics)
+        } else {
+            @Suppress("DEPRECATION")
+            mA.windowManager.defaultDisplay.getMetrics(metrics)
+        }
         val dp: Int = metrics.widthPixels / (metrics.densityDpi / 180)
 
         b.RecyclerCloud.apply {
             setHasFixedSize(true)
-            layoutManager = StaggeredGridLayoutManager(dp / 270, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager =
+                StaggeredGridLayoutManager(dp / 270, StaggeredGridLayoutManager.VERTICAL)
             adapter = mA.cloudAdapter
             itemAnimator = DefaultItemAnimator()
         }

@@ -1,6 +1,7 @@
 package com.unitech.boardtonote.fragment
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -36,16 +37,22 @@ class ListLocalFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mA.localAdapter = ListLocalAdapter(BtnLocalList(requireActivity()),
-                { btnClass -> itemClick(btnClass) },
-                { btnClass -> itemMoreClick(btnClass) })
+            { btnClass -> itemClick(btnClass) },
+            { btnClass -> itemMoreClick(btnClass) })
 
         val metrics = DisplayMetrics()
-        mA.windowManager.defaultDisplay.getMetrics(metrics)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            mA.display?.getRealMetrics(metrics)
+        } else {
+            @Suppress("DEPRECATION")
+            mA.windowManager.defaultDisplay.getMetrics(metrics)
+        }
         val dp: Int = metrics.widthPixels / (metrics.densityDpi / 180)
 
         b.RecyclerLocal.apply {
             setHasFixedSize(true)
-            layoutManager = StaggeredGridLayoutManager(dp / 270, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager =
+                StaggeredGridLayoutManager(dp / 270, StaggeredGridLayoutManager.VERTICAL)
             adapter = mA.localAdapter
             itemAnimator = DefaultItemAnimator()
         }

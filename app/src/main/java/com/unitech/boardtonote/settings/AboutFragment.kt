@@ -31,7 +31,6 @@ class AboutFragment : PreferenceFragmentCompat() {
             val request = manager.requestReviewFlow()
             request.addOnCompleteListener { result ->
                 if (result.isSuccessful) {
-                    val reviewInfo = result.result
                     Toast.makeText(it.context, "Success", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(it.context, "Error", Toast.LENGTH_SHORT).show()

@@ -2,7 +2,6 @@ package com.unitech.boardtonote.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -29,6 +28,7 @@ import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.io.File
 
+
 class EditActivity : AppCompatActivity(), SnackBarInterface {
     private val tag = "EditActivity"
 
@@ -42,8 +42,6 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
     private val startCropActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         when (it.resultCode) {
             RESULT_OK -> {
-                val size = Point()
-                windowManager.defaultDisplay.getSize(size)
                 Glide.with(Image_OriPic).load(btnClass.oriPic).centerInside().into(Image_OriPic)
                 onImageChange()
             }
@@ -150,13 +148,24 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
             R.id.Menu_Crop -> {
                 val options = UCrop.Options()
                 options.apply {
-                    setStatusBarColor(ContextCompat.getColor(this@EditActivity, R.color.primaryDark))
+                    setStatusBarColor(
+                        ContextCompat.getColor(
+                            this@EditActivity,
+                            R.color.primaryDark
+                        )
+                    )
                     setToolbarColor(ContextCompat.getColor(this@EditActivity, R.color.accent))
                     setToolbarWidgetColor(ContextCompat.getColor(this@EditActivity, R.color.dark))
                 }
 
-                val ucropIntent = UCrop.of(Uri.fromFile(File(btnClass.oriPicPath)), Uri.fromFile(File(btnClass.oriPicPath)))
-                        .withOptions(options)
+                val ucropIntent = UCrop.of(
+                    Uri.fromFile(File(btnClass.oriPicPath)), Uri.fromFile(
+                        File(
+                            btnClass.oriPicPath
+                        )
+                    )
+                )
+                    .withOptions(options)
                 startCropActivity.launch(ucropIntent.getIntent(this@EditActivity))
                 true
             }

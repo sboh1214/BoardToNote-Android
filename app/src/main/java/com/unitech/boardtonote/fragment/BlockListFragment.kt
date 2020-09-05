@@ -3,6 +3,7 @@ package com.unitech.boardtonote.fragment
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -107,20 +108,27 @@ class BlockListFragment : Fragment()
         if (orientation == Constant.orientationPortrait)
         {
             val ratio = eA.btnClass.getOriPicRatio()
-            if (ratio != null)
-            {
+            if (ratio != null) {
                 val point = Point()
-                eA.windowManager.defaultDisplay.getSize(point)
+                val displayMetrics = DisplayMetrics()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    eA.display?.getRealSize(point)
+                    eA.display?.getRealMetrics(displayMetrics)
+                } else {
+                    @Suppress("DEPRECATION")
+                    eA.windowManager.defaultDisplay.getSize(point)
+                    @Suppress("DEPRECATION")
+                    eA.windowManager.defaultDisplay.getMetrics(displayMetrics)
+                }
                 val imageHeight = (point.x.toFloat() * ratio).toInt()
                 b.ImageOriPic.layoutParams.height = imageHeight
                 b.ImageOriPic.requestLayout()
-                val displayMetrics = DisplayMetrics()
-                eA.windowManager.defaultDisplay.getMetrics(displayMetrics)
                 val height = displayMetrics.heightPixels
                 val param = b.RecyclerEdit.layoutParams
                 val type = TypedValue()
                 eA.theme.resolveAttribute(R.attr.actionBarSize, type, true)
-                val actionBarHeight = TypedValue.complexToDimensionPixelSize(type.data, eA.resources.displayMetrics)
+                val actionBarHeight =
+                    TypedValue.complexToDimensionPixelSize(type.data, eA.resources.displayMetrics)
                 param.height = height - imageHeight - actionBarHeight
                 b.RecyclerEdit.layoutParams = param
             }

@@ -155,8 +155,8 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.Menu_Search -> {
                 true
             }
