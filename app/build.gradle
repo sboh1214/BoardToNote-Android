@@ -13,7 +13,7 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 46
+        versionCode 47
         versionName "2020.9.1"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
