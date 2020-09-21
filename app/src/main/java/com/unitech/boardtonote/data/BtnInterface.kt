@@ -15,10 +15,10 @@ import androidx.core.content.FileProvider
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.google.firebase.ml.vision.FirebaseVision
-import com.google.firebase.ml.vision.common.FirebaseVisionImage
-import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.google.firebase.perf.FirebasePerformance
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.TextRecognition
 import com.unitech.boardtonote.Constant
 import java.io.BufferedOutputStream
 import java.io.File
@@ -54,18 +54,17 @@ interface BtnInterface {
     var content: ContentClass?
 
     data class ContentClass
-    (
-            var blockList: ArrayList<BlockClass>
+        (
+        var blockList: ArrayList<BlockClass>
     )
 
     data class BlockClass
-    (
-            var text: String,
-            val confidence: Float?,
-            val language: List<String?>,
-            @JsonIgnore
-            val frame: Rect?,
-            var fontSize: Float
+        (
+        var text: String,
+        val language: String,
+        @JsonIgnore
+        val frame: Rect?,
+        var fontSize: Float
     )
 
     var onLocationAndState: (Int, Int?) -> Boolean
@@ -103,7 +102,8 @@ interface BtnInterface {
 
     fun copyOriPic(uri: Uri): Boolean {
         return try {
-            val parcelFileDescriptor: ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
+            val parcelFileDescriptor: ParcelFileDescriptor =
+                context.contentResolver.openFileDescriptor(uri, "r")
                     ?: return false
             val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
             val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
@@ -158,31 +158,35 @@ interface BtnInterface {
         }
         val trace = FirebasePerformance.getInstance().newTrace("process_image")
         trace.start()
-        val image: FirebaseVisionImage = FirebaseVisionImage.fromBitmap(oriPic!!)
-        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
-        detector.processImage(image).apply {
-            addOnSuccessListener { firebaseVisionText ->
+        val image = InputImage.fromBitmap(oriPic!!, 0)
+        val recognizer = TextRecognition.getClient()
+        recognizer.process(image)
+            .addOnSuccessListener { visionText ->
                 trace.stop()
-                saveVisionText(firebaseVisionText)
+                saveVisionText(visionText)
                 Log.i(tag, "analyze() Success $dirName")
-                Log.v(tag, firebaseVisionText.text.replace("\n", " "))
+                Log.v(tag, visionText.text.replace("\n", " "))
                 onSuccess()
             }
-            addOnFailureListener { e ->
+            .addOnFailureListener { e ->
                 trace.stop()
                 onFailure()
                 Log.i(tag, "analyze() Failure $dirName")
                 Log.w(tag, e.toString())
             }
-        }
         return
     }
 
-    private fun saveVisionText(visionText: FirebaseVisionText) {
+    private fun saveVisionText(visionText: Text) {
         val list = arrayListOf<BlockClass>()
         for (b in visionText.textBlocks) {
             Log.v(tag, "saveVisionText block ${b.text.replace("\n", " ")}")
-            val blockClass = BlockClass(b.text, b.confidence, b.recognizedLanguages.map { lang -> lang.languageCode }, b.boundingBox, 22f)
+            val blockClass = BlockClass(
+                b.text,
+                b.recognizedLanguage,
+                b.boundingBox,
+                22f
+            )
             list.add(blockClass)
         }
         content = ContentClass(list)
@@ -232,14 +236,17 @@ interface BtnInterface {
             }
 
             val mTextLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val sb = StaticLayout.Builder.obtain(text, 0, text.length, textPaint, page.canvas.width)
+                val sb =
+                    StaticLayout.Builder.obtain(text, 0, text.length, textPaint, page.canvas.width)
                         .setAlignment(Layout.Alignment.ALIGN_NORMAL)
                         .setIncludePad(false)
                 sb.build()
             } else {
                 @Suppress("DEPRECATION")
-                StaticLayout(text, textPaint, page.canvas.width,
-                        Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+                StaticLayout(
+                    text, textPaint, page.canvas.width,
+                    Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false
+                )
             }
             mTextLayout.draw(page.canvas)
             document.finishPage(page)
@@ -258,8 +265,10 @@ interface BtnInterface {
             document.close()
             val file = File(pdfPath)
             val uri = if (Build.VERSION.SDK_INT >= 24) {
-                FileProvider.getUriForFile(context,
-                        context.applicationContext.packageName + ".fileprovider", file)
+                FileProvider.getUriForFile(
+                    context,
+                    context.applicationContext.packageName + ".fileprovider", file
+                )
             } else {
                 Uri.fromFile(file)
             }

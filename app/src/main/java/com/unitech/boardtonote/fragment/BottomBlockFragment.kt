@@ -79,7 +79,7 @@ class BottomBlockFragment(private val block: BtnInterface.BlockClass)
             dismiss()
             AlertDialog.Builder(eA).apply {
                 setTitle("More Info")
-                setMessage("Text : ${block.text} \nFont Size : ${block.fontSize} \nConfidence : ${block.confidence}")
+                setMessage("Text : ${block.text} \nFont Size : ${block.fontSize}")
                 setPositiveButton("Dismiss") { dialogInterface, _ -> dialogInterface.dismiss() }
                 show()
             }

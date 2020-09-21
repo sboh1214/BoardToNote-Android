@@ -119,7 +119,7 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
                 camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture
                 )
-                preview?.setSurfaceProvider(b.ViewFinder.createSurfaceProvider())
+                preview?.setSurfaceProvider(b.ViewFinder.surfaceProvider)
             } catch (exc: Exception) {
                 Log.e(tag, "Use case binding failed", exc)
             }

@@ -1,4 +1,4 @@
--keep class com.unitech.boardtonote.** {*;}
+-keep class com.unitech.boardtonote.* {*;}
 
 #uCrop
 -dontwarn com.yalantis.ucrop**
@@ -14,7 +14,7 @@
 }
 
 #Coroutine
--keepclassmembernames class kotlinx.** {
+-keepclassmembernames class kotlinx.* {
     volatile <fields>;
 }
 
