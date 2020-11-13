@@ -195,9 +195,9 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
 
     private fun signInUI() {
         val providers = arrayListOf(
-                AuthUI.IdpConfig.EmailBuilder().build(),
-                AuthUI.IdpConfig.GoogleBuilder().build(),
-                AuthUI.IdpConfig.FacebookBuilder().build())
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
 
         val intent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
