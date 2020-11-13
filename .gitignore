@@ -67,3 +67,6 @@ fastlane/test_output
 fastlane/readme.md
 .DS_Store
 /.idea/compiler.xml
+
+.idea/discord.xml
+.idea/runConfigurations/
