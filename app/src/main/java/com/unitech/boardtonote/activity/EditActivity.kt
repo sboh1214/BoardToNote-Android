@@ -22,29 +22,32 @@ import com.unitech.boardtonote.data.BtnCloud
 import com.unitech.boardtonote.data.BtnInterface
 import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.databinding.ActivityEditBinding
+import com.unitech.boardtonote.databinding.FragmentEditBinding
 import com.unitech.boardtonote.fragment.BlockListFragment
 import com.unitech.boardtonote.helper.SnackBarInterface
 import com.yalantis.ucrop.UCrop
-import kotlinx.android.synthetic.main.fragment_edit.*
 import java.io.File
 
 
 class EditActivity : AppCompatActivity(), SnackBarInterface {
     private val tag = "EditActivity"
 
-    private lateinit var b: ActivityEditBinding
+    private lateinit var binding: ActivityEditBinding
+    private lateinit var fragmentBinding: FragmentEditBinding
 
     lateinit var btnClass: BtnInterface
     lateinit var blockAdapter: BlockAdapter
 
     private var editMenu: Menu? = null
 
-    private val startCropActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        when (it.resultCode) {
-            RESULT_OK -> {
-                Glide.with(Image_OriPic).load(btnClass.oriPic).centerInside().into(Image_OriPic)
-                onImageChange()
-            }
+    private val startCropActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            when (it.resultCode) {
+                RESULT_OK -> {
+                    Glide.with(fragmentBinding.ImageOriPic).load(btnClass.oriPic).centerInside()
+                        .into(fragmentBinding.ImageOriPic)
+                    onImageChange()
+                }
             RESULT_CANCELED -> snackBar("User canceled cropping picture")
             else -> snackBar("Error raised while cropping picture")
         }
@@ -55,9 +58,9 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
         super.onCreate(savedInstanceState)
         Log.i(tag, "onCreate")
 
-        b = ActivityEditBinding.inflate(layoutInflater)
+        binding = ActivityEditBinding.inflate(layoutInflater)
 
-        setSupportActionBar(b.ToolbarEdit)
+        setSupportActionBar(binding.ToolbarEdit)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val intent = intent
@@ -76,17 +79,17 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
             Constant.locationCloud -> BtnCloud(this, dirName)
             else -> throw IllegalArgumentException()
         }
-        b.EditTitle.setText(btnClass.dirName)
-        b.EditTitle.setOnKeyListener { _, code, event ->
+        binding.EditTitle.setText(btnClass.dirName)
+        binding.EditTitle.setOnKeyListener { _, code, event ->
             if (event.action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER) {
                 val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                input.hideSoftInputFromWindow(b.EditTitle.windowToken, 0)
-                val success = btnClass.rename(b.EditTitle.text.toString())
+                input.hideSoftInputFromWindow(binding.EditTitle.windowToken, 0)
+                val success = btnClass.rename(binding.EditTitle.text.toString())
                 if (success) {
                     true
                 } else {
                     snackBar("Fail to rename note")
-                    b.EditTitle.setText(btnClass.dirName)
+                    binding.EditTitle.setText(btnClass.dirName)
                     false
                 }
             } else {
@@ -94,7 +97,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
             }
         }
 
-        setContentView(b.root)
+        setContentView(binding.root)
 
         supportFragmentManager
                 .beginTransaction()
@@ -201,6 +204,6 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
     }
 
     override fun snackBar(m: String) {
-        Snackbar.make(b.CoorEdit, m, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.CoorEdit, m, Snackbar.LENGTH_SHORT).show()
     }
 }

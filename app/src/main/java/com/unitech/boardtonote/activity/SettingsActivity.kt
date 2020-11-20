@@ -14,12 +14,12 @@ class SettingsActivity : AppCompatActivity(),
 {
     private val titleTag = "settingsActivityTitle"
 
-    private lateinit var b: ActivitySettingsBinding
+    lateinit var binding: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        b = ActivitySettingsBinding.inflate(layoutInflater)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
 
         if (savedInstanceState == null)
         {
@@ -38,10 +38,10 @@ class SettingsActivity : AppCompatActivity(),
                 setTitle(R.string.title_activity_settings)
             }
         }
-        setSupportActionBar(b.ToolbarPreferences)
+        setSupportActionBar(binding.ToolbarPreferences)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        setContentView(b.root)
+        setContentView(binding.root)
     }
 
     override fun onSaveInstanceState(outState: Bundle)

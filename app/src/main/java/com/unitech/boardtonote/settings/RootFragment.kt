@@ -13,8 +13,8 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.R
+import com.unitech.boardtonote.activity.SettingsActivity
 import com.unitech.boardtonote.helper.ThemeHelper
-import kotlinx.android.synthetic.main.activity_settings.*
 
 class RootFragment : PreferenceFragmentCompat()
 {
@@ -53,24 +53,31 @@ class RootFragment : PreferenceFragmentCompat()
             }
 
             AlertDialog.Builder(activity as Context).apply {
+                val linearSettings = (requireActivity() as SettingsActivity).binding.LinearSettings
                 setTitle("Enter Password")
                 setView(container)
                 setPositiveButton("Unlock") { _, _ ->
-                    if (edit.text.toString() == "unitech")
-                    {
+                    if (edit.text.toString() == "unitech") {
                         requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.Frame_Settings, DevFragment())
-                                .addToBackStack(null)
-                                .commit()
-                        Snackbar.make(requireActivity().Linear_Settings, "You are now developer!", Snackbar.LENGTH_SHORT).show()
-                    }
-                    else
-                    {
-                        Snackbar.make(requireActivity().Linear_Settings, "Password is wrong", Snackbar.LENGTH_SHORT).show()
+                            .replace(R.id.Frame_Settings, DevFragment())
+                            .addToBackStack(null)
+                            .commit()
+                        Snackbar.make(
+                            linearSettings,
+                            "You are now developer!",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Snackbar.make(linearSettings, "Password is wrong", Snackbar.LENGTH_SHORT)
+                            .show()
                     }
                 }
                 setNegativeButton("Cancel") { _, _ ->
-                    Snackbar.make(requireActivity().Linear_Settings, "User has canceled entering Developer Options", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        linearSettings,
+                        "User has canceled entering Developer Options",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
             }.show()
             true

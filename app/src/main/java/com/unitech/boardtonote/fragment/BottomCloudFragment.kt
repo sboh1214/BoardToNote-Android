@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.Constant
-import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.data.BtnCloud
 import com.unitech.boardtonote.databinding.BottomCloudBinding
+import com.unitech.boardtonote.databinding.DialogRenameBinding
 import com.unitech.boardtonote.helper.SnackBarInterface
-import kotlinx.android.synthetic.main.dialog_rename.view.*
 
 class BottomCloudFragment(private val btn: BtnCloud) : BottomSheetDialogFragment()
 {
@@ -53,17 +52,20 @@ class BottomCloudFragment(private val btn: BtnCloud) : BottomSheetDialogFragment
 
         AlertDialog.Builder(activity as Context).apply {
             setTitle("Rename Note")
-            val view = layoutInflater.inflate(R.layout.dialog_rename, null)
+            val binding = DialogRenameBinding.inflate(layoutInflater)
             setPositiveButton("Rename") { _, _ ->
-                dstName = view.Edit_Rename.text.toString()
-                mainActivity.cloudAdapter.btnCloudList.rename(btnCloud, view.Edit_Rename.text.toString())
+                dstName = binding.EditRename.text.toString()
+                mainActivity.cloudAdapter.btnCloudList.rename(
+                    btnCloud,
+                    binding.EditRename.text.toString()
+                )
                 mainActivity.cloudAdapter.notifyDataSetChanged()
                 snackBarInterface.snackBar("$srcName renamed to $dstName")
             }
             setNegativeButton("Cancel") { _, _ ->
                 snackBarInterface.snackBar("User canceled renaming $srcName")
             }
-            setView(view)
+            setView(binding.root)
         }.show()
     }
 

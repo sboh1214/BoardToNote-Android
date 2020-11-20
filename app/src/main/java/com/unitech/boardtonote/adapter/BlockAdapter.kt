@@ -5,22 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.unitech.boardtonote.data.BtnInterface
-import kotlinx.android.synthetic.main.item_edit.view.*
+import com.unitech.boardtonote.databinding.ItemEditBinding
 
 
 class BlockAdapter(val btnInterface: BtnInterface,
                    private val itemClick: (BtnInterface.BlockClass, View) -> Unit,
                    private val itemMoreClick: (BtnInterface.BlockClass) -> Boolean) :
-        RecyclerView.Adapter<BlockAdapter.BlockHolder>()
-{
-    inner class BlockHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener
-    {
-        fun bind(blockClass: BtnInterface.BlockClass)
-        {
-            itemView.Text_Content.text = blockClass.text
-            itemView.Text_Content.textSize = blockClass.fontSize
-            itemView.setOnClickListener(this)
-            itemView.Button_Edit_More.setOnClickListener { itemMoreClick(blockClass) }
+        RecyclerView.Adapter<BlockAdapter.BlockHolder>() {
+    inner class BlockHolder(private val binding: ItemEditBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        fun bind(blockClass: BtnInterface.BlockClass) {
+            binding.TextContent.text = blockClass.text
+            binding.TextContent.textSize = blockClass.fontSize
+            binding.root.setOnClickListener(this)
+            binding.ButtonEditMore.setOnClickListener { itemMoreClick(blockClass) }
         }
 
         override fun onClick(view: View?)
@@ -29,10 +27,9 @@ class BlockAdapter(val btnInterface: BtnInterface,
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlockHolder
-    {
-        val item = LayoutInflater.from(parent.context).inflate(com.unitech.boardtonote.R.layout.item_edit, parent, false)
-        return BlockHolder(item)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlockHolder {
+        val binding = ItemEditBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return BlockHolder(binding)
     }
 
     override fun onBindViewHolder(holder: BlockHolder, position: Int)

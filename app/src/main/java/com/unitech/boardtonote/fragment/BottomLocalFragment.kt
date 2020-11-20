@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.unitech.boardtonote.Constant
-import com.unitech.boardtonote.R
 import com.unitech.boardtonote.activity.MainActivity
 import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.databinding.BottomLocalBinding
+import com.unitech.boardtonote.databinding.DialogRenameBinding
 import com.unitech.boardtonote.helper.AccountHelper
 import com.unitech.boardtonote.helper.SnackBarInterface
-import kotlinx.android.synthetic.main.dialog_rename.view.*
 
 class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment() {
     private lateinit var mA: MainActivity
@@ -61,17 +60,17 @@ class BottomLocalFragment(private val btn: BtnLocal) : BottomSheetDialogFragment
 
         AlertDialog.Builder(activity as Context).apply {
             setTitle("Rename Note")
-            val view = layoutInflater.inflate(R.layout.dialog_rename, null)
+            val binding = DialogRenameBinding.inflate(layoutInflater)
             setPositiveButton("Rename") { _, _ ->
-                dstName = view.Edit_Rename.text.toString()
-                mA.localAdapter.btnLocalList.rename(btnLocal, view.Edit_Rename.text.toString())
+                dstName = binding.EditRename.text.toString()
+                mA.localAdapter.btnLocalList.rename(btnLocal, binding.EditRename.text.toString())
                 mA.localAdapter.notifyDataSetChanged()
                 snackBarInterface.snackBar("$srcName renamed to $dstName")
             }
             setNegativeButton("Cancel") { _, _ ->
                 snackBarInterface.snackBar("User canceled renaming $srcName")
             }
-            setView(view)
+            setView(binding.root)
         }.show()
     }
 

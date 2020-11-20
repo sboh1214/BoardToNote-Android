@@ -5,7 +5,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
 import com.unitech.boardtonote.R
-import kotlinx.android.synthetic.main.activity_settings.*
+import com.unitech.boardtonote.activity.SettingsActivity
 import java.io.File
 
 class DevFragment : PreferenceFragmentCompat()
@@ -18,7 +18,11 @@ class DevFragment : PreferenceFragmentCompat()
         delete!!.setOnPreferenceClickListener {
             val dir = File(requireActivity().filesDir!!.path)
             dir.deleteRecursively()
-            Snackbar.make(requireActivity().Linear_Settings, "Deleted all files", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                (requireActivity() as SettingsActivity).binding.LinearSettings,
+                "Deleted all files",
+                Snackbar.LENGTH_SHORT
+            ).show()
             true
         }
 

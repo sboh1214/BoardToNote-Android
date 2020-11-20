@@ -5,29 +5,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.unitech.boardtonote.R
 import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.data.BtnLocalList
-import kotlinx.android.synthetic.main.item_main.view.*
+import com.unitech.boardtonote.databinding.ItemMainBinding
 
 class ListLocalAdapter(val btnLocalList: BtnLocalList,
                        private val itemClick: (BtnLocal) -> Unit,
                        private val itemMoreClick: (BtnLocal) -> Boolean) :
-        RecyclerView.Adapter<ListLocalAdapter.LocalHolder>()
-{
-    init
-    {
+        RecyclerView.Adapter<ListLocalAdapter.LocalHolder>() {
+    init {
         setHasStableIds(true)
     }
 
-    inner class LocalHolder(item: View) : RecyclerView.ViewHolder(item), View.OnClickListener
-    {
-        fun bind(btn: BtnLocal)
-        {
-            itemView.Title_Text.text = btn.dirName
-            itemView.setOnClickListener(this)
-            itemView.Button_Main_More.setOnClickListener { itemMoreClick(btn) }
-            Glide.with(itemView).load(btn.oriPic).centerInside().into(itemView.Image_Preview)
+    inner class LocalHolder(private val binding: ItemMainBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        fun bind(btn: BtnLocal) {
+            binding.TitleText.text = btn.dirName
+            binding.root.setOnClickListener(this)
+            binding.ButtonMainMore.setOnClickListener { itemMoreClick(btn) }
+            Glide.with(binding.root).load(btn.oriPic).centerInside().into(binding.ImagePreview)
         }
 
         override fun onClick(view: View?)
@@ -36,10 +32,9 @@ class ListLocalAdapter(val btnLocalList: BtnLocalList,
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocalHolder
-    {
-        val item = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
-        return LocalHolder(item)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocalHolder {
+        val binding = ItemMainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return LocalHolder(binding)
     }
 
     override fun onBindViewHolder(holder: LocalHolder, position: Int)
