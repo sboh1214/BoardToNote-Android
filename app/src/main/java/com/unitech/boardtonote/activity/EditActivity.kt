@@ -22,7 +22,6 @@ import com.unitech.boardtonote.data.BtnCloud
 import com.unitech.boardtonote.data.BtnInterface
 import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.databinding.ActivityEditBinding
-import com.unitech.boardtonote.databinding.FragmentEditBinding
 import com.unitech.boardtonote.fragment.BlockListFragment
 import com.unitech.boardtonote.helper.SnackBarInterface
 import com.yalantis.ucrop.UCrop
@@ -33,7 +32,7 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
     private val tag = "EditActivity"
 
     private lateinit var binding: ActivityEditBinding
-    private lateinit var fragmentBinding: FragmentEditBinding
+    private lateinit var fragment: BlockListFragment
 
     lateinit var btnClass: BtnInterface
     lateinit var blockAdapter: BlockAdapter
@@ -44,11 +43,11 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             when (it.resultCode) {
                 RESULT_OK -> {
-                    Glide.with(fragmentBinding.ImageOriPic).load(btnClass.oriPic).centerInside()
-                        .into(fragmentBinding.ImageOriPic)
+                    Glide.with(fragment.b.ImageOriPic).load(btnClass.oriPic).centerInside()
+                        .into(fragment.b.ImageOriPic)
                     onImageChange()
                 }
-            RESULT_CANCELED -> snackBar("User canceled cropping picture")
+                RESULT_CANCELED -> snackBar("User canceled cropping picture")
             else -> snackBar("Error raised while cropping picture")
         }
 
@@ -98,10 +97,10 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
         }
 
         setContentView(binding.root)
-
+        fragment = BlockListFragment()
         supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.Frame_Edit, BlockListFragment())
+            .beginTransaction()
+            .replace(R.id.Frame_Edit, fragment)
                 .addToBackStack(null)
                 .commit()
     }

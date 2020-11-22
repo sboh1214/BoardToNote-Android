@@ -25,7 +25,7 @@ import com.unitech.boardtonote.helper.SnackBarInterface
 class BlockListFragment : Fragment()
 {
     private lateinit var eA: EditActivity
-    private lateinit var b: FragmentEditBinding
+    lateinit var b: FragmentEditBinding
     private lateinit var snackBarInterface: SnackBarInterface
 
     override fun onAttach(context: Context)
