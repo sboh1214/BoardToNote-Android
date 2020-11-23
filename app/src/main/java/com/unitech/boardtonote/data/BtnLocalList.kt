@@ -41,7 +41,6 @@ class BtnLocalList(val context: Context)
         {
             srcDir.renameTo(dstDir)
             btnLocal.dirName = name
-            Log.i(tag, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
             true
         }
     }

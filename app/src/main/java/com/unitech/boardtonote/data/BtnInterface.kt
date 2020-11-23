@@ -135,7 +135,6 @@ interface BtnInterface {
         } else {
             srcDir.renameTo(dstDir)
             dirName = name
-            Log.i(tag, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
             true
         }
     }
@@ -164,8 +163,6 @@ interface BtnInterface {
             .addOnSuccessListener { visionText ->
                 trace.stop()
                 saveVisionText(visionText)
-                Log.i(tag, "analyze() Success $dirName")
-                Log.v(tag, visionText.text.replace("\n", " "))
                 onSuccess()
             }
             .addOnFailureListener { e ->

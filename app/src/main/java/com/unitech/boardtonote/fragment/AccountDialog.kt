@@ -32,7 +32,6 @@ class AccountDialog : DialogFragment()
         super.onCreate(savedInstanceState)
         snackBarInterface = context as SnackBarInterface
         accountInterface = context as AccountHelper.AccountInterface
-        Log.i(tag, "onCreate")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
@@ -59,7 +58,6 @@ class AccountDialog : DialogFragment()
             val buttonAccountDelete = view.findViewById<AppCompatButton>(R.id.Button_AccountDelete)
             val buttonDismiss = view.findViewById<AppCompatButton>(R.id.Button_Dismiss)
             buttonPassword.setOnClickListener {
-
                 dismiss()
             }
             buttonSignOut.setOnClickListener {
@@ -70,7 +68,6 @@ class AccountDialog : DialogFragment()
                         .addOnCompleteListener {
                             File("${a.filesDir.path}/cloud").delete()
                             accountInterface.onSignOut(a, adapter)
-                            Log.i(tag, "User account signed out.")
                             snackBarInterface.snackBar("User account signed out.")
                         }
                 dismiss()
@@ -84,12 +81,10 @@ class AccountDialog : DialogFragment()
                             if (task.isSuccessful)
                             {
                                 accountInterface.onSignOut(a, adapter)
-                                Log.i(tag, "User account deleted.")
                                 snackBarInterface.snackBar("User account deleted.")
                             }
                             else
                             {
-                                Log.i(tag, "User account deleted.")
                                 snackBarInterface.snackBar("User account deleted.")
                             }
                         }

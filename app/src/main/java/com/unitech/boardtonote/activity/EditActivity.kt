@@ -55,7 +55,6 @@ class EditActivity : AppCompatActivity(), SnackBarInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i(tag, "onCreate")
 
         binding = ActivityEditBinding.inflate(layoutInflater)
 

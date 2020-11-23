@@ -25,7 +25,6 @@ class BtnCloud(override val context: Context, override var dirName: String?) : B
 
     private fun applyLocalTimeStamp()
     {
-        Log.d(tag, "$dirName : applyLocalTimeStamp : $localTimeStamp")
         val src = File(parentDirPath).listFiles()?.find { file -> file.name.substringBeforeLast(".") == dirName }
         val dst = File("$parentDirPath/$dirName.btn$localTimeStamp")
         src?.renameTo(dst)

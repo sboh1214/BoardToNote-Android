@@ -63,7 +63,6 @@ class BtnCloudList(val context: Context)
         {
             srcDir.renameTo(dstDir)
             btnCloud.dirName = name
-            Log.i(tag, "rename succeeded (${srcDir.name} -> ${dstDir.name})")
             true
         }
     }

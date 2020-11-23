@@ -12,8 +12,8 @@ android {
         applicationId "com.unitech.boardtonote"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 50
-        versionName "2020.11.2"
+        versionCode 51
+        versionName "2020.11.3"
         android.defaultConfig.vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -92,7 +92,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:19.0.10'
     implementation 'com.google.firebase:firebase-storage:19.2.0'
 
-    implementation 'com.facebook.android:facebook-android-sdk:8.1.0'
     implementation 'com.github.yalantis:ucrop:2.2.6-native'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3'
     implementation 'com.github.bumptech.glide:glide:4.11.0'

@@ -48,7 +48,6 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
             if (uri != null) {
                 val btnClass = BtnLocal(this@CameraActivity, null)
                 btnClass.copyOriPic(uri)
-                Log.i(tag, btnClass.toString())
                 val intent = Intent(this@CameraActivity, EditActivity::class.java)
                 intent.putExtra("dirName", btnClass.dirName)
                 intent.putExtra("location", Constant.locationLocal)
@@ -58,7 +57,6 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i(tag, "onCreate")
 
         b = ActivityCameraBinding.inflate(layoutInflater)
 
@@ -148,8 +146,6 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(tag, msg)
-                    Log.i(tag, "Captured picture with dirName ${btn.dirName}")
                     val intent = Intent(this@CameraActivity, EditActivity::class.java)
                     intent.putExtra("dirName", btn.dirName)
                     intent.putExtra("location", Constant.locationLocal)

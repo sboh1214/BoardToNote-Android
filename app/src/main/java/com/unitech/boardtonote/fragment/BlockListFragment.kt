@@ -54,7 +54,6 @@ class BlockListFragment : Fragment()
 
     private fun onSuccess(): Boolean
     {
-        Log.i(tag, "Recycler_Edit Init")
         eA.blockAdapter = BlockAdapter(eA.btnClass,
                 { btnClass, _ -> itemClick(btnClass) },
                 { btnClass -> itemMoreClick(btnClass) })

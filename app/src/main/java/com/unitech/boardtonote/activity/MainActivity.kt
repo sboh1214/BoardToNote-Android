@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i(tag, "onCreate")
 
         b = ActivityMainBinding.inflate(layoutInflater)
 
@@ -102,15 +101,13 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
 
         when (intent.action) {
             "shortcut.local" -> {
-                Log.i(tag, "shortcut.local")
                 b.pager.currentItem = 0
             }
             "shortcut.cloud" -> {
-                Log.i(tag, "shortcut.cloud")
                 b.pager.currentItem = 1
             }
             else -> {
-                Log.i(tag, "not shortcut")
+                // "not shortcut"
                 b.pager.currentItem = 0
             }
         }
@@ -131,14 +128,11 @@ class MainActivity : AppCompatActivity(), SnackBarInterface, AccountHelper.Accou
 
     override fun onBackPressed() {
         if (System.currentTimeMillis() <= time + 2000) {
-            Log.v(tag, "Press Back Button 2 time $time")
-            Log.i(tag, "Exit Application.")
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_HOME)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
         } else {
-            Log.v(tag, "Press Back Button 1 time $time")
             time = System.currentTimeMillis()
             snackBar("Press back one more time to exit.")
             return
