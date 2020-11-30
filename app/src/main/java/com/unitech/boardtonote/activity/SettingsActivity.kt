@@ -3,6 +3,7 @@ package com.unitech.boardtonote.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.unitech.boardtonote.R
@@ -56,9 +57,7 @@ class SettingsActivity : AppCompatActivity(),
         return if (supportFragmentManager.popBackStackImmediate())
         {
             true
-        }
-        else
-        {
+        } else {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             true
@@ -66,25 +65,17 @@ class SettingsActivity : AppCompatActivity(),
     }
 
     override fun onPreferenceStartFragment(
-            caller: PreferenceFragmentCompat,
-            pref: Preference
-    ): Boolean
-    {
-        // Instantiate the new Fragment
-        val args = pref.extras
-        val fragment = supportFragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                pref.fragment
-        ).apply {
-            arguments = args
-            setTargetFragment(caller, 0)
-        }
-        // Replace the existing Fragment with the new Fragment
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.Frame_Settings, fragment)
-                .addToBackStack(null)
-                .commit()
+        caller: PreferenceFragmentCompat?,
+        pref: Preference
+    ): Boolean {
+        val args: Bundle = pref.extras
+        val fragment: Fragment =
+            supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
+        fragment.arguments = args
+        supportFragmentManager.beginTransaction().replace(R.id.Frame_Settings, fragment)
+            .addToBackStack(null).commit()
         title = pref.title
+
         return true
     }
 }
