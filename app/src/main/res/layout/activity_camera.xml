@@ -14,34 +14,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/Button_Gallery"
-        style="@style/BTN.Button_Camera"
-        android:contentDescription="@string/gallery_button"
-        android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/Button_Picture"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_collections_white" />
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <ImageButton
-        android:id="@+id/Button_Picture"
-        style="@style/BTN.Button_Camera"
-        android:contentDescription="@string/shutter_button"
-        android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/Button_Note"
-        app:layout_constraintStart_toEndOf="@id/Button_Gallery"
-        app:srcCompat="@drawable/ic_shutter_state" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/Button_Gallery"-->
+<!--        style="@style/BTN.Button_Camera"-->
+<!--        android:contentDescription="@string/gallery_button"-->
+<!--        android:padding="12dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/Button_Picture"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:srcCompat="@drawable/ic_collections_white" />-->
 
-    <ImageButton
-        android:id="@+id/Button_Note"
-        style="@style/BTN.Button_Camera"
-        android:contentDescription="@string/collection_button"
-        android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/Button_Picture"
-        app:srcCompat="@drawable/ic_bookmark" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/Button_Picture"-->
+<!--        style="@style/BTN.Button_Camera"-->
+<!--        android:contentDescription="@string/shutter_button"-->
+<!--        android:padding="12dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/Button_Note"-->
+<!--        app:layout_constraintStart_toEndOf="@id/Button_Gallery"-->
+<!--        app:srcCompat="@drawable/ic_shutter_state" />-->
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/Button_Note"-->
+<!--        style="@style/BTN.Button_Camera"-->
+<!--        android:contentDescription="@string/collection_button"-->
+<!--        android:padding="12dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@id/Button_Picture"-->
+<!--        app:srcCompat="@drawable/ic_bookmark" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

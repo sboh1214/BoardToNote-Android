@@ -15,9 +15,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.imageResource
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.unitech.boardtonote.Constant
+import com.unitech.boardtonote.R
 import com.unitech.boardtonote.data.BtnLocal
 import com.unitech.boardtonote.databinding.ActivityCameraBinding
 import java.io.File
@@ -58,25 +66,45 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        b = ActivityCameraBinding.inflate(layoutInflater)
-
-
-        b.ButtonNote.setOnClickListener {
+        val onClickNote: () -> Unit = {
             val intent = Intent(this@CameraActivity, MainActivity::class.java)
             startActivity(intent)
         }
-        b.ButtonGallery.setOnClickListener {
+
+        val onClickPicture: () -> Unit = {
+            takePhoto()
+        }
+
+        val onClickGallery: () -> Unit = {
             startActivityForResult.launch("image/*")
         }
-        b.ButtonPicture.setOnClickListener { takePhoto() }
-        // Request camera permissions
-        if (allPermissionsGranted()) {
-            b.ViewFinder.post { startCamera() }
-        } else {
-            requestPermission.launch(Manifest.permission.CAMERA)
-        }
-        cameraExecutor = Executors.newSingleThreadExecutor()
-        setContentView(b.root)
+
+            b = ActivityCameraBinding.inflate(layoutInflater).apply {
+                composeView.setContent {
+                    MaterialTheme {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Button(onClick = onClickNote) {
+                                Image(imageResource(id = R.drawable.ic_bookmark))
+                            }
+                            Button(onClick = onClickPicture) {
+                                Image(imageResource(R.drawable.ic_shutter_state))
+                            }
+                            Button(onClick = onClickGallery) {
+                                Image(imageResource(R.drawable.ic_collections_white))
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Request camera permissions
+            if (allPermissionsGranted()) {
+                b.ViewFinder.post { startCamera() }
+            } else {
+                requestPermission.launch(Manifest.permission.CAMERA)
+            }
+            cameraExecutor = Executors.newSingleThreadExecutor()
+            setContentView(b.root)
     }
 
     override fun onStart() {
@@ -101,7 +129,7 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        cameraProviderFuture.addListener(Runnable {
+        cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             // Preview
