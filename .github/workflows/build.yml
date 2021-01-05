@@ -1,4 +1,4 @@
-name: Android
+name: Build
 
 on:
   pull_request:
@@ -27,10 +27,3 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: '${{ secrets.ANDROID_KEYSTORE_PASSWORD }}'
           ANDROID_KEYSTORE_ALIAS: 'upload'
           ANDROID_KEY_PASSWORD: '${{ secrets.ANDROID_KEY_PASSWORD }}'
-      - name: Upload to Google Play Store
-        uses: r0adkll/upload-google-play@v1.0.10
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          packageName: com.unitech.boardtonote
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: alpha
