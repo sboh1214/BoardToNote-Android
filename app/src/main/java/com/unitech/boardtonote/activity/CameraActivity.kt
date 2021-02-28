@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.unitech.boardtonote.Constant
@@ -84,14 +84,14 @@ class CameraActivity : AppCompatActivity(), LifecycleOwner {
                     MaterialTheme {
                         Row(modifier = Modifier.fillMaxWidth()) {
                             Button(onClick = onClickNote) {
-                                Image(vectorResource(R.drawable.ic_bookmark), contentDescription = null)
+                                Image(painterResource(R.drawable.ic_bookmark), contentDescription = null)
                             }
                             Button(onClick = onClickPicture) {
                                 // TODO : ic_shutter_state
-                                Image(vectorResource(R.drawable.ic_shutter_unpressed), contentDescription = null)
+                                Image(painterResource(R.drawable.ic_shutter_unpressed), contentDescription = null)
                             }
                             Button(onClick = onClickGallery) {
-                                Image(vectorResource(R.drawable.ic_collections_white), contentDescription = null)
+                                Image(painterResource(R.drawable.ic_collections_white), contentDescription = null)
                             }
                         }
                     }
